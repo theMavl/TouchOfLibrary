@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Document List</h1>
+
+    {% if document_list %}
+    <ul>
+
+      {% for document in document_list %}
+      <li>
+        <a>{{ document.title }}</a>
+          ({{document.type}})
+          ({% for author in document.authors.all %}
+          {{ author.first_name }}
+          {{author.last_name}}
+           {% if not forloop.last %},{% else %}{% endif %}
+          {% endfor %})
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>There are no books in the library.</p>
+    {% endif %}
+{% endblock %}

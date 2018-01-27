@@ -21,3 +21,7 @@ def index(request):
         'index.html',
         context={'num_documents':num_documents,'num_instances':num_instances,'num_authors':num_authors, 'num_users':num_users},
     )
+from django.views import generic
+
+class DocumentListView(generic.ListView):
+    model = Document
