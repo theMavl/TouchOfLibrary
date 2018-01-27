@@ -11,8 +11,7 @@
         <a href="{{ document.get_absolute_url }}">{{ document.title }} </a>
           ({{document.type}})
           ({% for author in document.authors.all %}
-          {{ author.first_name }}
-          {{author.last_name}}
+            <a href="{{author.get_absolute_url}}">{{ author.first_name }} {{author.last_name}}</a>
            {% if not forloop.last %},{% else %}{% endif %}
           {% endfor %})
       </li>
@@ -20,6 +19,6 @@
 
     </ul>
     {% else %}
-      <p>There are no books in the library yet</p>
+      <p>There are no documents in the library yet</p>
     {% endif %}
 {% endblock %}

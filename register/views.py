@@ -25,14 +25,14 @@ from django.views import generic
 
 class DocumentListView(generic.ListView):
     model = Document
-    paginate_by = 2
+    paginate_by = 10
 
 class DocumentDetailView(generic.DetailView):
     model = Document
 
 class AuthorsListView(generic.ListView):
     model = Author
-    paginate_by = 4
+    paginate_by = 10
 
 class AuthorDetailView(generic.DetailView):
     model = Author
