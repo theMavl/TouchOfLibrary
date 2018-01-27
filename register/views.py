@@ -29,3 +29,10 @@ class DocumentListView(generic.ListView):
 
 class DocumentDetailView(generic.DetailView):
     model = Document
+
+class AuthorsListView(generic.ListView):
+    model = Author
+    paginate_by = 4
+
+class AuthorDetailView(generic.DetailView):
+    model = Author
