@@ -25,3 +25,6 @@ from django.views import generic
 
 class DocumentListView(generic.ListView):
     model = Document
+
+class DocumentDetailView(generic.DetailView):
+    model = Document

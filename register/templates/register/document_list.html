@@ -8,7 +8,7 @@
 
       {% for document in document_list %}
       <li>
-        <a>{{ document.title }}</a>
+        <a href="{{ document.get_absolute_url }}">{{ document.title }} </a>
           ({{document.type}})
           ({% for author in document.authors.all %}
           {{ author.first_name }}
