@@ -25,7 +25,7 @@ from django.conf.urls import url
 
 urlpatterns += [
     url(r'^register/', include('register.urls')),
-    path('register/', include('register.urls'))
+    path('register/', include('register.urls')),
 ]
 
 from django.views.generic import RedirectView
