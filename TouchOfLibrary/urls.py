@@ -26,6 +26,7 @@ from django.conf.urls import url
 urlpatterns += [
     url(r'^register/', include('register.urls')),
     path('register/', include('register.urls')),
+    url(r'^accounts/', include('django.contrib.auth.urls')),
 ]
 
 from django.views.generic import RedirectView

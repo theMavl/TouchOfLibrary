@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 import uuid
+from django.contrib.auth.models import User
 
 
 class Document(models.Model):
@@ -8,7 +9,7 @@ class Document(models.Model):
     authors = models.ManyToManyField('Author', help_text='Select authors')
     description = models.TextField(max_length=1000, help_text="Enter a description of the document")
     type = models.ForeignKey('DocType', on_delete=models.SET_NULL, null=True)
-    tags = models.ManyToManyField('Tag', help_text="Select tags")
+
 
     def __str__(self):
         return self.title
@@ -22,7 +23,7 @@ class DocumentInstance(models.Model):
                           help_text="Unique document ID")
     document = models.ForeignKey('Document', on_delete=models.CASCADE, null=True)
     due_back = models.DateField(null=True, blank=True)
-    price = models.FloatField(help_text='Price in RUB', null=True)
+
     is_reference = models.BooleanField(default=False, help_text="Reference materials can not be borrowed.")
 
     DOCUMENT_STATUS = (
@@ -33,10 +34,10 @@ class DocumentInstance(models.Model):
     )
 
     status = models.CharField(max_length=1, choices=DOCUMENT_STATUS, blank=True, default='d')
-    holder = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True, blank=True)
 
     location = models.ForeignKey('LibraryLocation', on_delete=models.SET_NULL, null=True, blank=True)
 
+    borrower = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     additional_field1 = models.CharField(max_length=500, blank=True)
     additional_field2 = models.CharField(max_length=500, blank=True)
     additional_field3 = models.CharField(max_length=500, blank=True)
