@@ -13,5 +13,7 @@
   {{ tag}}
    {% if not forloop.last %},{% else %}{% endif %}
   {% endfor %}
+  {% if user.is_authenticated %}
+  <p style="text-align: center"><button>Check out that {{document.type}}!</button> </p> {% else %} <p>To check out that {{document.type}} you need to login</p>{% endif %}
 
 {% endblock %}
