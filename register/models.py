@@ -13,7 +13,6 @@ class Document(models.Model):
     type = models.ForeignKey('DocType', on_delete=models.SET_NULL, null=True)
     tags = models.ManyToManyField('Tag', help_text="Select tags")
 
-
     def __str__(self):
         return self.title
 
@@ -41,6 +40,7 @@ class DocumentInstance(models.Model):
     location = models.ForeignKey('LibraryLocation', on_delete=models.SET_NULL, null=True, blank=True)
     price = models.FloatField(help_text='Price in RUB', null=True)
     holder = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
     additional_field1 = models.CharField(max_length=500, blank=True)
     additional_field2 = models.CharField(max_length=500, blank=True)
     additional_field3 = models.CharField(max_length=500, blank=True)
@@ -89,11 +89,14 @@ class DocType(models.Model):
 
 
 class PatronInfo(models.Model):
-    user = models.ForeignKey(User,on_delete=models.SET_NULL, null=True, blank=True)
-    name = models.TextField(max_length=100,blank=True)
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    name = models.TextField(max_length=100, blank=True)
     phone_number = models.CharField(max_length=20)
     address = models.CharField(max_length=20)
     telegram = models.CharField(max_length=20, blank=True)
+
+    def get_name(self):
+        return "kek"
 
     class Meta:
         verbose_name = "Patron's Information"
@@ -101,6 +104,7 @@ class PatronInfo(models.Model):
 
     def __str__(self):
         return '[%d] %s %s' % (self.user.id, self.user.first_name, self.user.last_name)
+
 
 class RecordsLog(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True)

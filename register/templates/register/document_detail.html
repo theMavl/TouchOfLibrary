@@ -1,19 +1,21 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>Title: {{ document.title }}</h1>
-  <p><strong>Authors:</strong> <a href=""></a> {% for author in document.authors.all %}
-  <a href="{{author.get_absolute_url}}">{{ author.first_name }} {{author.last_name}}</a>
+    <h1>{{ document.title }}</h1>
+    <h4>{{ document.type }}</h4>
+    <p><strong>Authors:</strong> <a href=""></a> {% for author in document.authors.all %}
+        <a href="{{ author.get_absolute_url }}">{{ author.first_name }} {{ author.last_name }}</a>
 
-   {% if not forloop.last %},{% else %}{% endif %}
-  {% endfor %}</p>
-  <p><strong>Description:</strong> {{document.description}}
-  <p><strong>Type of document:</strong> {{document.type}}
-  <p><strong>Tags:</strong> {% for tag in document.tags.all %}
-  {{ tag}}
-   {% if not forloop.last %},{% else %}{% endif %}
-  {% endfor %}
-  {% if user.is_authenticated %}
-  <p style="text-align: center"><button>Check out that {{document.type}}!</button> </p> {% else %} <p>To check out that {{document.type}} you need to login</p>{% endif %}
-
+        {% if not forloop.last %},{% else %}{% endif %}
+    {% endfor %}</p>
+    <p><strong>Description:</strong> {{ document.description }}
+    <p><strong>Tags:</strong> {% for tag in document.tags.all %}
+        {{ tag }}
+        {% if not forloop.last %},{% else %}{% endif %}
+    {% endfor %}
+        {% if user.is_authenticated %}
+            <p style="text-align: center">
+                <button>Check out that {{ document.type }}!</button>
+            </p> {% else %} <p>To check out that {{ document.type }} you need to login</p>{% endif %}
+    <!--TODO: Assign procedure to the button (D1)-->
 {% endblock %}
