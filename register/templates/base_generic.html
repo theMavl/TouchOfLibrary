@@ -10,7 +10,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
   {% load static %}
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -26,6 +26,7 @@
           <li><a href="{% url 'authors' %}">All authors</a></li>
           {% if user.is_authenticated %}
           <li>User: {{ user.get_username }}</li>
+              <li> <a href="{{ user.username }}"> Profile </a></li>
           <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
           {% else %}
           <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
