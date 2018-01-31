@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Library Home</h1>
+
+    <p>Welcome to <em>TouchOfLibrary</em></p>
+
+    <h2>Content</h2>
+
+    <p>Information About User:</p>
+    <ul>
+        {% if user.is_authenticated %}
+            <li><strong>User:</strong> {{ user.id }}</li>
+        {% endif %}
+
+        <li><strong>Name:</strong> {{ Name }}</li>
+        <li><strong>Address:</strong> {{ Address}}</li>
+        <li><strong>Telegram:</strong> {{ Telegram}}</li>
+        <li><strong>Phone Number:</strong> {{ Phone_Number}}</li>
+    </ul>
+
+{% endblock %}
