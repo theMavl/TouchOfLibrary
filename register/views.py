@@ -39,10 +39,6 @@ class DocumentDetailView(generic.DetailView):
     model = Document
 
 
-class DocumentInstanceView(generic.ListView):
-    model = DocumentInstance
-
-
 class AuthorsListView(generic.ListView):
     model = Author
     paginate_by = 10
@@ -58,3 +54,9 @@ from django.shortcuts import render
 def get_user_profile(request, username):
     user = User.objects.get(username=username)
     return render(request, 'register/user_profile.html', {"username": user})
+
+
+def get_document_detail(request, id):
+    copy_list = DocumentInstance.objects.filter(document_id=id)
+    document = Document.objects.get(id=id)
+    return render(request, 'register/document_detail.html', context={'copy_list': copy_list, "document": document}, )

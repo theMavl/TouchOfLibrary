@@ -1,5 +1,4 @@
 {% extends "base_generic.html" %}
-
 {% block content %}
     <h1>Documents</h1>
 
@@ -7,8 +6,9 @@
         <ul>
 
             {% for document in document_list %}
+
                 <li>
-                    <a href="{{ document.get_absolute_url }}">{{ document.type }} {{ document.title }} </a>
+                    <a href="{% url 'document-detail' id=document.id %}">{{ document.type }} {{ document.title }} </a>
                     ({% for author in document.authors.all %}
                     <a href="{{ author.get_absolute_url }}">{{ author.first_name }} {{ author.last_name }}</a>
                     {% if not forloop.last %},{% else %}{% endif %}

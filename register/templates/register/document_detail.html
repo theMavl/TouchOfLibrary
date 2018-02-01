@@ -1,5 +1,6 @@
 {% extends "base_generic.html" %}
 
+
 {% block content %}
     <h1>{{ document.title }}</h1>
     <h4>{{ document.type }}</h4>
@@ -14,8 +15,42 @@
         {% if not forloop.last %},{% else %}{% endif %}
     {% endfor %}
         {% if user.is_authenticated %}
+
+            <h2>Copies of this {{ document.type }}</h2>
+            {% if copy_list %}
+                <ul>
+
+                    {% for copy in copy_list %}
+                        <li>
+                            <h3>{{ copy.document.title }}</h3>
+                            <p><strong>Location: </strong>
+                            <ul>
+                                <li><strong>Level: </strong> {{ copy.location.level }}</li>
+                                <li><strong>Room: </strong> {{ copy.location.room }}</li>
+                            </ul>
+                            {% if copy.status == 'a' %}
+                            <p><strong>Status: </strong>Available </p>
+                                <p style="text-align: center"> Book </p>
+                                <!--TODO:  Assign procedure to the book button-->
+                            {% elif copy.status == 'g'%}
+                                <p><strong>Status: </strong>Given out </p>
+                                <p><strong>Will be available on </strong> {{ copy.due_back }}</p>
+                            {% elif copy.status == 'r'%}
+                                <p><strong>Status: </strong>Reserved </p>
+                            {% else %}
+                                <p><strong>Status: </strong>Maintenance </p>
+                            {% endif %}
+                            {% if not forloop.last %},{% else %}{% endif %}
+
+                        </li>
+                    {% endfor %}
+
+                </ul>
+            {% else %}
+                <p>There are no copies in the library yet</p>
+            {% endif %}
             <p style="text-align: center">
-                <button>Check out that {{ document.type }}!</button>
-            </p> {% else %} <p>To check out that {{ document.type }} you need to login</p>{% endif %}
-    <!--TODO: Assign procedure to the button (D1)-->
+            </p>
+        {% else %} <p>To check out that {{ document.type }} you need to login</p>{% endif %}
+
 {% endblock %}

@@ -98,11 +98,13 @@ class PatronInfo(models.Model):
     def get_name(self):
         return "kek"
 
+
     class Meta:
         verbose_name = "Patron's Information"
         verbose_name_plural = "Patrons' Information"
 
     def __str__(self):
+
         return '[%d] %s %s' % (self.user.id, self.user.first_name, self.user.last_name)
 
 
