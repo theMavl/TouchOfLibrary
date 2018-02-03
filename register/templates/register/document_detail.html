@@ -1,7 +1,6 @@
 {% extends "base_generic.html" %}
-
-
 {% block content %}
+
     <h1>{{ document.title }}</h1>
     <h4>{{ document.type }}</h4>
     <p><strong>Authors:</strong> <a href=""></a> {% for author in document.authors.all %}
@@ -14,9 +13,11 @@
         {{ tag }}
         {% if not forloop.last %},{% else %}{% endif %}
     {% endfor %}
+
         {% if user.is_authenticated %}
 
             <h2>Copies of this {{ document.type }}</h2>
+
             {% if copy_list %}
                 <ul>
 
@@ -29,13 +30,13 @@
                                 <li><strong>Room: </strong> {{ copy.location.room }}</li>
                             </ul>
                             {% if copy.status == 'a' %}
-                            <p><strong>Status: </strong>Available </p>
-                                <p style="text-align: center"> Book </p>
-                                <!--TODO:  Assign procedure to the book button-->
-                            {% elif copy.status == 'g'%}
+                                <p><strong>Status: </strong>Available </p>
+                                <button style="text-align: center" ><a href="{% url 'order_book' id=copy.id %}"> Book </a> </button>
+
+                            {% elif copy.status == 'g' %}
                                 <p><strong>Status: </strong>Given out </p>
                                 <p><strong>Will be available on </strong> {{ copy.due_back }}</p>
-                            {% elif copy.status == 'r'%}
+                            {% elif copy.status == 'r' %}
                                 <p><strong>Status: </strong>Reserved </p>
                             {% else %}
                                 <p><strong>Status: </strong>Maintenance </p>
@@ -53,4 +54,7 @@
             </p>
         {% else %} <p>To check out that {{ document.type }} you need to login</p>{% endif %}
 
+
+
 {% endblock %}
+
