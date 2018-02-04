@@ -1,0 +1,29 @@
+{% extends "base_generic.html" %}
+
+ <!--This is an html response page for ~/register/information/ url that shows content information
+ (FirstName, LastName (from internal user model))
+ (address, telegram, phone number (from patronInfo model))
+ about user (if he is authenticated in system)-->
+
+{% block content %}
+    <h1>User Information</h1>
+
+    <p>Welcome to <em>TouchOfLibrary</em></p>
+
+    <h2>Basic information:</h2>
+
+    <p>Information About User:</p>
+    <ul>
+        {% if user.is_authenticated %}
+            <li><strong>User ID:</strong> {{ user.id }}</li>
+        {% endif %}
+
+        <li><strong>Name:</strong> {{ FirstName }}</li>
+        <li><strong>Surname:</strong> {{ LastName }}</li>
+        <li><strong>Email:</strong> {{ Email }}</li>
+        <li><strong>Address:</strong> {{ Address}}</li>
+        <li><strong>Telegram:</strong> {{ Telegram}}</li>
+        <li><strong>Phone Number:</strong> {{ Phone_Number}}</li>
+    </ul>
+
+{% endblock %}
