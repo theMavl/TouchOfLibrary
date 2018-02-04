@@ -3,58 +3,66 @@
 
     <h1>{{ document.title }}</h1>
     <h4>{{ document.type }}</h4>
-    <p><strong>Authors:</strong> <a href=""></a> {% for author in document.authors.all %}
-        <a href="{{ author.get_absolute_url }}">{{ author.first_name }} {{ author.last_name }}</a>
+    <p><strong>Authors:</strong> <a href=""></a>
 
-        {% if not forloop.last %},{% else %}{% endif %}
-    {% endfor %}</p>
+        {% for author in document.authors.all %}
+            <a href="{{ author.get_absolute_url }}">{{ author.first_name }} {{ author.last_name }}</a>
+            {% if not forloop.last %},{% else %}{% endif %}
+        {% endfor %}</p>
+
     <p><strong>Description:</strong> {{ document.description }}
-    <p><strong>Tags:</strong> {% for tag in document.tags.all %}
-        {{ tag }}
-        {% if not forloop.last %},{% else %}{% endif %}
-    {% endfor %}
+    <p><strong>Tags:</strong>
+        {% for tag in document.tags.all %}
+            {{ tag }}
+            {% if not forloop.last %},{% else %}{% endif %}
+        {% endfor %}
+
 
         {% if user.is_authenticated %}
 
-            <h2>Copies of this {{ document.type }}</h2>
-
             {% if copy_list %}
-                <ul>
+                <table border="1" align="left" width="80%">
+                    <caption>Copies of this {{ document.type }}</caption>
+                    <tr>
+                        <th> Title</th>
+                        <th> Location</th>
+                        <th> Status</th>
+                    </tr>
 
                     {% for copy in copy_list %}
-                        <li>
-                            <h3>{{ copy.document.title }}</h3>
-                            <p><strong>Location: </strong>
-                            <ul>
-                                <li><strong>Level: </strong> {{ copy.location.level }}</li>
-                                <li><strong>Room: </strong> {{ copy.location.room }}</li>
-                            </ul>
-                            {% if copy.status == 'a' %}
-                                <p><strong>Status: </strong>Available </p>
-                                <button style="text-align: center" ><a href="{% url 'order_book' id=copy.id %}"> Book </a> </button>
+                        <tr>
+                            <th>{{ copy.document.title }}</th>
+                            <th><strong>Level: </strong> {{ copy.location.level }}
+                                <strong>Room: </strong> {{ copy.location.room }}
+                            </th>
 
+                            {% if copy.status == 'a' %}
+                                <th bgcolor="#90ee90" title="Boot this {{ document.type }} now!">
+                                    <a href="{% url 'order_book' id=copy.id %}"> Available </a> </button>
+                                </th>
                             {% elif copy.status == 'g' %}
-                                <p><strong>Status: </strong>Given out </p>
-                                <p><strong>Will be available on </strong> {{ copy.due_back }}</p>
+                                <th bgcolor="#ff6347" title="Will be available on {{ copy.due_back }}">
+                                    Given out
+                                </th>
                             {% elif copy.status == 'r' %}
-                                <p><strong>Status: </strong>Reserved </p>
+                                <th bgcolor="#ffa07a">
+                                    Reserved
+                                </th>
                             {% else %}
-                                <p><strong>Status: </strong>Maintenance </p>
+                                <th bgcolor="#fffff0">
+                                    Maintenance
+                                </th>
                             {% endif %}
                             {% if not forloop.last %},{% else %}{% endif %}
-
-                        </li>
+                        </tr>
                     {% endfor %}
+                </table>
 
-                </ul>
             {% else %}
                 <p>There are no copies in the library yet</p>
             {% endif %}
-            <p style="text-align: center">
-            </p>
+
         {% else %} <p>To check out that {{ document.type }} you need to login</p>{% endif %}
-
-
 
 {% endblock %}
 
