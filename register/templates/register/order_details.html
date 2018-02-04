@@ -1,0 +1,38 @@
+{% extends "base_generic.html" %}
+{% block content %}
+
+    <h1>Order: {{ copy.document.title }}</h1>
+    <p>Borrower: {{ user.username }}</p>
+    <p>Maximum due date: {{ date }}</p>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <table>
+            {{ form }}
+        </table>
+        <input type="submit" value="Order"/>
+    </form>
+
+
+
+{% endblock %}
+ <tr>
+        <th><label for="due_date">Preferred date:</label></th>
+        <td>
+            <input id="due_date" name="new_due_date" type="text" value="2017-11-11" required/>
+            <br/>
+            <span class="helptext">Enter date between  1 now and 2 weeks (default 2 weeks).</span>
+        </td>
+ </tr>
+
+<tr>
+        <th><label for="due_date">Renewal date:</label></th>
+        <td>
+            <ul class="errorlist">
+                <li>Invalid date - date from the past</li>
+            </ul>
+            <input id="id_renewal_date" name="renewal_date" type="text" value="2001-07-07" required/>
+            <br/>
+            <span class="helptext">Enter date between 2  now and 2 weeks (default 2 weeks).</span>
+        </td>
+    </tr>
