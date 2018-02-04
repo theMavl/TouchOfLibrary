@@ -6,6 +6,7 @@ from .models import Document, Author, DocumentInstance, PatronInfo
 from django.contrib.auth.decorators import login_required
 from django.views import generic
 from django.contrib import auth
+from django.contrib.auth.models import User, UserManager
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -29,6 +30,10 @@ def index(request):
     )
 
 
+# function that provides response with information.html file filled with content
+# (with content from user and patronInfo models)
+# working for an /information/ url request, (requires to be authorized)
+
 @login_required
 def information(request):
     user = auth.get_user(request)
@@ -38,17 +43,21 @@ def information(request):
             request,
             'information.html',
             context={'user': user,
-                     'Name': PatronInfo.objects.get(id=user.id).name,
-                     'Address': PatronInfo.objects.get(id=user.id).address,
-                     'Telegram': PatronInfo.objects.get(id=user.id).telegram,
-                     'Phone_Number': PatronInfo.objects.get(id=user.id).phone_number},
+                     'FirstName': User.objects.get(id=user.id).first_name,
+                     'LastName': User.objects.get(id=user.id).last_name,
+                     'Email': User.objects.get(id=user.id).email,
+                     'Address': PatronInfo.objects.get(user_id=user.id).address,
+                     'Telegram': PatronInfo.objects.get(user_id=user.id).telegram,
+                     'Phone_Number': PatronInfo.objects.get(user_id=user.id).phone_number},
         )
     except ObjectDoesNotExist:
         return render(
             request,
             'information.html',
             context={'user': user,
-                     'Name': "You have no Patron status",
+                     'FirstName': User.objects.get(id=user.id).first_name,
+                     'LastName': User.objects.get(id=user.id).last_name,
+                     'Email': User.objects.get(id=user.id).email,
                      'Address': "You have no Patron status",
                      'Telegram': "You have no Patron status",
                      'Phone_Number': "You have no Patron status"},
