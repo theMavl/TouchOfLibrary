@@ -7,12 +7,17 @@ from django.dispatch import receiver
 
 
 class Document(models.Model):
+    """
+    Model of abstract document
+    """
+    # document attributes
     title = models.CharField(max_length=100)
     authors = models.ManyToManyField('Author', help_text='Select authors')
     description = models.TextField(max_length=1000, help_text="Enter a description of the document")
     type = models.ForeignKey('DocType', on_delete=models.SET_NULL, null=True)
     tags = models.ManyToManyField('Tag', help_text="Select tags")
 
+    # document features
     def __str__(self):
         return self.title
 
@@ -21,6 +26,10 @@ class Document(models.Model):
 
 
 class DocumentInstance(models.Model):
+    """
+        Model of real document in the library
+    """
+    # instance attributes
     id = models.UUIDField(primary_key=True, default=uuid.uuid4,
                           help_text="Unique document ID")
     document = models.ForeignKey('Document', on_delete=models.CASCADE, null=True)
@@ -50,16 +59,23 @@ class DocumentInstance(models.Model):
     class Meta:
         ordering = ["due_back"]
 
+    # instance attributes
     def __str__(self):
         return '%s (%s)' % (self.document.title, self.id)
 
 
 class Author(models.Model):
+    """
+    Model of author
+    """
+
+    # Author attributes
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     date_born = models.DateField(null=True, blank=True)
     date_died = models.DateField('Died', null=True, blank=True)
 
+    # Author features
     def get_absolute_url(self):
         return reverse('author-detail', args=[str(self.id)])
 
@@ -68,6 +84,9 @@ class Author(models.Model):
 
 
 class LibraryLocation(models.Model):
+    """
+        Location of each document instance
+    """
     room = models.IntegerField(help_text='Room in library', null=True)
     level = models.IntegerField(help_text='Level in library', null=True)
 
@@ -89,12 +108,17 @@ class DocType(models.Model):
 
 
 class PatronInfo(models.Model):
+    """
+        Model of patron
+    """
+    # Patron attributes
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     name = models.TextField(max_length=100, blank=True)
     phone_number = models.CharField(max_length=20)
     address = models.CharField(max_length=20)
     telegram = models.CharField(max_length=20, blank=True)
 
+    # Patron features
     def get_name(self):
         return "kek"
 
@@ -107,6 +131,9 @@ class PatronInfo(models.Model):
 
 
 class RecordsLog(models.Model):
+    """
+        Model of each record about each check out
+    """
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True)
     document = models.ForeignKey('DocumentInstance', on_delete=models.PROTECT, null=True)
     ACTION_DIRECTION = (

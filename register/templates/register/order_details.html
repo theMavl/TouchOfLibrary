@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+{% block content %}
+    {% if copy.status == 'a' %}
+
+        <h1>Order: {{ copy.document.title }}</h1>
+        <p>Borrower: {{ user.username }}</p>
+        <p>Maximum due date: {{ date }}</p>
+
+        <form action="" method="post">
+            {% csrf_token %}
+            <table>
+                {{ form }}
+            </table>
+            <input type="submit" value="Order"/>
+        </form>
+
+    {% else %}
+        <h1> Sorry</h1>
+        <p>This document will not be available for ordering until {{ date }}</p>
+    {% endif %}
+
+{% endblock %}
