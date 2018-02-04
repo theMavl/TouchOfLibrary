@@ -24,15 +24,15 @@ from django.conf.urls import include
 from django.conf.urls import url
 
 urlpatterns += [
-    url(r'^register/', include('register.urls')),
-    path('register/', include('register.urls')),
+    url(r'^library/', include('library.urls')),
+    path('library/', include('library.urls')),
     url(r'^accounts/', include('django.contrib.auth.urls')),
 ]
 
 from django.views.generic import RedirectView
 
 urlpatterns += [
-    url(r'^$', RedirectView.as_view(url='/register/', permanent=True)),
+    url(r'^$', RedirectView.as_view(url='/library/', permanent=True)),
 ]
 
 from django.conf import settings

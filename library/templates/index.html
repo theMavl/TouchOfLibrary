@@ -1,0 +1,16 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Library Home</h1>
+
+    <p>Welcome to <em>TouchOfLibrary</em></p>
+    <h1></h1>
+    <h4>Small statistics</h4>
+    <ul>
+        <li><strong>Patrons registered:</strong> {{ num_users }}</li>
+        <li><strong>Documents:</strong> {{ num_documents }}</li>
+        <li><strong>Copies of documents:</strong> {{ num_instances }}</li>
+        <li><strong>Authors:</strong> {{ num_authors }}</li>
+    </ul>
+
+{% endblock %}

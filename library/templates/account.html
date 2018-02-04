@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+
+<!--This is an html response page for ~/register/information/ url that shows content information
+(FirstName, LastName (from internal user model))
+(address, telegram, phone number (from patronInfo model))
+about user-->
+
+{% block content %}
+
+    <h1>Your account</h1>
+
+    <p>Personal data:</p>
+    <ul>
+        <div><strong>Patron ID:</strong> {{ user.id }}</div>
+        <div><strong>Name:</strong> {{ FirstName }} {{ LastName }}</div>
+        <div><strong>Email:</strong> {{ Email }}</div>
+        <div><strong>Address:</strong> {{ Address }}</div>
+        <div><strong>Telegram:</strong> {{ Telegram }}</div>
+        <div><strong>Phone Number:</strong> {{ Phone_Number }}</div>
+    </ul>
+
+{% endblock %}
