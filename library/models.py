@@ -116,6 +116,7 @@ class PatronInfo(models.Model):
     phone_number = models.CharField(max_length=20)
     address = models.CharField(max_length=20)
     telegram = models.CharField(max_length=20, blank=True)
+    patron_type = models.ForeignKey('PatronType', on_delete=models.SET_NULL, null=True)
 
     # Patron features
     def get_name(self):
@@ -129,24 +130,35 @@ class PatronInfo(models.Model):
         return '[%d] %s %s' % (self.user.id, self.user.first_name, self.user.last_name)
 
 
+class PatronType(models.Model):
+    title = models.CharField(max_length=100, blank=True)
+    max_days = models.IntegerField(help_text='Maximum number of days allowed', null=True)
+    max_documents = models.IntegerField(help_text='Maximum number of days allowed', null=True)
+
+    def __str__(self):
+        return self.title
+
+
 class RecordsLog(models.Model):
     """
         Model of each record about each check out
     """
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True)
-    document = models.ForeignKey('DocumentInstance', on_delete=models.PROTECT, null=True)
+    document = models.ForeignKey('Document', on_delete=models.PROTECT, null=True)
+    document_instance = models.ForeignKey('DocumentInstance', on_delete=models.PROTECT, null=True)
     ACTION_DIRECTION = (
-        (0, 'borrowed'),
+        (0, 'received'),
         (1, 'returned')
     )
     action = models.IntegerField(choices=ACTION_DIRECTION)
     timestamp = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return '%s %s %s %s (%s)' % (
-            self.user.first_name, self.user.last_name,
-            self.ACTION_DIRECTION.__getitem__(self.action), self.document.id,
-            self.document.document.title)
+
+class WishList(models.Model):
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True)
+    document = models.ForeignKey('Document', on_delete=models.CASCADE, null=True)
+    timestamp = models.DateTimeField(auto_now=True)
+    executed = models.BooleanField(default=False)
 
 
 class Tag(models.Model):
