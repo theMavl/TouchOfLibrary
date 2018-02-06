@@ -1,5 +1,6 @@
 {% extends 'base_generic.html' %}
 {% block content %}
+{% if perms.library.change_wishlist %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -34,4 +35,6 @@
                 </table>
 </body>
 </html>
+{% else %} You are not allowed to be here
+{% endif %}
 {% endblock %}

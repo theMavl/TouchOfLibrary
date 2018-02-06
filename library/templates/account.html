@@ -18,5 +18,7 @@ about user-->
         <div><strong>Telegram:</strong> {{ Telegram }}</div>
         <div><strong>Phone Number:</strong> {{ Phone_Number }}</div>
     </ul>
-
+{% if perms.library.change_wishlist %}
+<div><a href="{% url 'order-list' %}">Orders of users</a></div>
+{% endif %}
 {% endblock %}
