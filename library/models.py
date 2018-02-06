@@ -16,6 +16,7 @@ class Document(models.Model):
     description = models.TextField(max_length=1000, help_text="Enter a description of the document")
     type = models.ForeignKey('DocType', on_delete=models.SET_NULL, null=True)
     tags = models.ManyToManyField('Tag', help_text="Select tags")
+    quantity = models.IntegerField(null=True)
 
     # document features
     def __str__(self):
