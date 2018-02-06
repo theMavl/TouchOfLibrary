@@ -20,5 +20,6 @@ about user-->
     </ul>
 {% if perms.library.change_wishlist %}
 <div><a href="{% url 'order-list' %}">Orders of users</a></div>
+<div><a href="{% url 'record-list' %}">Records</a></div>
 {% endif %}
 {% endblock %}

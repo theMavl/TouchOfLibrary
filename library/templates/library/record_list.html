@@ -1,0 +1,32 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+{% if perms.library.change_wishlist %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Given out books</title>
+</head>
+<body>
+ <table border="1" align="left" width="80%">
+                    <caption>All user's given out documents</caption>
+                    <tr>
+                        <th> Title</th>
+                        <th> Type </th>
+                        <th> User </th>
+                        <th> Due date </th>
+                    </tr>
+
+                    {% for record in records %}
+                        <tr>
+                            <th>{{ record.document.title }}</th>
+                            <th> {{ record.document.type }}</th>
+                        <th>{{ record.user }} ( Patron type )</th>
+                        <th> {{ record.document_instance.due_back }}</th>
+                        </tr>
+                    {% endfor %}
+                </table>
+</body>
+</html>
+{% else %} You are not allowed to be here
+{% endif %}
+{% endblock %}

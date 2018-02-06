@@ -137,6 +137,10 @@ def order_list(request):
     orders = WishList.objects.all()
     return render(request, 'library/order_list.html', context={'orders': orders})
 
+def record_list(request):
+    record = RecordsLog.objects.all()
+    return render(request, 'library/record_list.html', context={'records': record})
+
 
 def order_confirmation(request, id):
     order = WishList.objects.get(id=id)

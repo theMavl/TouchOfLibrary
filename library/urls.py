@@ -11,5 +11,6 @@ urlpatterns = [
     url(r'^authors/(?P<pk>\d+)$', views.AuthorDetailView.as_view(), name='author-detail'),
     url(r'^orders/$', views.order_list, name='order-list'),
     url(r'^orders/(?P<id>\d+)$', views.order_confirmation, name='order-confirmation'),
+    url(r'^records/$', views.record_list, name='record-list'),
 
 ]
