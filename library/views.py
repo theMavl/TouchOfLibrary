@@ -100,33 +100,37 @@ def get_document_detail(request, id):
     """
     user = auth.get_user(request)
     document = Document.objects.get(id=id)
-    wished = WishList.objects.filter(user_id=user.id, document_id=document.id)
-    ordered = RecordsLog.objects.filter(user=user, document=document)
+    if user.is_authenticated:
+        wished = WishList.objects.filter(user_id=user.id, document_id=document.id)
+        ordered = RecordsLog.objects.filter(user=user, document=document)
 
-    if request.method == 'POST':
-        form = ReserveButton(request.POST)
-        if form.clean_order():
+        if request.method == 'POST':
+            form = ReserveButton(request.POST)
+            if form.clean_order():
 
-            record = WishList.objects.create(user=user, document=document,
-                                             timestamp=datetime.datetime.today().isoformat(), executed=False)
-            record.save()
-            #if user.patrontype.privileges == 1:
-            #   document.quantity = document.quantity-1
-            #   document.save()
+                record = WishList.objects.create(user=user, document=document,
+                                                 timestamp=datetime.datetime.today().isoformat(), executed=False)
+                record.save()
+                #if user.patrontype.privileges == 1:
+                #   document.quantity = document.quantity-1
+                #   document.save()
+            else:
+                WishList.objects.filter(user_id=user.id, document_id=document.id).delete()
+                #if user.patrontype.privileges == 1:
+                #    document.quantity = document.quantity + 1
+                #    document.save()
+    #TODO connect user with patrontype
+            wished = WishList.objects.filter(user=user, document=document)
+            ordered = RecordsLog.objects.filter(user_id=user.id, document_id=document.id)
+
         else:
-            WishList.objects.filter(user_id=user.id, document_id=document.id).delete()
-            #if user.patrontype.privileges == 1:
-            #    document.quantity = document.quantity + 1
-            #    document.save()
-#TODO connect user with patrontype
-        wished = WishList.objects.filter(user=user, document=document)
-        ordered = RecordsLog.objects.filter(user_id=user.id, document_id=document.id)
-
+            form = ReserveButton()
+        # html template
+        return render(request, 'library/document_detail.html',
+                      context={'ordered': ordered, 'wished': wished, "document": document})
     else:
-        form = ReserveButton()
-    # html template
-    return render(request, 'library/document_detail.html',
-                  context={'ordered': ordered, 'wished': wished, "document": document})
+        return render(request, 'library/document_detail.html',
+                      context={"document": document})
 
 
 def order_list(request):
