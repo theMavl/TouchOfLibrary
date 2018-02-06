@@ -99,6 +99,9 @@ class DocType(models.Model):
     name = models.CharField(max_length=50, help_text="Document type name")
     fields = models.CharField(max_length=1000, blank=True,
                               help_text="Fields labels separated with semicolon. Max: 5")
+    max_days = models.IntegerField(help_text='Maximum days for loan in regular case', null=True)
+    max_days_bestseller = models.IntegerField(help_text='Maximum days for loan if document is bestseller', null=True)
+    max_days_privileges = models.IntegerField(help_text='Maximum days for loan for privileged patrons', null=True)
 
     class Meta:
         verbose_name = "Document Type"
@@ -133,8 +136,9 @@ class PatronInfo(models.Model):
 
 class PatronType(models.Model):
     title = models.CharField(max_length=100, blank=True)
-    max_days = models.IntegerField(help_text='Maximum number of days allowed', null=True)
+    #max_days = models.IntegerField(help_text='Maximum number of days allowed', null=True)
     max_documents = models.IntegerField(help_text='Maximum number of days allowed', null=True)
+    privileges = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
