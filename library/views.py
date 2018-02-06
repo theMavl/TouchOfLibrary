@@ -6,8 +6,8 @@ from django.urls import reverse
 from django.views import generic
 import datetime
 
-from library.forms import OrderDocument
-from .models import Document, Author, DocumentInstance, PatronInfo
+from library.forms import OrderDocument, ReserveButton, CheckOutButton
+from .models import Document, Author, DocumentInstance, PatronInfo, WishList, RecordsLog
 from django.contrib.auth.decorators import login_required
 from django.views import generic
 from django.contrib import auth
@@ -96,44 +96,68 @@ class AuthorDetailView(generic.DetailView):
 
 def get_document_detail(request, id):
     """
-    page with information about document and its copies
+    page with information about document
     """
-    # List of all copies of current document
-    copy_list = DocumentInstance.objects.filter(document_id=id)
+    user = auth.get_user(request)
     document = Document.objects.get(id=id)
+    wished = WishList.objects.filter(user_id=user.id, document_id=document.id)
+    ordered = RecordsLog.objects.filter(user=user, document=document)
 
+    if request.method == 'POST':
+        form = ReserveButton(request.POST)
+        if form.clean_order():
+
+            record = WishList.objects.create(user=user, document=document,
+                                             timestamp=datetime.datetime.today().isoformat(), executed=False)
+            record.save()
+            #if user.patrontype.privileges == 1:
+            #   document.quantity = document.quantity-1
+            #   document.save()
+        else:
+            WishList.objects.filter(user_id=user.id, document_id=document.id).delete()
+            #if user.patrontype.privileges == 1:
+            #    document.quantity = document.quantity + 1
+            #    document.save()
+#TODO connect user with patrontype
+        wished = WishList.objects.filter(user=user, document=document)
+        ordered = RecordsLog.objects.filter(user_id=user.id, document_id=document.id)
+
+    else:
+        form = ReserveButton()
     # html template
     return render(request, 'library/document_detail.html',
-                  context={'copy_list': copy_list, "document": document})
+                  context={'ordered': ordered, 'wished': wished, "document": document})
 
 
-def order_book(request, id):
-    """
-    page for ordering the document's copy
-    """
-    copy = get_object_or_404(DocumentInstance, pk=id)
-    proposed_renewal_date = datetime.date.today() + datetime.timedelta(14)
+def order_list(request):
+    orders = WishList.objects.all()
+    return render(request, 'library/order_list.html', context={'orders': orders})
 
-    # If POST request then process the input data
+
+def order_confirmation(request, id):
+    order = WishList.objects.get(id=id)
+    copies = DocumentInstance.objects.filter(document_id=order.document.id, status='a')
+    copy = copies[0]
     if request.method == 'POST':
-
-        # Create a form instance and populate it with data from the request (binding):
-        form = OrderDocument(request.POST)
-
-        # Check if the form is valid:
-        if form.is_valid():
-            # Change fields in data base table
-            copy.due_back = form.cleaned_data["due_date"]
+        form = CheckOutButton(request.POST)
+        if form.clean_check_out():
+            copy.document.quantity = copy.document.quantity - 1
+            copy.document.save()
             copy.status = 'g'
+            copy.holder = order.user
+            # TODO connect user with patrontype
+            #if order.user.patrontype.privileges == 1:
+            #    copy.due_back = datetime.date.today() + datetime.timedelta(copy.document.type.max_days_privileges)
+            if copy.document.bestseller:
+                copy.due_back = datetime.date.today() + datetime.timedelta(copy.document.type.max_days_bestseller)
+            else:
+                copy.due_back = datetime.date.today() + datetime.timedelta(copy.document.type.max_days)
             copy.save()
+            order.delete()
+            RecordsLog.objects.create(user=order.user, document=order.document, document_instance=copy,
+                                      action=0, timestamp=copy.due_back)
+        return order_list(request)
 
-            # redirect to a new URL:
-            return HttpResponseRedirect(reverse('index'))
-
-    # If  GET create the default form.
     else:
-        proposed_renewal_date = datetime.date.today() + datetime.timedelta(14)
-        form = OrderDocument(initial={"due_date": proposed_renewal_date, })
-
-    # html template
-    return render(request, 'library/order_details.html', {'form': form, 'copy': copy, 'date': proposed_renewal_date})
+        form = CheckOutButton()
+        return render(request, 'library/order_details.html', context={'order': order, 'form': form})

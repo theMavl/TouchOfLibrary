@@ -1,0 +1,37 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Orders</title>
+</head>
+<body>
+ <table border="1" align="left" width="80%">
+                    <caption>All user's orders</caption>
+                    <tr>
+                        <th> Title</th>
+                        <th> Type </th>
+                        <th> User </th>
+                        <th>  </th>
+                    </tr>
+
+                    {% for order in orders %}
+                        <tr>
+                            <th>{{ order.document.title }}</th>
+                            <th> {{ order.document.type }}</th>
+                        <th>{{ order.user }} ( Patron type )</th>
+                            {% if order.document.quantity > 0 %}
+                                <th bgcolor="#98fb98" title="Give out one copy of this {{ order.document.type }}">
+                                    <a href="{% url 'order-confirmation' id=order.id %}"> Give out </a> </button>
+                                </th>
+                            {% else %}
+                                <th bgcolor="#f08080">
+                                    Out of stock
+                                </th>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+</body>
+</html>
+{% endblock %}

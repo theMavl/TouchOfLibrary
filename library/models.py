@@ -17,6 +17,7 @@ class Document(models.Model):
     type = models.ForeignKey('DocType', on_delete=models.SET_NULL, null=True)
     tags = models.ManyToManyField('Tag', help_text="Select tags")
     quantity = models.IntegerField(null=True)
+    bestseller = models.BooleanField(default=False)
 
     # document features
     def __str__(self):

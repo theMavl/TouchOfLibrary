@@ -1,6 +1,15 @@
 {% extends "base_generic.html" %}
 {% block content %}
-
+<head>
+<style>
+    .redtext{
+        color: tomato;
+    }
+    .greentext{
+        color: palegreen;
+    }
+</style>
+</head>
     <h1>{{ document.title }}</h1>
     <h4>{{ document.type }}</h4>
     <p><strong>Authors:</strong> <a href=""></a>
@@ -19,46 +28,25 @@
 
 
         {% if user.is_authenticated %}
+            {% if ordered %}
+                    <p>Given out to you</p>
+            {% elif document.quantity > 0 %}
 
-            {% if copy_list %}
-                <table border="1" align="left" width="80%">
-                    <caption>Copies of this {{ document.type }}</caption>
-                    <tr>
-                        <th> Title</th>
-                        <th> Location</th>
-                        <th> Status</th>
-                    </tr>
-
-                    {% for copy in copy_list %}
-                        <tr>
-                            <th>{{ copy.document.title }}</th>
-                            <th><strong>Level </strong> {{ copy.location.level }},
-                                <strong>room </strong> {{ copy.location.room }}
-                            </th>
-
-                            {% if copy.status == 'a' %}
-                                <th bgcolor="#90ee90" title="Boot this {{ document.type }} now!">
-                                    <a href="{% url 'order_book' id=copy.id %}"> Available </a> </button>
-                                </th>
-                            {% elif copy.status == 'g' %}
-                                <th bgcolor="#ff6347" title="Will be available on {{ copy.due_back }}">
-                                    Given out
-                                </th>
-                            {% elif copy.status == 'r' %}
-                                <th bgcolor="#ffa07a">
-                                    Reserved
-                                </th>
-                            {% else %}
-                                <th bgcolor="#fffff0">
-                                    Maintenance
-                                </th>
-                            {% endif %}
-                        </tr>
-                    {% endfor %}
-                </table>
-
+                {% if wished %}
+                    <form action="" method="post">
+                     {% csrf_token %}
+                        {{ form }}
+                        <input type="submit" name="cancel_order" value="Cancel order"/>
+                    </form>
+                {% else %}
+                    <form action="" method="post">
+                     {% csrf_token %}
+                        {{ form }}
+                        <input type="submit" name="document_order" value="Order"/>
+                    </form>
+                {% endif %}
             {% else %}
-                <p>There are no copies in the library yet</p>
+                <p class="redtext">There are no copies in the library yet</p>
             {% endif %}
 
         {% else %} <p>To check out that {{ document.type }} you need to login</p>{% endif %}
