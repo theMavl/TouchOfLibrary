@@ -5,7 +5,6 @@
 
         <h3>Order: {{ order.document.title }}</h3>
         <p>Borrower: {{ order.user }}(Patron type)</p>
-        <p>Maximum due date: 14 (Still) </p>
 
         <form action="" method="post">
             {% csrf_token %}

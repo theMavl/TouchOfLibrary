@@ -7,7 +7,7 @@ from django.views import generic
 import datetime
 
 from library.forms import OrderDocument, ReserveButton, CheckOutButton
-from .models import Document, Author, DocumentInstance, PatronInfo, WishList, RecordsLog
+from .models import Document, Author, DocumentInstance, PatronInfo, WishList, RecordsLog, PatronType
 from django.contrib.auth.decorators import login_required
 from django.views import generic
 from django.contrib import auth
@@ -179,6 +179,8 @@ def record_list(request):
 def order_confirmation(request, id):
     order = WishList.objects.get(id=id)
     copies = DocumentInstance.objects.filter(document_id=order.document.id, status='a')
+    patron = PatronInfo.objects.filter(user_id=order.user.id).first()
+    patron_type = PatronType.objects.filter(id=patron.patron_type_id).first()
     copy = copies[0]
     if request.method == 'POST':
         form = CheckOutButton(request.POST)
@@ -188,9 +190,9 @@ def order_confirmation(request, id):
             copy.status = 'g'
             copy.holder = order.user
             # TODO connect user with patrontype
-            # if order.user.patrontype.privileges == 1:
-            #    copy.due_back = datetime.date.today() + datetime.timedelta(copy.document.type.max_days_privileges)
-            if copy.document.bestseller:
+            if patron_type.privileges:
+                copy.due_back = datetime.date.today() + datetime.timedelta(copy.document.type.max_days_privileges)
+            elif copy.document.bestseller:
                 copy.due_back = datetime.date.today() + datetime.timedelta(copy.document.type.max_days_bestseller)
             else:
                 copy.due_back = datetime.date.today() + datetime.timedelta(copy.document.type.max_days)
