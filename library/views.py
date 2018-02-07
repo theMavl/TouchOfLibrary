@@ -42,7 +42,7 @@ def index(request):
 # working for an /information/ url request, (requires to be authorized)
 
 @login_required
-def account(request):
+def dashboard(request):
     user = auth.get_user(request)
     wish_list = list(WishList.objects.filter(user_id=user.id))
 
@@ -69,7 +69,7 @@ def account(request):
     try:
         return render(
             request,
-            'account.html',
+            'dashboard.html',
             context={'user': user,
                      'FirstName': User.objects.get(id=user.id).first_name,
                      'LastName': User.objects.get(id=user.id).last_name,
@@ -83,7 +83,7 @@ def account(request):
     except ObjectDoesNotExist:
         return render(
             request,
-            'account.html',
+            'dashboard.html',
             context={'user': user,
                      'FirstName': User.objects.get(id=user.id).first_name,
                      'LastName': User.objects.get(id=user.id).last_name,
