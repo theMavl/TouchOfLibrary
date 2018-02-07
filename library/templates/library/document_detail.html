@@ -30,6 +30,8 @@
         {% if user.is_authenticated %}
             {% if ordered %}
                 <p><b>Given out to you</b></p>
+            {% elif document.is_reference %}
+                <p><b>Reference documents cannot be checked out.</b></p>
             {% elif document.quantity > 0 %}
 
                 {% if wished %}
@@ -51,7 +53,7 @@
 
             {#Table starts:#}
 
-            {% if copy_list %}
+            {% if copy_list and not document.is_reference %}
                 <table border="1" align="left" width="80%">
                     <caption>Copies of this {{ document.type }}</caption>
                     <tr>

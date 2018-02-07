@@ -14,10 +14,11 @@ class Document(models.Model):
     title = models.CharField(max_length=100)
     authors = models.ManyToManyField('Author', help_text='Select authors')
     description = models.TextField(max_length=1000, help_text="Enter a description of the document")
-    type = models.ForeignKey('DocType', on_delete=models.SET_NULL, null=True)
+    type = models.ForeignKey('DocType', on_delete=models.SET_NULL, null=True, blank=True)
     tags = models.ManyToManyField('Tag', help_text="Select tags")
     quantity = models.IntegerField(null=True)
     bestseller = models.BooleanField(default=False)
+    is_reference = models.BooleanField(default=False, help_text="Reference materials can not be borrowed.")
 
     # document features
     def __str__(self):
@@ -36,8 +37,6 @@ class DocumentInstance(models.Model):
                           help_text="Unique document ID")
     document = models.ForeignKey('Document', on_delete=models.CASCADE, null=True)
     due_back = models.DateField(null=True, blank=True)
-
-    is_reference = models.BooleanField(default=False, help_text="Reference materials can not be borrowed.")
 
     DOCUMENT_STATUS = (
         ('a', 'Available'),
