@@ -44,6 +44,27 @@ def index(request):
 @login_required
 def account(request):
     user = auth.get_user(request)
+    wish_list = list(WishList.objects.filter(user_id=user.id))
+
+    wish_table = []
+    book_table = []
+
+    for wishes in wish_list:
+        wish_table.append([wishes.document.title,
+                           wishes.document.type,
+                           wishes.document.quantity])
+
+    users_books = list(DocumentInstance.objects.filter(holder=user.id))
+
+    for books in users_books:
+        string = ""
+        for a in list(books.document.authors.all()):
+            string += a.first_name + " " + a.last_name + "; "
+        book_table.append([books.document.title,
+                           string,
+                           books.document.type.name,
+                           books.due_back,
+                           books.location])
 
     try:
         return render(
@@ -55,7 +76,9 @@ def account(request):
                      'Email': User.objects.get(id=user.id).email,
                      'Address': PatronInfo.objects.get(user_id=user.id).address,
                      'Telegram': PatronInfo.objects.get(user_id=user.id).telegram,
-                     'Phone_Number': PatronInfo.objects.get(user_id=user.id).phone_number},
+                     'Phone_Number': PatronInfo.objects.get(user_id=user.id).phone_number,
+                     'wish_table': wish_table,
+                     'book_table': book_table},
         )
     except ObjectDoesNotExist:
         return render(
@@ -67,7 +90,9 @@ def account(request):
                      'Email': User.objects.get(id=user.id).email,
                      'Address': "You have no Patron status",
                      'Telegram': "You have no Patron status",
-                     'Phone_Number': "You have no Patron status"},
+                     'Phone_Number': "You have no Patron status",
+                     'wish_table': wish_table,
+                     'book_table': book_table},
         )
 
 
@@ -98,8 +123,12 @@ def get_document_detail(request, id):
     """
     page with information about document
     """
+
     user = auth.get_user(request)
     document = Document.objects.get(id=id)
+    additional = document.type.fields.split(sep=";")
+    copy_list = DocumentInstance.objects.filter(document_id=id)
+
     if user.is_authenticated:
         wished = WishList.objects.filter(user_id=user.id, document_id=document.id)
         ordered = RecordsLog.objects.filter(user=user, document=document)
@@ -127,7 +156,11 @@ def get_document_detail(request, id):
             form = ReserveButton()
         # html template
         return render(request, 'library/document_detail.html',
-                      context={'ordered': ordered, 'wished': wished, "document": document})
+                      context={'ordered': ordered,
+                               'wished': wished,
+                               "document": document,
+                               "additional": additional,
+                               "copy_list": copy_list})
     else:
         return render(request, 'library/document_detail.html',
                       context={"document": document})

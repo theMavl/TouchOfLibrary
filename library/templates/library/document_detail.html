@@ -49,6 +49,63 @@
                 <p class="redtext">There are no copies in the library yet</p>
             {% endif %}
 
+            {#Table starts:#}
+
+            {% if copy_list %}
+                <table border="1" align="left" width="80%">
+                    <caption>Copies of this {{ document.type }}</caption>
+                    <tr>
+                        <th> Title</th>
+                        <th> Location</th>
+                        <th> Status</th>
+                        <th> Additional</th>
+                    </tr>
+
+                    {% for copy in copy_list %}
+                        <tr>
+                            <th>{{ copy.document.title }}</th>
+                            <th><strong>Level </strong> {{ copy.location.level }},
+                                <strong>room </strong> {{ copy.location.room }}
+                            </th>
+
+                            {% if copy.status == 'a' %}
+                                <th bgcolor="#90ee90" title="Boot this {{ document.type }} now!">
+                                    <a href="{% url 'order_book' id=copy.id %}"> Available </a>
+                                </th>
+                            {% elif copy.status == 'g' %}
+                                <th bgcolor="#ff6347" title="Will be available on {{ copy.due_back }}">
+                                    Given out
+                                </th>
+                            {% elif copy.status == 'r' %}
+                                <th bgcolor="#ffa07a">
+                                    Reserved
+                                </th>
+                            {% else %}
+                                <th bgcolor="#fffff0">
+                                    Maintenance
+                                </th>
+                            {% endif %}
+                            <th>
+                                {% for a in additional %}
+                                    {% if forloop.counter == 1 %}
+                                        <div> <strong>{{ a }}: </strong> {{ copy.additional_field1 }} </div>
+                                    {% elif forloop.counter == 2 %}
+                                        <div> <strong>{{ a }}: </strong> {{ copy.additional_field2 }} </div>
+                                    {% elif forloop.counter == 3 %}
+                                        <div> <strong>{{ a }}: </strong> {{ copy.additional_field3 }} </div>
+                                    {% elif forloop.counter == 4 %}
+                                        <div> <strong>{{ a }}: </strong> {{ copy.additional_field4 }} </div>
+                                    {% elif forloop.counter == 5 %}
+                                        <div> <strong>{{ a }}: </strong> {{ copy.additional_field5 }} </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </th>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+            {% endif %}
+
         {% else %} <p>To check out that {{ document.type }} you need to login</p>{% endif %}
 
 {% endblock %}

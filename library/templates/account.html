@@ -22,4 +22,59 @@ about user-->
 <div><a href="{% url 'order-list' %}">Orders of users</a></div>
 <div><a href="{% url 'record-list' %}">Records</a></div>
 {% endif %}
+
+    {% if user.is_authenticated %}
+
+            {% if wish_table %}
+
+                <table border="1" align="left" width="80%">
+                    <caption> Materials that you are waiting for now: </caption>
+                    <tr>
+                        <th> Title </th>
+                        <th> Document Type</th>
+                        <th> Quantity </th>
+                    </tr>
+
+                    {% for wishes in wish_table %}
+                        <tr>
+                            <th> {{ wishes.0 }}</th>
+                            <th> {{ wishes.1 }}</th>
+                            <th> {{ wishes.2 }}</th>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+            {% else %}
+                <p>We have no booking requests from you</p>
+            {% endif %}
+
+        {% else %} <p>To check out that {{ document.type }} you need to login</p>{% endif %}
+
+            {% if book_table %}
+
+                <table border="1" align="left" width="80%">
+                    <caption> Materials that you have: </caption>
+                    <tr>
+                        <th> Title </th>
+                        <th> Authors </th>
+                        <th> Type </th>
+                        <th> Return date </th>
+                        <th> Location </th>
+                    </tr>
+
+                    {% for book in book_table %}
+                        <tr>
+                            <th> {{ book.0 }}</th>
+                            <th> {{ book.1 }}</th>
+                            <th> {{ book.2 }}</th>
+                            <th> {{ book.3 }}</th>
+                            <th> {{ book.4 }}</th>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+            {% else %}
+                <p>You have no any documents/videos</p>
+            {% endif %}
+
 {% endblock %}
