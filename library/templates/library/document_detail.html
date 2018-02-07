@@ -29,7 +29,7 @@
 
         {% if user.is_authenticated %}
             {% if ordered %}
-                    <p>Given out to you</p>
+                <p><b>Given out to you</b></p>
             {% elif document.quantity > 0 %}
 
                 {% if wished %}
@@ -70,7 +70,7 @@
 
                             {% if copy.status == 'a' %}
                                 <th bgcolor="#90ee90" title="Boot this {{ document.type }} now!">
-                                    <a href="{% url 'order_book' id=copy.id %}"> Available </a>
+                                    Available for booking
                                 </th>
                             {% elif copy.status == 'g' %}
                                 <th bgcolor="#ff6347" title="Will be available on {{ copy.due_back }}">

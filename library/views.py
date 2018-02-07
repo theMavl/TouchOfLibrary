@@ -140,15 +140,15 @@ def get_document_detail(request, id):
                 record = WishList.objects.create(user=user, document=document,
                                                  timestamp=datetime.datetime.today().isoformat(), executed=False)
                 record.save()
-                #if user.patrontype.privileges == 1:
+                # if user.patrontype.privileges == 1:
                 #   document.quantity = document.quantity-1
                 #   document.save()
             else:
                 WishList.objects.filter(user_id=user.id, document_id=document.id).delete()
-                #if user.patrontype.privileges == 1:
+                # if user.patrontype.privileges == 1:
                 #    document.quantity = document.quantity + 1
                 #    document.save()
-    #TODO connect user with patrontype
+                # TODO connect user with patrontype
             wished = WishList.objects.filter(user=user, document=document)
             ordered = RecordsLog.objects.filter(user_id=user.id, document_id=document.id)
 
@@ -170,6 +170,7 @@ def order_list(request):
     orders = WishList.objects.all()
     return render(request, 'library/order_list.html', context={'orders': orders})
 
+
 def record_list(request):
     record = RecordsLog.objects.all()
     return render(request, 'library/record_list.html', context={'records': record})
@@ -187,7 +188,7 @@ def order_confirmation(request, id):
             copy.status = 'g'
             copy.holder = order.user
             # TODO connect user with patrontype
-            #if order.user.patrontype.privileges == 1:
+            # if order.user.patrontype.privileges == 1:
             #    copy.due_back = datetime.date.today() + datetime.timedelta(copy.document.type.max_days_privileges)
             if copy.document.bestseller:
                 copy.due_back = datetime.date.today() + datetime.timedelta(copy.document.type.max_days_bestseller)
