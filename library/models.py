@@ -191,9 +191,10 @@ class WishList(models.Model):
         n = len(orders)
         for x in orders:
             x.document.quantity_synced = False
-            x.document_copy.status = 'a'
             x.document.save()
-            x.document_copy.save()
+            if x.document_copy is not None:
+                x.document_copy.status = 'a'
+                x.document_copy.save()
             x.delete()
         return n
 
