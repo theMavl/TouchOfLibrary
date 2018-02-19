@@ -26,89 +26,100 @@
             {{ tag }}
             {% if not forloop.last %},{% else %}{% endif %}
         {% endfor %}
-
-
+    <p><strong>Quantity: {{ document.quantity }}</strong>
         {% if user.is_authenticated %}
             {% if ordered %}
                 <p><b>Given out to you</b></p>
             {% elif document.is_reference %}
                 <p><b>Reference documents cannot be checked out.</b></p>
-            {% elif wished %}
-                <form action="" method="post">
-                    {% csrf_token %}
-                    {{ form }}
-                    <input type="submit" name="cancel_order" value="Cancel order"/>
-                </form>
-            {% elif document.quantity > 0 %}
-                <form action="" method="post">
-                    {% csrf_token %}
-                    {{ form }}
-                    <input type="submit" name="document_order" value="Order"/>
-                </form>
-
-            {% else %}
-                <p class="redtext">There are no copies in the library yet</p>
             {% endif %}
+        {% endif %}
+
+    {% if not user.is_authenticated and copy_list %}
+        <p>To check out that {{ document.type }} you need to login</p>
+    {% elif not copy_list %}
+        <p class="redtext">There are no copies in the library yet</p>
+    {% endif %}
 
 
-            {#Table starts:#}
+    {#Table starts:#}
 
-            {% if copy_list and not document.is_reference %}
-                <table border="1" align="left" width="80%">
-                    <caption>Copies of this {{ document.type }}</caption>
-                    <tr>
-                        <th> Title</th>
-                        <th> Location</th>
-                        <th> Status</th>
-                        <th> Additional</th>
-                    </tr>
+    {% if copy_list and not document.is_reference %}
+        <table border="1" align="left" width="80%">
+            <caption>Copies of this {{ document.type }}</caption>
+            <tr>
+                <th> Title</th>
+                <th> Location</th>
+                <th> Status</th>
+                <th> Additional</th>
+            </tr>
 
-                    {% for copy in copy_list %}
-                        <tr>
-                            <th>{{ copy.document.title }}</th>
-                            <th><strong>Level </strong> {{ copy.location.level }},
-                                <strong>room </strong> {{ copy.location.room }}
-                            </th>
+            {% for copy in copy_list %}
+                <tr>
+                    <th>{{ copy.document.title }}</th>
+                    <th><strong>Level </strong> {{ copy.location.level }},
+                        <strong>room </strong> {{ copy.location.room }}
+                    </th>
 
-                            {% if copy.status == 'a' %}
-                                <th bgcolor="#90ee90" title="Boot this {{ document.type }} now!">
-                                    Available for booking
+                    {% if copy.status == 'a' %}
+                        {% if user.is_authenticated %}
+                            {% if wished %}
+                                <th bgcolor="#90ee90" title="You cannot reserve another one copy">
+                                    In library
                                 </th>
-                            {% elif copy.status == 'g' %}
-                                <th bgcolor="#ff6347" title="Will be available on {{ copy.due_back }}">
-                                    Given out
-                                </th>
-                            {% elif copy.status == 'r' %}
-                                <th bgcolor="#ffa07a">
-                                    Reserved
-                                </th>
+
                             {% else %}
-                                <th bgcolor="#fffff0">
-                                    Maintenance
+                                <th bgcolor="#90ee90" title="Book this document now!">
+                                    <a href="{% url 'order-document' copy_id=copy.id %}"> Available for booking</a>
                                 </th>
                             {% endif %}
-                            <th>
-                                {% for a in additional %}
-                                    {% if forloop.counter == 1 %}
-                                        <div><strong>{{ a }}: </strong> {{ copy.additional_field1 }} </div>
-                                    {% elif forloop.counter == 2 %}
-                                        <div><strong>{{ a }}: </strong> {{ copy.additional_field2 }} </div>
-                                    {% elif forloop.counter == 3 %}
-                                        <div><strong>{{ a }}: </strong> {{ copy.additional_field3 }} </div>
-                                    {% elif forloop.counter == 4 %}
-                                        <div><strong>{{ a }}: </strong> {{ copy.additional_field4 }} </div>
-                                    {% elif forloop.counter == 5 %}
-                                        <div><strong>{{ a }}: </strong> {{ copy.additional_field5 }} </div>
-                                    {% endif %}
-                                {% endfor %}
+                        {% else %}
+                            <th bgcolor="#90ee90">
+                                In library
                             </th>
-                        </tr>
-                    {% endfor %}
-                </table>
+                        {% endif %}
+                    {% elif copy.status == 'g' %}
+                        <th bgcolor="#ff6347" title="Will be available on {{ copy.due_back }}">
+                            Given out
+                        </th>
+                    {% elif copy.status == 'r' %}
+                        {% if user.is_authenticated and wished and wished.first.document_copy == copy %}
+                            <th bgcolor="#ffa07a" title="Cancel booking">
 
-            {% endif %}
+                                <a href="{% url 'order-document' copy_id=copy.id %}"> Reserved on you till {{ wished.first.due_date }}</a>
+                            </th>
+                        {% else %}
+                            <th bgcolor="#ffa07a">
+                                Reserved
+                            </th>
+                        {% endif %}
+                    {% else %}
+                        <th bgcolor="#fffff0">
+                            Maintenance
+                        </th>
+                    {% endif %}
+                    <th>
+                        {% for a in additional %}
+                            {% if forloop.counter == 1 %}
+                                <div><strong>{{ a }}: </strong> {{ copy.additional_field1 }} </div>
+                            {% elif forloop.counter == 2 %}
+                                <div><strong>{{ a }}: </strong> {{ copy.additional_field2 }} </div>
+                            {% elif forloop.counter == 3 %}
+                                <div><strong>{{ a }}: </strong> {{ copy.additional_field3 }} </div>
+                            {% elif forloop.counter == 4 %}
+                                <div><strong>{{ a }}: </strong> {{ copy.additional_field4 }} </div>
+                            {% elif forloop.counter == 5 %}
+                                <div><strong>{{ a }}: </strong> {{ copy.additional_field5 }} </div>
+                            {% endif %}
+                        {% endfor %}
+                    </th>
+                </tr>
+            {% endfor %}
+        </table>
 
-        {% else %} <p>To check out that {{ document.type }} you need to login</p>{% endif %}
+    {% endif %}
+
+
 
 {% endblock %}
 

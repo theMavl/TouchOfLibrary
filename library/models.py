@@ -2,8 +2,11 @@ from django.db import models
 from django.urls import reverse
 import uuid
 from django.contrib.auth.models import User
+import datetime
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
+from django.db.models import Q
 
 
 class Document(models.Model):
@@ -32,6 +35,9 @@ class Document(models.Model):
         else:
             n = self.last_quantity
         return n
+
+    def quantity_real(self):
+        return len(DocumentInstance.objects.filter(Q(document_id=self.id) & (Q(status='a') | Q(status='r'))))
 
     # document features
     def __str__(self):
@@ -178,6 +184,27 @@ class WishList(models.Model):
     document_copy = models.ForeignKey('DocumentInstance', on_delete=models.CASCADE, null=True)
     timestamp = models.DateTimeField(auto_now=True)
     executed = models.BooleanField(default=False)
+
+    @staticmethod
+    def clean_old_wishes():
+        orders = [x for x in WishList.objects.all() if x.is_old]
+        n = len(orders)
+        for x in orders:
+            x.document.quantity_synced = False
+            x.document_copy.status = 'a'
+            x.document.save()
+            x.document_copy.save()
+            x.delete()
+        return n
+
+    @property
+    def is_old(self):
+        if datetime.date.today() > self.timestamp.date() + datetime.timedelta(days=5):
+            return True
+        return False
+
+    def due_date(self):
+        return str(self.timestamp.date() + datetime.timedelta(days=5))
 
 
 class Tag(models.Model):

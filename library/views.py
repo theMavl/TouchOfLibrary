@@ -4,9 +4,8 @@ from django.shortcuts import render, redirect, render_to_response, get_object_or
 from django.template import RequestContext
 from django.urls import reverse
 from django.views import generic
-import datetime
 
-from library.forms import ReserveButton, CheckOutButton
+from library.forms import CheckOutButton
 from .models import Document, Author, DocumentInstance, PatronInfo, WishList, RecordsLog, PatronType
 from django.contrib.auth.decorators import login_required
 from django.views import generic
@@ -14,7 +13,7 @@ from django.contrib import auth
 import datetime
 from django.contrib.auth.models import User, UserManager
 from django.core.exceptions import ObjectDoesNotExist
-from datetime import datetime
+import datetime
 
 
 def index(request):
@@ -134,28 +133,6 @@ def get_document_detail(request, id):
     if user.is_authenticated:
         wished = WishList.objects.filter(user_id=user.id, document_id=document.id)
         ordered = RecordsLog.objects.filter(user=user, document=document)
-
-        if request.method == 'POST':
-            form = ReserveButton(request.POST)
-            if form.clean_order():
-
-                record = WishList.objects.create(user=user, document=document, executed=False)
-                record.save()
-                # if user.patrontype.privileges == 1:
-                #   document.quantity = document.quantity-1
-                #   document.save()
-            else:
-                WishList.objects.filter(user_id=user.id, document_id=document.id).delete()
-                # if user.patrontype.privileges == 1:
-                #    document.quantity = document.quantity + 1
-                #    document.save()
-                # TODO connect user with patrontype
-            wished = WishList.objects.filter(user=user, document=document)
-            ordered = RecordsLog.objects.filter(user_id=user.id, document_id=document.id)
-
-        else:
-            form = ReserveButton()
-        # html template
         return render(request, 'library/document_detail.html',
                       context={'ordered': ordered,
                                'wished': wished,
@@ -164,24 +141,12 @@ def get_document_detail(request, id):
                                "copy_list": copy_list})
     else:
         return render(request, 'library/document_detail.html',
-                      context={"document": document})
+                      context={"document": document, "additional": additional,
+                               "copy_list": copy_list})
 
 
 def order_list(request):
     orders = WishList.objects.all()
-    for i in orders:
-        timestart = str(i.timestamp)
-        timestart = timestart[0:10]
-        timenow = str(datetime.now())
-        timenow = timenow[0:10]
-        datetime_stamp = datetime.strptime(timestart, '%Y-%m-%d')
-        datetime_now = datetime.strptime(timenow, '%Y-%m-%d')
-        delta = datetime_now - datetime_stamp
-        delta = str(delta)
-        delta = int(delta[0])
-        if delta >= 5:
-            WishList.objects.filter(pk=i.pk).delete()
-
     return render(request, 'library/order_list.html', context={'orders': orders})
 
 
@@ -191,19 +156,19 @@ def record_list(request):
 
 
 def order_confirmation(request, id):
+    # TODO: Add custom date selector
+    # TODO: Add more information about the order
     order = WishList.objects.get(id=id)
-    copies = DocumentInstance.objects.filter(document_id=order.document.id, status='a')
+    copy = order.document_copy
     patron = PatronInfo.objects.filter(user_id=order.user.id).first()
     patron_type = PatronType.objects.filter(id=patron.patron_type_id).first()
-    copy = copies[0]
     if request.method == 'POST':
         form = CheckOutButton(request.POST)
         if form.clean_check_out():
-            copy.document.quantity = copy.document.quantity - 1
+            copy.document.quantity_synced = False
             copy.document.save()
             copy.status = 'g'
             copy.holder = order.user
-            # TODO connect user with patrontype
             if patron_type.privileges:
                 copy.due_back = datetime.date.today() + datetime.timedelta(copy.document.type.max_days_privileges)
             elif copy.document.bestseller:
@@ -211,11 +176,36 @@ def order_confirmation(request, id):
             else:
                 copy.due_back = datetime.date.today() + datetime.timedelta(copy.document.type.max_days)
             copy.save()
-            order.delete()
+
             RecordsLog.objects.create(user=order.user, document=order.document, document_instance=copy,
-                                      action=0, timestamp=copy.due_back)
+                                      action=0)
+            order.delete()
         return order_list(request)
 
     else:
         form = CheckOutButton()
         return render(request, 'library/order_details.html', context={'order': order, 'form': form})
+
+
+def order_document(request, copy_id):
+    user = auth.get_user(request)
+    copy = DocumentInstance.objects.get(id=str(copy_id))
+    document = Document.objects.get(id=copy.document_id)
+
+    if user.is_authenticated:
+        wished = WishList.objects.filter(user_id=user.id, document_copy_id=copy.id)
+        ordered = RecordsLog.objects.filter(user=user, document=document)
+        if wished:
+            wished.delete()
+            copy.status = "a"
+            document.quantity_synced = False
+            copy.save()
+            document.save()
+        elif not ordered and copy.status == "a" and not document.is_reference:
+            WishList.objects.create(user=user, document=document, document_copy=copy, executed=False).save()
+            copy.status = "r"
+            document.quantity_synced = False
+            copy.save()
+            document.save()
+            # html template
+    return redirect('document-detail', id=document.id)
