@@ -15,12 +15,11 @@
                         <th> User </th>
                         <th>  </th>
                     </tr>
-
                     {% for order in orders %}
                         <tr>
                             <th>{{ order.document.title }}</th>
                             <th> {{ order.document.type }}</th>
-                        <th>{{ order.user }} ( Patron type )</th>
+                        <th>{{ order.user }} {{user.first_name}} {{user.last_name}}  </th>
                             {% if order.document.quantity > 0 %}
                                 <th bgcolor="#98fb98" title="Give out one copy of this {{ order.document.type }}">
                                     <a href="{% url 'order-confirmation' id=order.id %}"> Give out </a> </button>

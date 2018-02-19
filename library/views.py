@@ -11,8 +11,10 @@ from .models import Document, Author, DocumentInstance, PatronInfo, WishList, Re
 from django.contrib.auth.decorators import login_required
 from django.views import generic
 from django.contrib import auth
+import datetime
 from django.contrib.auth.models import User, UserManager
 from django.core.exceptions import ObjectDoesNotExist
+from datetime import datetime
 
 
 def index(request):
@@ -167,6 +169,19 @@ def get_document_detail(request, id):
 
 def order_list(request):
     orders = WishList.objects.all()
+    for i in orders:
+        timestart = str(i.timestamp)
+        timestart = timestart[0:10]
+        timenow = str(datetime.now())
+        timenow = timenow[0:10]
+        datetime_stamp = datetime.strptime(timestart, '%Y-%m-%d')
+        datetime_now = datetime.strptime(timenow, '%Y-%m-%d')
+        delta = datetime_now - datetime_stamp
+        delta = str(delta)
+        delta = int(delta[0])
+        if delta >= 5:
+            WishList.objects.filter(pk=i.pk).delete()
+
     return render(request, 'library/order_list.html', context={'orders': orders})
 
 
