@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.views import generic
 import datetime
 
-from library.forms import OrderDocument, ReserveButton, CheckOutButton
+from library.forms import ReserveButton, CheckOutButton
 from .models import Document, Author, DocumentInstance, PatronInfo, WishList, RecordsLog, PatronType
 from django.contrib.auth.decorators import login_required
 from django.views import generic
@@ -137,8 +137,7 @@ def get_document_detail(request, id):
             form = ReserveButton(request.POST)
             if form.clean_order():
 
-                record = WishList.objects.create(user=user, document=document,
-                                                 timestamp=datetime.datetime.today().isoformat(), executed=False)
+                record = WishList.objects.create(user=user, document=document, executed=False)
                 record.save()
                 # if user.patrontype.privileges == 1:
                 #   document.quantity = document.quantity-1

@@ -16,9 +16,22 @@ class Document(models.Model):
     description = models.TextField(max_length=1000, help_text="Enter a description of the document")
     type = models.ForeignKey('DocType', on_delete=models.SET_NULL, null=True, blank=True)
     tags = models.ManyToManyField('Tag', help_text="Select tags")
-    quantity = models.IntegerField(null=True)
+    last_quantity = models.IntegerField(
+        help_text='This field is used for storing quantity after recalculation. DO NOT USE IT, use quantity() instead!',
+        null=True)
     bestseller = models.BooleanField(default=False)
+    quantity_synced = models.BooleanField(default=False)
     is_reference = models.BooleanField(default=False, help_text="Reference materials can not be borrowed.")
+
+    def quantity(self) -> int:
+        if not self.quantity_synced:
+            n = len(DocumentInstance.objects.filter(document_id=self.id, status='a'))
+            self.last_quantity = n
+            self.quantity_synced = True
+            self.save()
+        else:
+            n = self.last_quantity
+        return n
 
     # document features
     def __str__(self):
@@ -136,7 +149,7 @@ class PatronInfo(models.Model):
 
 class PatronType(models.Model):
     title = models.CharField(max_length=100, blank=True)
-    #max_days = models.IntegerField(help_text='Maximum number of days allowed', null=True)
+    # max_days = models.IntegerField(help_text='Maximum number of days allowed', null=True)
     max_documents = models.IntegerField(help_text='Maximum number of days allowed', null=True)
     privileges = models.BooleanField(default=False)
 
@@ -162,6 +175,7 @@ class RecordsLog(models.Model):
 class WishList(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True)
     document = models.ForeignKey('Document', on_delete=models.CASCADE, null=True)
+    document_copy = models.ForeignKey('DocumentInstance', on_delete=models.CASCADE, null=True)
     timestamp = models.DateTimeField(auto_now=True)
     executed = models.BooleanField(default=False)
 
