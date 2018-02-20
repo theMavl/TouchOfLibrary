@@ -1,6 +1,6 @@
 {% extends "base_generic.html" %}
 {% block content %}
-
+{% if perms.library.change_wishlist %}
         <h2>Order confirmation</h2>
 
         <h3>Order: {{ order.document.title }}</h3>
@@ -15,5 +15,7 @@
 
             </tr>
         </form>
-
+{% else %}
+You are not allowed to be here
+{% endif %}
 {% endblock %}
