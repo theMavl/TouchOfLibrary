@@ -18,5 +18,7 @@ urlpatterns = [
     url(r'^order_document/(?P<copy_id>[0-9a-z-]+)$', views.order_document, name='order-document'),
     url(r'^records/$', views.record_list, name='record-list'),
     url(r'^users_list/$', views.users_list, name='users-list'),
-
+    url(r'^document/create', views.DocumentCreate.as_view(), name='document-create'),
+    url(r'^document/instance/create', views.DocumentInstanceCreate.as_view(), name='documentinstance-create'),
+    url(r'^document/update/(?P<pk>\d+)$', views.DocumentUpdate.as_view(), name='document-update'),
 ]

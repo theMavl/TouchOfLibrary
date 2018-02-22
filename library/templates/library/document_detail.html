@@ -118,8 +118,9 @@
         </table>
 
     {% endif %}
-
+    {% if perms.library.change_wishlist %}
+  <!-- TODO: link to update document -->
+    {% endif %}
 
 
 {% endblock %}
-

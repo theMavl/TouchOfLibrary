@@ -14,6 +14,7 @@ import datetime
 from django.contrib.auth.models import User, UserManager
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 
 def index(request):
@@ -212,3 +213,18 @@ def order_document(request, copy_id):
             document.save()
             # html template
     return redirect('document-detail', id=document.id)
+
+class DocumentCreate(CreateView):
+    model = Document
+    fields = '__all__'
+
+
+class DocumentInstanceCreate(CreateView):
+    model = DocumentInstance
+    fields = '__all__'
+
+
+class DocumentUpdate(UpdateView):
+    model = Document
+    fields = '__all__'
+    template_name_suffix = '_update_form'
