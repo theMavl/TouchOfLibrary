@@ -17,5 +17,6 @@ urlpatterns = [
     url(r'^orders/(?P<id>\d+)$', views.order_confirmation, name='order-confirmation'),
     url(r'^order_document/(?P<copy_id>[0-9a-z-]+)$', views.order_document, name='order-document'),
     url(r'^records/$', views.record_list, name='record-list'),
+    url(r'^users_list/$', views.users_list, name='users-list'),
 
 ]

@@ -149,6 +149,9 @@ def order_list(request):
     orders = WishList.objects.all()
     return render(request, 'library/order_list.html', context={'orders': orders})
 
+def users_list(request):
+    record = PatronInfo.objects.all()
+    return render(request, 'library/patroninfo_list.html', context={'users': record})
 
 def record_list(request):
     record = RecordsLog.objects.all()
