@@ -28,7 +28,7 @@
         {% endfor %}
     <p><strong>Quantity: {{ document.quantity }}</strong>
         {% if user.is_authenticated %}
-            {% if ordered %}
+            {% if given_out %}
                 <p><b>Given out to you</b></p>
             {% elif document.is_reference %}
                 <p><b>Reference documents cannot be checked out.</b></p>
@@ -63,14 +63,14 @@
 
                     {% if copy.status == 'a' %}
                         {% if user.is_authenticated %}
-                            {% if wished %}
-                                <th bgcolor="#90ee90" title="You cannot reserve another one copy">
+                            {% if reserved or given_out %}
+                                <th bgcolor="#90ee90" title="You cannot book another one copy">
                                     In library
                                 </th>
 
                             {% else %}
                                 <th bgcolor="#90ee90" title="Book this document now!">
-                                    <a href="{% url 'order-document' copy_id=copy.id %}"> Available for booking</a>
+                                    <a href="{% url 'reserve-document' copy_id=copy.id %}"> Available for booking</a>
                                 </th>
                             {% endif %}
                         {% else %}
@@ -81,12 +81,15 @@
                     {% elif copy.status == 'g' %}
                         <th bgcolor="#ff6347" title="Will be available on {{ copy.due_back }}">
                             Given out
+                            {% if perms.library.change_reservation %} to <a href="{% url 'patron-details' id=copy.holder.id %}">{{ copy.holder }}</a>.
+                                <a href="{{ copy.form_return_request_mail }}">Request to return</a>
+                            {% elif copy.id == given_out.first.document_instance.id %} to you {% endif %}
                         </th>
                     {% elif copy.status == 'r' %}
-                        {% if user.is_authenticated and wished and wished.first.document_copy == copy %}
+                        {% if user.is_authenticated and reserved and reserved.first.document_copy == copy %}
                             <th bgcolor="#ffa07a" title="Cancel booking">
 
-                                <a href="{% url 'order-document' copy_id=copy.id %}"> Reserved on you till {{ wished.first.due_date }}</a>
+                                <a href="{% url 'reserve-document' copy_id=copy.id %}"> Reserved on you till {{ reserved.first.due_date }}</a>
                             </th>
                         {% else %}
                             <th bgcolor="#ffa07a">
@@ -118,7 +121,7 @@
         </table>
 
     {% endif %}
-    {% if perms.library.change_wishlist %}
+    {% if perms.library.change_reservation %}
   <!-- TODO: link to update document -->
     {% endif %}
 

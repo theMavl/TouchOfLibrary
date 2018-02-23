@@ -39,6 +39,10 @@ class Document(models.Model):
     def quantity_real(self):
         return len(DocumentInstance.objects.filter(Q(document_id=self.id) & (Q(status='a') | Q(status='r'))))
 
+    def str_authors(self):
+        authors_list = [str(x) for x in list(self.authors.all())]
+        return ', '.join(authors_list)
+
     # document features
     def __str__(self):
         return self.title
@@ -79,6 +83,19 @@ class DocumentInstance(models.Model):
     class Meta:
         ordering = ["due_back"]
 
+    def form_return_request_mail(self):
+        n_line = "%0A%0A"
+        return "mailto:%s?subject=Return document to Library&body=Dear %s %s,%sThis is Touch of Library. " \
+               "Please return %s to the library as soon as possible." \
+               "%sRegards,%sTouch of Library." % (self.holder.email, self.holder.first_name, self.holder.last_name, n_line, self.summary(), n_line, n_line[:3])
+
+    def summary(self):
+        fields = [self.additional_field1, self.additional_field2,
+                                             self.additional_field3, self.additional_field4, self.additional_field5]
+        fields_str = ', '.join([x for x in fields if x != ""])
+        return '%s %s "%s" (%s)' % (str(self.document.type).lower(),
+            self.document.str_authors(), self.document.title, fields_str)
+
     # instance attributes
     def __str__(self):
         return '%s (%s)' % (self.document.title, self.id)
@@ -100,7 +117,7 @@ class Author(models.Model):
         return reverse('author-detail', args=[str(self.id)])
 
     def __str__(self):
-        return '%s, %s' % (self.last_name, self.first_name)
+        return '%s. %s' % (self.first_name[0], self.last_name)
 
 
 class LibraryLocation(models.Model):
@@ -149,6 +166,9 @@ class PatronInfo(models.Model):
         verbose_name = "Patron's Information"
         verbose_name_plural = "Patrons' Information"
 
+    def get_absolute_url(self):
+        return reverse('patron-details', args=[str(self.user_id)])
+
     def __str__(self):
         return '[%d] %s %s' % (self.user.id, self.user.first_name, self.user.last_name)
 
@@ -163,22 +183,21 @@ class PatronType(models.Model):
         return self.title
 
 
-class RecordsLog(models.Model):
+class GiveOut(models.Model):
     """
-        Model of each record about each check out
+        Model of giving-out a document to an user
     """
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey('auth.User', on_delete=models.PROTECT, null=True)
+    patron = models.ForeignKey('PatronInfo', on_delete=models.PROTECT, null=True)
     document = models.ForeignKey('Document', on_delete=models.PROTECT, null=True)
     document_instance = models.ForeignKey('DocumentInstance', on_delete=models.PROTECT, null=True)
-    ACTION_DIRECTION = (
-        (0, 'received'),
-        (1, 'returned')
-    )
-    action = models.IntegerField(choices=ACTION_DIRECTION)
     timestamp = models.DateTimeField(auto_now=True)
 
 
-class WishList(models.Model):
+class Reservation(models.Model):
+    """
+        Model of reservation on a book
+    """
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True)
     document = models.ForeignKey('Document', on_delete=models.CASCADE, null=True)
     document_copy = models.ForeignKey('DocumentInstance', on_delete=models.CASCADE, null=True)
@@ -186,8 +205,8 @@ class WishList(models.Model):
     executed = models.BooleanField(default=False)
 
     @staticmethod
-    def clean_old_wishes():
-        orders = [x for x in WishList.objects.all() if x.is_old]
+    def clean_old_reservations():
+        orders = [x for x in Reservation.objects.all() if x.is_old]
         n = len(orders)
         for x in orders:
             x.document.quantity_synced = False

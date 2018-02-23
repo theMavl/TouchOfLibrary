@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.views import generic
 
 from library.forms import CheckOutButton
-from .models import Document, Author, DocumentInstance, PatronInfo, WishList, RecordsLog, PatronType
+from .models import Document, Author, DocumentInstance, PatronInfo, Reservation, GiveOut, PatronType
 from django.contrib.auth.decorators import login_required
 from django.views import generic
 from django.contrib import auth
@@ -15,6 +15,7 @@ from django.contrib.auth.models import User, UserManager
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.contrib.auth.decorators import permission_required
 
 
 def index(request):
@@ -46,15 +47,16 @@ def index(request):
 @login_required
 def dashboard(request):
     user = auth.get_user(request)
-    wish_list = list(WishList.objects.filter(user_id=user.id))
+    patron = PatronInfo.objects.get(user_id=user.id)
+    reservation_list = list(Reservation.objects.filter(user_id=user.id))
 
-    wish_table = []
-    book_table = []
+    reservation_table = []
+    giveout_table = []
 
-    for wishes in wish_list:
-        wish_table.append([wishes.document.title,
-                           wishes.document.type,
-                           wishes.document.quantity])
+    for reservation in reservation_list:
+        reservation_table.append([reservation.document.title,
+                                  reservation.document.type,
+                                  reservation.document.quantity])
 
     users_books = list(DocumentInstance.objects.filter(holder=user.id))
 
@@ -62,39 +64,100 @@ def dashboard(request):
         string = ""
         for a in list(books.document.authors.all()):
             string += a.first_name + " " + a.last_name + "; "
-        book_table.append([books.document.title,
-                           string,
-                           books.document.type.name,
-                           books.due_back,
-                           books.location])
+        giveout_table.append([books.document.title,
+                            string,
+                            books.document.type.name,
+                            books.due_back,
+                            books.location])
 
     try:
         return render(
             request,
             'dashboard.html',
-            context={'user': user,
-                     'FirstName': User.objects.get(id=user.id).first_name,
-                     'LastName': User.objects.get(id=user.id).last_name,
-                     'Email': User.objects.get(id=user.id).email,
-                     'Address': PatronInfo.objects.get(user_id=user.id).address,
-                     'Telegram': PatronInfo.objects.get(user_id=user.id).telegram,
-                     'Phone_Number': PatronInfo.objects.get(user_id=user.id).phone_number,
-                     'wish_table': wish_table,
-                     'book_table': book_table},
+            context={
+                'FirstName': user.first_name,
+                'LastName': user.last_name,
+                'Email': user.email,
+                'Address': patron.address,
+                'Telegram': patron.telegram,
+                'Phone_Number': patron.phone_number,
+                'reservation_table': reservation_table,
+                'giveout_table': giveout_table},
         )
     except ObjectDoesNotExist:
         return render(
             request,
             'dashboard.html',
-            context={'user': user,
-                     'FirstName': User.objects.get(id=user.id).first_name,
-                     'LastName': User.objects.get(id=user.id).last_name,
-                     'Email': User.objects.get(id=user.id).email,
+            context={'FirstName': user.first_name,
+                     'LastName': user.last_name,
+                     'Email': user.email,
                      'Address': "You have no Patron status",
                      'Telegram': "You have no Patron status",
                      'Phone_Number': "You have no Patron status",
-                     'wish_table': wish_table,
-                     'book_table': book_table},
+                     'reservation_table': reservation_table,
+                     'giveout_table': giveout_table},
+        )
+
+
+# @permission_required('library.change_patroninfo')
+@login_required
+def patron_details(request, id):
+    user = auth.get_user(request)
+
+    if not user.has_perm('library.change_patroninfo'):
+        return redirect('dashboard')
+
+    patron_user = User.objects.get(id=id)
+    patron = PatronInfo.objects.get(user_id=patron_user.id)
+
+    reservation_list = list(Reservation.objects.filter(user_id=patron_user.id))
+
+    reservation_table = []
+    giveout_table = []
+
+    for reservation in reservation_list:
+        reservation_table.append([reservation.document.title,
+                                  reservation.document.type,
+                                  reservation.document.quantity])
+
+    users_books = list(DocumentInstance.objects.filter(holder=patron_user.id))
+
+    for books in users_books:
+        string = ""
+        for a in list(books.document.authors.all()):
+            string += a.first_name + " " + a.last_name + "; "
+        giveout_table.append([books.document.title,
+                            string,
+                            books.document.type.name,
+                            books.due_back,
+                            books.location])
+
+    try:
+        return render(
+            request,
+            'library/patron_detail.html',
+            context={'FirstName': patron_user.first_name,
+                     'LastName': patron_user.last_name,
+                     'Email': patron_user.email,
+                     'Address': patron.address,
+                     'Telegram': patron.telegram,
+                     'Phone_Number': patron.phone_number,
+                     'reservation_table': reservation_table,
+                     'giveout_table': giveout_table},
+        )
+    except ObjectDoesNotExist:
+        return render(
+            request,
+            'library/patron_detail.html',
+            context={
+                'FirstName': patron_user.first_name,
+                'LastName': patron_user.last_name,
+                'Email': patron_user.email,
+                'Address': "No data",
+                'Telegram': "No data",
+                'Phone_Number': "No data",
+                'reservation_table': reservation_table,
+                'giveout_table': giveout_table},
         )
 
 
@@ -132,11 +195,11 @@ def get_document_detail(request, id):
     copy_list = DocumentInstance.objects.filter(document_id=id)
 
     if user.is_authenticated:
-        wished = WishList.objects.filter(user_id=user.id, document_id=document.id)
-        ordered = RecordsLog.objects.filter(user=user, document=document)
+        reserved = Reservation.objects.filter(user_id=user.id, document_id=document.id)
+        given_out = GiveOut.objects.filter(user=user, document=document)
         return render(request, 'library/document_detail.html',
-                      context={'ordered': ordered,
-                               'wished': wished,
+                      context={'given_out': given_out,
+                               'reserved': reserved,
                                "document": document,
                                "additional": additional,
                                "copy_list": copy_list})
@@ -146,25 +209,31 @@ def get_document_detail(request, id):
                                "copy_list": copy_list})
 
 
-def order_list(request):
-    orders = WishList.objects.all()
-    return render(request, 'library/order_list.html', context={'orders': orders})
+def reservation_list(request):
+    reservations = Reservation.objects.all()
+    return render(request, 'library/reservation_list.html', context={'reservations': reservations})
 
-def users_list(request):
+
+def patrons_list(request):
+    user = auth.get_user(request)
+    if not user.has_perm('library.change_patroninfo'):
+        return redirect('dashboard')
+
     record = PatronInfo.objects.all()
-    return render(request, 'library/patroninfo_list.html', context={'users': record})
-
-def record_list(request):
-    record = RecordsLog.objects.all()
-    return render(request, 'library/record_list.html', context={'records': record})
+    return render(request, 'library/patrons_list.html', context={'patrons': record})
 
 
-def order_confirmation(request, id):
+def giveout_list(request):
+    giveouts = GiveOut.objects.all()
+    return render(request, 'library/giveout_list.html', context={'giveouts': giveouts})
+
+
+def giveout_confirmation(request, id):
     # TODO: Add custom date selector
-    # TODO: Add more information about the order
-    order = WishList.objects.get(id=id)
-    copy = order.document_copy
-    patron = PatronInfo.objects.filter(user_id=order.user.id).first()
+    # TODO: Add more information about the reservation
+    reservation = Reservation.objects.get(id=id)
+    copy = reservation.document_copy
+    patron = PatronInfo.objects.filter(user_id=reservation.user.id).first()
     patron_type = PatronType.objects.filter(id=patron.patron_type_id).first()
     if request.method == 'POST':
         form = CheckOutButton(request.POST)
@@ -172,7 +241,7 @@ def order_confirmation(request, id):
             copy.document.quantity_synced = False
             copy.document.save()
             copy.status = 'g'
-            copy.holder = order.user
+            copy.holder = reservation.user
             if patron_type.privileges:
                 copy.due_back = datetime.date.today() + datetime.timedelta(copy.document.type.max_days_privileges)
             elif copy.document.bestseller:
@@ -181,38 +250,35 @@ def order_confirmation(request, id):
                 copy.due_back = datetime.date.today() + datetime.timedelta(copy.document.type.max_days)
             copy.save()
 
-            RecordsLog.objects.create(user=order.user, document=order.document, document_instance=copy,
-                                      action=0)
-            order.delete()
-        return order_list(request)
+            GiveOut.objects.create(user=reservation.user, patron=patron, document=reservation.document,
+                                   document_instance=copy)
+            reservation.delete()
+        return reservation_list(request)
 
     else:
         form = CheckOutButton()
-        return render(request, 'library/order_details.html', context={'order': order, 'form': form})
+        return render(request, 'library/giveout_details.html', context={'reservation': reservation, 'form': form})
 
 
-def order_document(request, copy_id):
+def reserve_document(request, copy_id):
     user = auth.get_user(request)
     copy = DocumentInstance.objects.get(id=str(copy_id))
     document = Document.objects.get(id=copy.document_id)
 
     if user.is_authenticated:
-        wished = WishList.objects.filter(user_id=user.id, document_copy_id=copy.id)
-        ordered = RecordsLog.objects.filter(user=user, document=document)
-        if wished:
-            wished.delete()
+        reserved = Reservation.objects.filter(user_id=user.id, document_copy_id=copy.id)
+        checked_out = GiveOut.objects.filter(user=user, document=document)
+        if reserved:
+            reserved.delete()
             copy.status = "a"
-            document.quantity_synced = False
-            copy.save()
-            document.save()
-        elif not ordered and copy.status == "a" and not document.is_reference:
-            WishList.objects.create(user=user, document=document, document_copy=copy, executed=False).save()
+        elif not checked_out and copy.status == "a" and not document.is_reference:
+            Reservation.objects.create(user=user, document=document, document_copy=copy, executed=False).save()
             copy.status = "r"
-            document.quantity_synced = False
-            copy.save()
-            document.save()
-            # html template
+        document.quantity_synced = False
+        copy.save()
+        document.save()
     return redirect('document-detail', id=document.id)
+
 
 class DocumentCreate(CreateView):
     model = Document

@@ -1,10 +1,10 @@
 {% extends "base_generic.html" %}
 {% block content %}
 {% if perms.library.change_wishlist %}
-        <h2>Order confirmation</h2>
+        <h2>Give out confirmation</h2>
 
-        <h3>Order: {{ order.document.title }}</h3>
-        <p>Borrower: {{ order.user }}(Patron type)</p>
+        <h3>Order: {{ reservation.document.title }}</h3>
+        <p>Borrower: {{ reservation.user }}(Patron type)</p>
 
         <form action="" method="post">
             {% csrf_token %}

@@ -9,12 +9,15 @@ about user-->
 
     <h1>Dashboard</h1>
 
-    {% if perms.library.change_wishlist %}
-        <p>Librarian actions</p>
-        <div><a href="{% url 'order-list' %}">Orders of users</a></div>
-        <div><a href="{% url 'record-list' %}">Records</a></div>
-        <div><a href="{% url 'users-list' %}">List of users</a></div>
-        <div><a href="{% url 'document-create' %}">Create new document</a></div>
+    {% if perms.library.change_reservation and perms.library.change_user and perms.library.change_giveout and perms.library.change_document %}
+        <h3>Librarian activities</h3>
+        <p>Patron management</p>
+        <div><a href="{% url 'patrons-list' %}">Patrons</a></div>
+        <div><a href="{% url 'reservation-list' %}">Reservations</a></div>
+        <div><a href="{% url 'giveout-list' %}">Check-outs</a></div>
+        <hr>
+        <p>Documents</p>
+        <div><a href="{% url 'document-create' %}">New document</a></div>
 
     {% else %}
         <p>Personal data</p>
@@ -28,7 +31,7 @@ about user-->
         </ul>
         {% if user.is_authenticated %}
 
-            {% if wish_table %}
+            {% if reservation_table %}
 
                 <table border="1" align="left" width="80%">
                     <caption> Materials that you are waiting for now:</caption>
@@ -38,11 +41,11 @@ about user-->
                         <th> Quantity</th>
                     </tr>
 
-                    {% for wishes in wish_table %}
+                    {% for reservation in reservation_table %}
                         <tr>
-                            <th> {{ wishes.0 }}</th>
-                            <th> {{ wishes.1 }}</th>
-                            <th> {{ wishes.2 }}</th>
+                            <th> {{ reservation.0 }}</th>
+                            <th> {{ reservation.1 }}</th>
+                            <th> {{ reservation.2 }}</th>
                         </tr>
                     {% endfor %}
                 </table>
