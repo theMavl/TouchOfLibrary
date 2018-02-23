@@ -24,8 +24,9 @@
                     <div><a href="{% url 'document' %}">All documents</a></div>
                     <div><a href="{% url 'authors' %}">All authors</a></div>
                     {% if user.is_authenticated %}
-                        <div>User: <a title="Open user card" href="{% url 'dashboard' %}">{{ user.get_username }}</a></div>
-                        <div><a href="{% url 'logout' %}?next={{ request.path }}">Logout</a></div>
+                        <div><a title="Open user card" href="{% url 'dashboard' %}">Dashboard</a>
+                        </div>
+                        <div><a href="{% url 'logout' %}?next={{ request.path }}">Logout ({{ user.get_username }})</a></div>
                     {% else %}
                         <div><a href="{% url 'login' %}?next={{ request.path }}">Login</a></div>
                     {% endif %}

@@ -109,28 +109,8 @@ def patron_details(request, id):
 
     patron_user = User.objects.get(id=id)
     patron = PatronInfo.objects.get(user_id=patron_user.id)
-
-    reservation_list = list(Reservation.objects.filter(user_id=patron_user.id))
-
-    reservation_table = []
-    giveout_table = []
-
-    for reservation in reservation_list:
-        reservation_table.append([reservation.document.title,
-                                  reservation.document.type,
-                                  reservation.document.quantity])
-
-    users_books = list(DocumentInstance.objects.filter(holder=patron_user.id))
-
-    for books in users_books:
-        string = ""
-        for a in list(books.document.authors.all()):
-            string += a.first_name + " " + a.last_name + "; "
-        giveout_table.append([books.document.title,
-                            string,
-                            books.document.type.name,
-                            books.due_back,
-                            books.location])
+    reservation_list = Reservation.objects.filter(user_id=patron_user.id)
+    giveout_list = GiveOut.objects.filter(user_id=patron_user.id)
 
     try:
         return render(
@@ -142,8 +122,8 @@ def patron_details(request, id):
                      'Address': patron.address,
                      'Telegram': patron.telegram,
                      'Phone_Number': patron.phone_number,
-                     'reservation_table': reservation_table,
-                     'giveout_table': giveout_table},
+                     'reservation_table': reservation_list,
+                     'giveout_table': giveout_list},
         )
     except ObjectDoesNotExist:
         return render(
@@ -156,8 +136,8 @@ def patron_details(request, id):
                 'Address': "No data",
                 'Telegram': "No data",
                 'Phone_Number': "No data",
-                'reservation_table': reservation_table,
-                'giveout_table': giveout_table},
+                'reservation_table': reservation_list,
+                'giveout_table': reservation_list},
         )
 
 
