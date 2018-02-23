@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+<h1>Patron detail</h1>
+<div>
+    <p>Personal data</p>
+    <table>
+        <tr>
+            <td><b>Patron ID: </b></td>
+            <td>{{ patron_user.id }}</td>
+        </tr>
+        <tr>
+            <td><b>Full name: </b></td>
+            <td>{{ patron_user.first_name }} {{ patron_user.last_name }}</td>
+        </tr>
+        <tr>
+            <td><b>Email:</b></td>
+            <td>{{ patron_user.email }}</td>
+        </tr>
+        <tr>
+            <td><b>Address:</b></td>
+            <td>{{ patron_info.address }}</td>
+        </tr>
+        <tr>
+            <td><b>Telegram</b></td>
+            <td>{{ patron_info.telegram }}</td>
+        </tr>
+        <tr>
+            <td><b>Phone Number: </b></td>
+            <td>{{ patron_info.phone_number }}</td>
+        </tr>
+    </table>
+</div>
+<hr>
+{% if reservation_table %}
+    <div>
+        <table border="1" align="left" width="80%">
+            <caption> Reserved documents:</caption>
+            <tr>
+                <th> Document</th>
+                {% if perms.library.change_reservation %}
+                    <th> Actions</th> {% endif %}
+            </tr>
+
+            {% for reservation in reservation_table %}
+                <tr>
+                    <th>
+                        <a href="{{ reservation.document.get_absolute_url }}">{{ reservation.document_copy.summary }}</a>
+                    </th>
+                    {% if reservation.document_copy.status == 'r' %}
+                        <th bgcolor="#98fb98" title="Give out the copy">
+                            <a href="{% url 'giveout-confirmation' id=reservation.id %}"> Give out </a>
+                        </th>
+                    {% else %}
+                        <th bgcolor="#f08080">
+                            Out of stock
+                        </th>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% else %}
+    <div>No reserved documents</div>
+{% endif %}
+<hr>
+{% if giveout_table %}
+    <div>
+        <table border="1" align="left" width="80%">
+            <caption> Given out documents:</caption>
+            <tr>
+                <th> Timestamp</th>
+                <th> Document</th>
+                <th> Return date</th>
+                {% if perms.library.change_reservation %}
+                    <th> Actions</th> {% endif %}
+            </tr>
+
+            {% for issuance in giveout_table %}
+                <tr>
+                    <th> {{ issuance.timestamp }}</th>
+                    <th>
+                        <a href="{{ issuance.document.get_absolute_url }}">{{ issuance.document_instance.summary }}</a>
+                    </th>
+                    <th> {{ issuance.document_instance.due_back }}</th>
+                    {% if perms.library.change_reservation %}
+                        <th><a href="{{ issuance.document_instance.form_return_request_mail }}">Request to return</a>
+                        </th>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% else %}
+    <div>No issued documents</div>
+{% endif %}
+</body>
+</html>

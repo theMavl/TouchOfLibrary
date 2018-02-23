@@ -5,7 +5,10 @@ from . import views
 # Maintenance routines
 from library.models import Reservation
 
-Reservation.clean_old_reservations()
+try:
+    Reservation.clean_old_reservations()
+except:
+    pass
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
@@ -29,4 +32,6 @@ urlpatterns = [
     url(r'^document/create', views.DocumentCreate.as_view(), name='document-create'),
     url(r'^document/instance/create', views.DocumentInstanceCreate.as_view(), name='documentinstance-create'),
     url(r'^document/update/(?P<pk>\d+)$', views.DocumentUpdate.as_view(), name='document-update'),
+
+    url(r'^populate_database/$', views.populate_db, name='debug-populate-database'),
 ]

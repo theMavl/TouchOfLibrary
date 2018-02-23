@@ -9,8 +9,11 @@ about user-->
 
     <h1>Dashboard</h1>
 
-    {% if perms.library.change_reservation and perms.library.change_user and perms.library.change_giveout and perms.library.change_document %}
+    {% if perms.library.change_reservation and perms.auth.change_user and perms.library.change_giveout and perms.library.change_document %}
         <h3>Librarian activities</h3>
+        {% if user.is_staff %}
+            <div><a href="{% url 'debug-populate-database' %}">DEBUG FEATURE: Populate database instantly</a></div>
+        {% endif %}
         <p>Patron management</p>
         <div><a href="{% url 'patrons-list' %}">Patrons</a></div>
         <div><a href="{% url 'reservation-list' %}">Reservations</a></div>
@@ -18,72 +21,7 @@ about user-->
         <hr>
         <p>Documents</p>
         <div><a href="{% url 'document-create' %}">New document</a></div>
-
     {% else %}
-        <p>Personal data</p>
-        <ul>
-            <div><strong>Patron ID:</strong> {{ user.id }}</div>
-            <div><strong>Name:</strong> {{ FirstName }} {{ LastName }}</div>
-            <div><strong>Email:</strong> {{ Email }}</div>
-            <div><strong>Address:</strong> {{ Address }}</div>
-            <div><strong>Telegram:</strong> {{ Telegram }}</div>
-            <div><strong>Phone Number:</strong> {{ Phone_Number }}</div>
-        </ul>
-        {% if user.is_authenticated %}
-
-            {% if reservation_table %}
-
-                <table border="1" align="left" width="80%">
-                    <caption> Materials that you are waiting for now:</caption>
-                    <tr>
-                        <th> Title</th>
-                        <th> Document Type</th>
-                        <th> Quantity</th>
-                    </tr>
-
-                    {% for reservation in reservation_table %}
-                        <tr>
-                            <th> {{ reservation.0 }}</th>
-                            <th> {{ reservation.1 }}</th>
-                            <th> {{ reservation.2 }}</th>
-                        </tr>
-                    {% endfor %}
-                </table>
-
-            {% else %}
-                <p>We have no booking requests from you</p>
-            {% endif %}
-
-        {% else %} <p>To check out that {{ document.type }} you need to login</p>{% endif %}
-
-        {% if book_table %}
-
-            <table border="1" align="left" width="80%">
-                <caption> Materials that you have:</caption>
-                <tr>
-                    <th> Title</th>
-                    <th> Authors</th>
-                    <th> Type</th>
-                    <th> Return date</th>
-                    <th> Location</th>
-                </tr>
-
-                {% for book in book_table %}
-                    <tr>
-                        <th> {{ book.0 }}</th>
-                        <th> {{ book.1 }}</th>
-                        <th> {{ book.2 }}</th>
-                        <th> {{ book.3 }}</th>
-                        <th> {{ book.4 }}</th>
-                    </tr>
-                {% endfor %}
-            </table>
-
-        {% else %}
-            <p>You have no any documents/videos</p>
-        {% endif %}
+        {% include "library/user_infromation_template.html" %}
     {% endif %}
-
-
-
 {% endblock %}
