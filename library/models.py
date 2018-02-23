@@ -87,14 +87,16 @@ class DocumentInstance(models.Model):
         n_line = "%0A%0A"
         return "mailto:%s?subject=Return document to Library&body=Dear %s %s,%sThis is Touch of Library. " \
                "Please return %s to the library as soon as possible." \
-               "%sRegards,%sTouch of Library." % (self.holder.email, self.holder.first_name, self.holder.last_name, n_line, self.summary(), n_line, n_line[:3])
+               "%sRegards,%sTouch of Library." % (
+               self.holder.email, self.holder.first_name, self.holder.last_name, n_line, self.summary(), n_line,
+               n_line[:3])
 
     def summary(self):
         fields = [self.additional_field1, self.additional_field2,
-                                             self.additional_field3, self.additional_field4, self.additional_field5]
+                  self.additional_field3, self.additional_field4, self.additional_field5]
         fields_str = ', '.join([x for x in fields if x != ""])
         return '%s %s "%s" (%s)' % (str(self.document.type).lower(),
-            self.document.str_authors(), self.document.title, fields_str)
+                                    self.document.str_authors(), self.document.title, fields_str)
 
     # instance attributes
     def __str__(self):

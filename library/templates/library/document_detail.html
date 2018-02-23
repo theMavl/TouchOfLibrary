@@ -81,14 +81,14 @@
                     {% elif copy.status == 'g' %}
                         <th bgcolor="#ff6347" title="Will be available on {{ copy.due_back }}">
                             Given out
-                            {% if perms.library.change_reservation %} to <a href="{% url 'patron-details' id=copy.holder.id %}">{{ copy.holder }}</a>.
+                            {% if perms.library.change_reservation %} to
+                                <a href="{% url 'patron-details' id=copy.holder.id %}">{{ copy.holder }}</a>.
                                 <a href="{{ copy.form_return_request_mail }}">Request to return</a>
                             {% elif copy.id == given_out.first.document_instance.id %} to you {% endif %}
                         </th>
                     {% elif copy.status == 'r' %}
                         {% if user.is_authenticated and reserved and reserved.first.document_copy == copy %}
                             <th bgcolor="#ffa07a" title="Cancel booking">
-
                                 <a href="{% url 'reserve-document' copy_id=copy.id %}"> Reserved on you till {{ reserved.first.due_date }}</a>
                             </th>
                         {% else %}

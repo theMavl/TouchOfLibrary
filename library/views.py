@@ -42,10 +42,6 @@ def index(request):
     )
 
 
-# function that provides response with information.html file filled with content
-# (with content from user and patronInfo models)
-# working for an /information/ url request, (requires to be authorized)
-
 @login_required
 def dashboard(request):
     user = auth.get_user(request)
@@ -136,11 +132,13 @@ def get_document_detail(request, id):
                                "copy_list": copy_list})
 
 
+@permission_required('library.change_reservation')
 def reservation_list(request):
     reservations = Reservation.objects.all()
     return render(request, 'library/reservation_list.html', context={'reservations': reservations})
 
 
+@permission_required('auth.change_user')
 def patrons_list(request):
     user = auth.get_user(request)
     if not user.has_perm('auth.change_user'):
@@ -150,11 +148,13 @@ def patrons_list(request):
     return render(request, 'library/patrons_list.html', context={'patrons': record})
 
 
+@permission_required('library.change_giveout')
 def giveout_list(request):
     giveouts = GiveOut.objects.all()
     return render(request, 'library/giveout_list.html', context={'giveouts': giveouts})
 
 
+@permission_required('library.add_giveout')
 def giveout_confirmation(request, id):
     # TODO: Add custom date selector
     # TODO: Add more information about the reservation
@@ -187,6 +187,7 @@ def giveout_confirmation(request, id):
         return render(request, 'library/giveout_details.html', context={'reservation': reservation, 'form': form})
 
 
+@login_required
 def reserve_document(request, copy_id):
     user = auth.get_user(request)
     copy = DocumentInstance.objects.get(id=str(copy_id))

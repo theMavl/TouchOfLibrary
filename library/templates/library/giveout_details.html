@@ -1,21 +1,21 @@
 {% extends "base_generic.html" %}
 {% block content %}
-{% if perms.library.change_giveout %}
+    {% if perms.library.change_giveout %}
         <h2>Give out confirmation</h2>
 
-        <h3>Order: {{ reservation.document.title }}</h3>
+        <h4>Order: {{ reservation.document_copy.summary }}</h4>
         <p>Borrower: {{ reservation.user }}(Patron type)</p>
 
         <form action="" method="post">
             {% csrf_token %}
             {{ form }}
             <tr>
-                <th><input type="submit" name="accept_order" value="Accept"/> </th>
+                <th><input type="submit" name="accept_order" value="Accept"/></th>
                 <th><input type="submit" name="deny_order" value="Cancel"/></th>
 
             </tr>
         </form>
-{% else %}
-You are not allowed to be here
-{% endif %}
+    {% else %}
+        You are not allowed to be here
+    {% endif %}
 {% endblock %}
