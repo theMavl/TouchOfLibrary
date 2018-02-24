@@ -5,7 +5,7 @@ from django.template import RequestContext
 from django.urls import reverse
 from django.views import generic
 
-from library.forms import CheckOutButton
+from library.forms import DueDateForm
 from .models import Document, Author, DocumentInstance, PatronInfo, Reservation, GiveOut, PatronType, Tag, \
     LibraryLocation, DocType
 from django.contrib.auth.decorators import login_required
@@ -118,6 +118,25 @@ def get_document_detail(request, id):
     copy_list = DocumentInstance.objects.filter(document_id=id)
 
     if user.is_authenticated:
+        patron = PatronInfo.objects.get(id=user.id)
+        if not document.is_reference:
+            if document.bestseller:
+                max_days = document.type.max_days_bestseller
+            else:
+                if patron.patron_type.privileges:
+                    max_days = document.type.max_days_privileges
+                else:
+                    max_days = document.type.max_days
+            due_date = (datetime.date.today() + datetime.timedelta(max_days)).strftime("%d %b %Y")
+        else:
+            max_days = 0
+            due_date = ""
+        all_reserved = Reservation.objects.filter(user_id=user.id)
+        all_checked_out = GiveOut.objects.filter(user_id=user.id)
+        if patron.patron_type.max_documents > len(all_reserved)+len(all_checked_out):
+            can_reserve = True
+        else:
+            can_reserve = False
         reserved = Reservation.objects.filter(user_id=user.id, document_id=document.id)
         given_out = GiveOut.objects.filter(user=user, document=document)
         return render(request, 'library/document_detail.html',
@@ -125,7 +144,10 @@ def get_document_detail(request, id):
                                'reserved': reserved,
                                "document": document,
                                "additional": additional,
-                               "copy_list": copy_list})
+                               "copy_list": copy_list,
+                               "max_days": max_days,
+                               "due_date": due_date,
+                               "can_reserve": can_reserve})
     else:
         return render(request, 'library/document_detail.html',
                       context={"document": document, "additional": additional,
@@ -160,31 +182,40 @@ def giveout_confirmation(request, id):
     # TODO: Add more information about the reservation
     reservation = Reservation.objects.get(id=id)
     copy = reservation.document_copy
-    patron = PatronInfo.objects.filter(user_id=reservation.user.id).first()
-    patron_type = PatronType.objects.filter(id=patron.patron_type_id).first()
+    patron = PatronInfo.objects.get(user_id=reservation.user.id)
+
+    if copy.document.bestseller:
+        max_days = copy.document.type.max_days_bestseller
+    else:
+        if patron.patron_type.privileges:
+            max_days = copy.document.type.max_days_privileges
+        else:
+            max_days = copy.document.type.max_days
     if request.method == 'POST':
-        form = CheckOutButton(request.POST)
-        if form.clean_check_out():
+
+
+        form = DueDateForm(request.POST)
+        form.max_days = max_days
+        if form.is_valid():
+            copy.due_back = form.clean_due_date()
             copy.document.quantity_synced = False
             copy.document.save()
             copy.status = 'g'
             copy.holder = reservation.user
-            if patron_type.privileges:
-                copy.due_back = datetime.date.today() + datetime.timedelta(copy.document.type.max_days_privileges)
-            elif copy.document.bestseller:
-                copy.due_back = datetime.date.today() + datetime.timedelta(copy.document.type.max_days_bestseller)
-            else:
-                copy.due_back = datetime.date.today() + datetime.timedelta(copy.document.type.max_days)
             copy.save()
-
             GiveOut.objects.create(user=reservation.user, patron=patron, document=reservation.document,
                                    document_instance=copy)
             reservation.delete()
-        return reservation_list(request)
+            return HttpResponseRedirect(reverse('reservation-list'))
 
     else:
-        form = CheckOutButton()
-        return render(request, 'library/giveout_details.html', context={'reservation': reservation, 'form': form})
+        proposed_renewal_date = datetime.date.today() + datetime.timedelta(max_days)
+        form = DueDateForm(initial={"due_date": proposed_renewal_date,
+                                    "max_date": max_days})
+
+    return render(request, 'library/giveout_details.html',
+                      context={'reservation': reservation,
+                               'form': form})
 
 
 @login_required

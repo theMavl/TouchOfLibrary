@@ -9,6 +9,9 @@
             .greentext {
                 color: palegreen;
             }
+            .highlight{
+                color: lightseagreen;
+            }
         </style>
     </head>
     <h1>{{ document.title }}</h1>
@@ -28,10 +31,13 @@
         {% endfor %}
     <p><strong>Quantity: {{ document.quantity }}</strong>
         {% if user.is_authenticated %}
+            {% if document.is_reference %}
+                <p><b class="redtext">Reference documents cannot be checked out.</b></p>
+            {% else %}
+                <p><strong> You can order this {{ document.type }} for <b class="highlight">{{ max_days }} </b> days. If you check it out today, you will have to return it till <b class="highlight">{{ due_date }}</b></strong></p>
+                {% endif %}
             {% if given_out %}
                 <p><b>Given out to you</b></p>
-            {% elif document.is_reference %}
-                <p><b>Reference documents cannot be checked out.</b></p>
             {% endif %}
         {% endif %}
 
@@ -63,8 +69,12 @@
 
                     {% if copy.status == 'a' %}
                         {% if user.is_authenticated %}
-                            {% if reserved or given_out %}
-                                <th bgcolor="#90ee90" title="You cannot book another one copy">
+                            {% if not can_reserve %}
+                                <th bgcolor="#90ee90" title="You are over reservation limit">
+                                    In library
+                                </th>
+                            {% elif reserved or given_out %}
+                                <th bgcolor="#90ee90" title="You cannot book more than one copy">
                                     In library
                                 </th>
 

@@ -6,11 +6,19 @@ from django.forms import ModelForm
 from library.models import DocumentInstance
 
 
-class CheckOutButton(forms.Form):
-    def clean_check_out(self):
-        checkOut = False
-        if 'deny_order' in self.data:
-            checkOut = False
-        elif 'accept_order' in self.data:
-            checkOut = True
-        return checkOut
+class DueDateForm(forms.Form):
+
+    due_date = forms.DateField(help_text="Enter a date when the document must be returned.")
+    max_days = 1
+
+    def clean_due_date(self):
+        data = self.cleaned_data['due_date']
+        # If date from the past
+        if data < datetime.date.today():
+            raise ValidationError('Wrong date - date from the past')
+
+        # If the interval is bigger than 2 weeks
+        if data > datetime.date.today() + datetime.timedelta(self.max_days):
+            raise ValidationError('Wrong date - out of limit borders')
+
+        return data

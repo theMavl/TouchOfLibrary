@@ -5,15 +5,10 @@
 
         <h4>Order: {{ reservation.document_copy.summary }}</h4>
         <p>Borrower: {{ reservation.user }}(Patron type)</p>
-
         <form action="" method="post">
             {% csrf_token %}
             {{ form }}
-            <tr>
-                <th><input type="submit" name="accept_order" value="Accept"/></th>
-                <th><input type="submit" name="deny_order" value="Cancel"/></th>
-
-            </tr>
+       <input type="submit" name="accept_order" value="Accept"/>
         </form>
     {% else %}
         You are not allowed to be here
