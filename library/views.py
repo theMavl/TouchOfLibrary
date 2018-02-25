@@ -140,7 +140,7 @@ def get_document_detail(request, id):
         reserved = Reservation.objects.filter(user_id=user.id, document_id=document.id)
         given_out = GiveOut.objects.filter(user=user, document=document)
         return render(request, 'library/document_detail.html',
-                      context={'given_out': given_out,
+                      context={'given_out': given_out.first(),
                                'reserved': reserved,
                                "document": document,
                                "additional": additional,
