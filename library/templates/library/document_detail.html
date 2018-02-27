@@ -47,7 +47,10 @@
         <p class="redtext">There are no copies in the library yet</p>
     {% endif %}
 
-
+    {% if perms.library.change_reservation %}
+      <p><a href="{% url 'document-update' pk=document.pk %}">Update this document</a></p>
+      <p><a href="{% url 'document-delete' pk=document.pk %}">DELETE this document</a></p>
+    {% endif %}
     {#Table starts:#}
 
     {% if copy_list and not document.is_reference %}
@@ -130,9 +133,6 @@
             {% endfor %}
         </table>
 
-    {% endif %}
-    {% if perms.library.change_reservation %}
-  <!-- TODO: link to update document -->
     {% endif %}
 
 

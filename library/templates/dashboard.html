@@ -21,6 +21,7 @@ about user-->
         <hr>
         <p>Documents</p>
         <div><a href="{% url 'document-create' %}">New document</a></div>
+        <div><a href="{% url 'documentinstance-create' %}">Create instances for documents</a>
     {% else %}
         {% include "library/user_infromation_template.html" %}
     {% endif %}

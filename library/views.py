@@ -18,6 +18,7 @@ import datetime
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
+from django.urls import reverse_lazy
 
 
 def index(request):
@@ -370,6 +371,10 @@ class DocumentCreate(CreateView):
     model = Document
     fields = '__all__'
 
+
+class DocumentDelete(DeleteView):
+    model = Document
+    success_url = reverse_lazy('document')
 
 class DocumentInstanceCreate(CreateView):
     model = DocumentInstance
