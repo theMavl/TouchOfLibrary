@@ -1,0 +1,27 @@
+{% extends "base_generic.html" %}
+{% block content %}
+    {% if perms.library.change_giveout %}
+        <h2>Document return confirmation</h2>
+
+        <div><h4>Giveout details</h4>
+            Copy of {{ giveout.document_instance.summary }}
+            <div>Given out to {{ giveout.user.first_name }} {{ giveout.user.last_name }} ({{ patron_type }}) at {{ giveout.timestamp }}</div>
+        </div>
+        <br>
+        <div>Overdue: {{ overdue_days }} day(s)</div>
+        <div>Fine: {{ fine }}</div>
+        <h3>As a Librarian, I confirm that</h3>
+        <div>A document is being returned in appropriate condition</div>
+        {% if fine > 0 %}
+            <p>Patron has paid the fine</p>
+        {% endif %}
+        <p></p>
+        <form action="" method="post">
+            {% csrf_token %}
+            <div>{{ form }}</div>
+            <div><input type="submit" name="accept_return" value="Accept"/></div>
+        </form>
+    {% else %}
+        You are not allowed to be here
+    {% endif %}
+{% endblock %}

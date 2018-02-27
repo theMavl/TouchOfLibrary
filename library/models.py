@@ -195,6 +195,9 @@ class GiveOut(models.Model):
     document_instance = models.ForeignKey('DocumentInstance', on_delete=models.PROTECT, null=True)
     timestamp = models.DateTimeField(auto_now=True)
 
+    def get_absolute_url(self):
+        return reverse('return-document', args=[str(self.id)])
+
 
 class Reservation(models.Model):
     """

@@ -87,8 +87,9 @@
                         <a href="{{ issuance.document.get_absolute_url }}">{{ issuance.document_instance.summary }}</a>
                     </th>
                     <th> {{ issuance.document_instance.due_back }}</th>
-                    {% if perms.library.change_reservation %}
-                        <th><a href="{{ issuance.document_instance.form_return_request_mail }}">Request to return</a>
+                    {% if perms.library.change_reservation and perms.library.delete_giveout %}
+                        <th><div><a href="{{ issuance.document_instance.form_return_request_mail }}">Request return</a></div>
+                            <div><a href="{{ issuance.get_absolute_url }}">Accept return</a></div>
                         </th>
                     {% endif %}
                 </tr>

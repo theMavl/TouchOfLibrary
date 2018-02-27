@@ -5,7 +5,7 @@ from django.template import RequestContext
 from django.urls import reverse
 from django.views import generic
 
-from library.forms import DueDateForm
+from library.forms import DueDateForm, ReturnDocumentForm
 from .models import Document, Author, DocumentInstance, PatronInfo, Reservation, GiveOut, PatronType, Tag, \
     LibraryLocation, DocType
 from django.contrib.auth.decorators import login_required
@@ -221,6 +221,37 @@ def giveout_confirmation(request, id):
     return render(request, 'library/giveout_details.html',
                   context={'reservation': reservation,
                            'form': form})
+
+
+@permission_required('library.delete_giveout')
+def return_document(request, id):
+    giveout = GiveOut.objects.get(id=id)
+    copy = giveout.document_instance
+    document = giveout.document
+    patron_user = giveout.user
+    patron_type = PatronInfo.objects.filter(user=patron_user)
+    if patron_type:
+        patron_type = patron_type.first().patron_type
+    else:
+        patron_type = None
+
+    if request.method == 'POST':
+
+        form = ReturnDocumentForm(request.POST)
+
+        if form.is_valid():
+            copy.status = 'a'
+            copy.holder = None
+            document.quantity_synced = False
+            copy.save()
+            document.save()
+            giveout.delete()
+            return redirect('patron-details', id=patron_user.id)
+    else:
+        form = ReturnDocumentForm(initial={"librarian_confirm": False})
+
+    return render(request, 'library/document_return.html',
+                  context={'giveout': giveout, 'patron_type': patron_type, 'overdue_days': 0, 'fine': 0.0, 'form': form})
 
 
 @login_required
