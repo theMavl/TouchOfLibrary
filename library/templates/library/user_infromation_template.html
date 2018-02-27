@@ -40,7 +40,7 @@
             <caption> Reserved documents:</caption>
             <tr>
                 <th> Document</th>
-                {% if perms.library.change_reservation %}
+                {% if perms.library.change_reservation and perms.library.change_giveout %}
                     <th> Actions</th> {% endif %}
             </tr>
 
@@ -49,14 +49,16 @@
                     <th>
                         <a href="{{ reservation.document.get_absolute_url }}">{{ reservation.document_copy.summary }}</a>
                     </th>
-                    {% if reservation.document_copy.status == 'r' %}
-                        <th bgcolor="#98fb98" title="Give out the copy">
-                            <a href="{% url 'giveout-confirmation' id=reservation.id %}"> Give out </a>
-                        </th>
-                    {% else %}
-                        <th bgcolor="#f08080">
-                            Out of stock
-                        </th>
+                    {% if perms.library.change_reservation and perms.library.change_giveout %}
+                        {% if reservation.document_copy.status == 'r' %}
+                            <th bgcolor="#98fb98" title="Give out the copy">
+                                <a href="{% url 'giveout-confirmation' id=reservation.id %}"> Give out </a>
+                            </th>
+                        {% else %}
+                            <th bgcolor="#f08080">
+                                Out of stock
+                            </th>
+                        {% endif %}
                     {% endif %}
                 </tr>
             {% endfor %}
