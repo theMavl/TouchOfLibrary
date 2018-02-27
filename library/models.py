@@ -156,7 +156,7 @@ class PatronInfo(models.Model):
     # Patron attributes
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     phone_number = models.CharField(max_length=20)
-    address = models.CharField(max_length=20)
+    address = models.CharField(max_length=200)
     telegram = models.CharField(max_length=20, blank=True)
     patron_type = models.ForeignKey('PatronType', on_delete=models.SET_NULL, null=True)
 
