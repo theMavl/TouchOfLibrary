@@ -119,7 +119,12 @@ def get_document_detail(request, id):
     copy_list = DocumentInstance.objects.filter(document_id=id)
 
     if user.is_authenticated:
-        patron = PatronInfo.objects.get(id=user.id)
+        patron = PatronInfo.objects.filter(id=user.id)
+        if not patron:
+            return render(request, 'library/document_detail.html',
+                          context={"document": document, "additional": additional,
+                                   "copy_list": copy_list, "not_a_patron": True})
+        patron = patron.first()
         if not document.is_reference:
             if document.bestseller:
                 max_days = document.type.max_days_bestseller
@@ -134,7 +139,7 @@ def get_document_detail(request, id):
             due_date = ""
         all_reserved = Reservation.objects.filter(user_id=user.id)
         all_checked_out = GiveOut.objects.filter(user_id=user.id)
-        if patron.patron_type.max_documents > len(all_reserved)+len(all_checked_out):
+        if patron.patron_type.max_documents > len(all_reserved) + len(all_checked_out):
             can_reserve = True
         else:
             can_reserve = False
@@ -152,7 +157,7 @@ def get_document_detail(request, id):
     else:
         return render(request, 'library/document_detail.html',
                       context={"document": document, "additional": additional,
-                               "copy_list": copy_list})
+                               "copy_list": copy_list, "not_a_patron": True})
 
 
 @permission_required('library.change_reservation')
@@ -194,7 +199,6 @@ def giveout_confirmation(request, id):
             max_days = copy.document.type.max_days
     if request.method == 'POST':
 
-
         form = DueDateForm(request.POST)
         form.max_days = max_days
         if form.is_valid():
@@ -215,8 +219,8 @@ def giveout_confirmation(request, id):
                                     "max_date": max_days})
 
     return render(request, 'library/giveout_details.html',
-                      context={'reservation': reservation,
-                               'form': form})
+                  context={'reservation': reservation,
+                           'form': form})
 
 
 @login_required
@@ -375,6 +379,7 @@ class DocumentCreate(CreateView):
 class DocumentDelete(DeleteView):
     model = Document
     success_url = reverse_lazy('document')
+
 
 class DocumentInstanceCreate(CreateView):
     model = DocumentInstance

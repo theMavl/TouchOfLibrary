@@ -35,7 +35,7 @@
                 <p><b class="redtext">Reference documents cannot be checked out.</b></p>
             {% elif given_out %}
                 <p><strong>You must return copy till {{ given_out.document_instance.due_back }}</strong></p>
-            {% else %}
+            {% elif not not_a_patron %}
                 <p><strong> You can order this {{ document.type }} for <b class="highlight">{{ max_days }} </b> days. If you check it out today, you will have to return it till <b class="highlight">{{ due_date }}</b></strong></p>
             {% endif %}
             {% if given_out %}
@@ -74,7 +74,11 @@
 
                     {% if copy.status == 'a' %}
                         {% if user.is_authenticated %}
-                            {% if not can_reserve %}
+                            {% if not_a_patron %}
+                                <th bgcolor="#90ee90" title="You have no patron status">
+                                    In library
+                                </th>
+                            {% elif not can_reserve %}
                                 <th bgcolor="#90ee90" title="You are over reservation limit">
                                     In library
                                 </th>
@@ -82,8 +86,7 @@
                                 <th bgcolor="#90ee90" title="You cannot book more than one copy">
                                     In library
                                 </th>
-
-                            {% else %}
+                            {% elif not not_a_patron %}
                                 <th bgcolor="#90ee90" title="Book this document now!">
                                     <a href="{% url 'reserve-document' copy_id=copy.id %}"> Available for booking</a>
                                 </th>
