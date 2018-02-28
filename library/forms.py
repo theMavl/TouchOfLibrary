@@ -7,7 +7,6 @@ from library.models import DocumentInstance
 
 
 class DueDateForm(forms.Form):
-
     due_date = forms.DateField(help_text="Enter a date when the document must be returned.")
     max_days = 1
 
@@ -23,7 +22,12 @@ class DueDateForm(forms.Form):
 
         return data
 
-class MyForm(forms.ModelForm):
-    class Meta:
-        model = DocumentInstance
-        fields = '__all__'
+
+class ReturnDocumentForm(forms.Form):
+    librarian_confirmation = forms.BooleanField()
+
+    def confirmed(self):
+        librarian_confirm = self.cleaned_data['librarian_confirm']
+
+        if not librarian_confirm:
+            raise ValidationError('You must confirm the return')

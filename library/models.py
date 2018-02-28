@@ -156,7 +156,7 @@ class PatronInfo(models.Model):
     # Patron attributes
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     phone_number = models.CharField(max_length=20)
-    address = models.CharField(max_length=20)
+    address = models.CharField(max_length=200)
     telegram = models.CharField(max_length=20, blank=True)
     patron_type = models.ForeignKey('PatronType', on_delete=models.SET_NULL, null=True)
 
@@ -194,6 +194,9 @@ class GiveOut(models.Model):
     document = models.ForeignKey('Document', on_delete=models.PROTECT, null=True)
     document_instance = models.ForeignKey('DocumentInstance', on_delete=models.PROTECT, null=True)
     timestamp = models.DateTimeField(auto_now=True)
+
+    def get_absolute_url(self):
+        return reverse('return-document', args=[str(self.id)])
 
 
 class Reservation(models.Model):

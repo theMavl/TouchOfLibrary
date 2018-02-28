@@ -26,6 +26,8 @@ urlpatterns = [
     url(r'^issued/$', views.giveout_list, name='giveout-list'),
     url(r'^issued/(?P<id>\d+)$', views.giveout_confirmation, name='giveout-confirmation'),
 
+    url(r'^return_document/(?P<id>\d+)$', views.return_document, name='return-document'),
+
     url(r'^patrons/$', views.patrons_list, name='patrons-list'),
     url(r'^patrons/(?P<id>\d+)$', views.patron_details, name='patron-details'),
 
