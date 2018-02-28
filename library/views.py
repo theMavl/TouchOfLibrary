@@ -425,6 +425,7 @@ class DocumentUpdate(UpdateView):
 def instance_update(request, id):
     instance = get_object_or_404(DocumentInstance, id=id)
     instance.document.quantity_synced = False
+    instance.document.save()
     form = DocumentInstanceUpdate(request.POST or None, instance=instance)
     if form.is_valid():
         form.save()
@@ -435,6 +436,7 @@ def instance_update(request, id):
 def instance_delete(request, id):
     instance = get_object_or_404(DocumentInstance, id=id)
     instance.document.quantity_synced = False
+    instance.document.save()
     instance = get_object_or_404(DocumentInstance, id=id).delete()
     form = DocumentInstanceDelete(request.POST or None, instance=instance)
     if form.is_valid():
