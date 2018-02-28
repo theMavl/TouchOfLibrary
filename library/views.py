@@ -19,7 +19,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse_lazy
-from .forms import MyForm
+from .forms import DocumentInstanceUpdate, DocumentInstanceDelete
 
 def index(request):
     """
@@ -422,10 +422,22 @@ class DocumentUpdate(UpdateView):
     fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference'
     template_name_suffix = '_update_form'
 
-def my_view(request, id):
+def instance_update(request, id):
     instance = get_object_or_404(DocumentInstance, id=id)
-    form = MyForm(request.POST or None, instance=instance)
+    instance.document.quantity_synced = False
+    form = DocumentInstanceUpdate(request.POST or None, instance=instance)
     if form.is_valid():
         form.save()
-        return redirect('next_view')
+        return redirect('document-detail', id=instance.document.pk)
     return render(request, 'documentinstance_update.html', {'form': form})
+
+
+def instance_delete(request, id):
+    instance = get_object_or_404(DocumentInstance, id=id)
+    instance.document.quantity_synced = False
+    instance = get_object_or_404(DocumentInstance, id=id).delete()
+    form = DocumentInstanceDelete(request.POST or None, instance=instance)
+    if form.is_valid():
+        form.save()
+        return redirect('document-detail', id=instance.document.pk)
+    return render(request, 'documentinstance_delete.html', {'form': form})

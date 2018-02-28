@@ -63,13 +63,14 @@
                 <th> Location</th>
                 <th> Status</th>
                 <th> Additional</th>
+                {% if perms.library.change_documentinstance %}
                 <th>Edit</th>
+                {% endif %}
             </tr>
 
             {% for copy in copy_list %}
                 <tr>
                     <th>{{ copy.document.title }}</th>
-                    <th> <div><a href="{% url 'documentinstance-update' id=copy.id %}">Update this particular copy</a></th>
                     <th><strong>Level </strong> {{ copy.location.level }},
                         <strong>room </strong> {{ copy.location.room }}
                     </th>
@@ -136,6 +137,11 @@
                             {% endif %}
                         {% endfor %}
                     </th>
+                    {% if perms.library.change_documentinstance %}
+                    <th> <div><a href="{% url 'documentinstance-update' id=copy.id %}">Update this particular copy</a>
+                      <div><a href="{% url 'documentinstance-delete' id=copy.id %}">DELETE this particular copy</a>
+                    </th>
+                      {% endif %}
                 </tr>
             {% endfor %}
         </table>

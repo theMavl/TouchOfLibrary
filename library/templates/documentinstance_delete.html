@@ -3,7 +3,7 @@
 {% block content %}
 {% if perms.library.change_documentinstance %}
  <form action="" method="post">
-{{form}}
+Are you sure want to delete this copy?
 <input class="button" type="submit" name="submit" value="Submit">
 {% csrf_token %}
 </form>

@@ -31,3 +31,13 @@ class ReturnDocumentForm(forms.Form):
 
         if not librarian_confirm:
             raise ValidationError('You must confirm the return')
+
+class DocumentInstanceUpdate(forms.ModelForm):
+    class Meta:
+        model = DocumentInstance
+        fields = '__all__'
+
+class DocumentInstanceDelete(forms.ModelForm):
+    class Meta:
+        model = DocumentInstance
+        fields = '__all__'
