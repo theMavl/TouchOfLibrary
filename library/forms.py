@@ -41,3 +41,8 @@ class DocumentInstanceDelete(forms.ModelForm):
     class Meta:
         model = DocumentInstance
         fields = '__all__'
+
+class DocumentInstanceCreate(forms.ModelForm):
+    class Meta:
+        model = DocumentInstance
+        fields = 'document','status','location','price','additional_field1','additional_field2','additional_field3','additional_field4','additional_field5'  

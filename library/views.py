@@ -19,7 +19,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse_lazy
-from .forms import DocumentInstanceUpdate, DocumentInstanceDelete
+from .forms import DocumentInstanceUpdate, DocumentInstanceDelete, DocumentInstanceCreate
 
 def index(request):
     """
@@ -439,6 +439,10 @@ def instance_delete(request, id):
     return redirect('document-detail', id=copy)
 
 
-class DocumentInstanceCreate(CreateView):
-    model = DocumentInstance
-    fields = '__all__'
+def instance_create(request):
+    instance = DocumentInstance.objects.create()
+    form = DocumentInstanceCreate(request.POST or None, instance=instance)
+    if form.is_valid():
+        form.save()
+        return redirect('document')
+    return render(request, 'documentinstance_create.html', {'form': form})

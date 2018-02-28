@@ -32,7 +32,7 @@ urlpatterns = [
     url(r'^patrons/(?P<id>\d+)$', views.patron_details, name='patron-details'),
 
     url(r'^document/create', views.DocumentCreate.as_view(), name='document-create'),
-    url(r'^document/instance/create', views.DocumentInstanceCreate.as_view(), name='documentinstance-create'),
+    url(r'^document/instance/create/', views.instance_create, name='documentinstance-create'),
     url(r'^document/instance/update/(?P<id>[0-9a-f-]+)$', views.instance_update, name='documentinstance-update'),
     url(r'^document/instance/delete/(?P<id>[0-9a-f-]+)$', views.instance_delete, name='documentinstance-delete'),
     url(r'^document/update/(?P<pk>\d+)$', views.DocumentUpdate.as_view(), name='document-update'),
