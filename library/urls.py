@@ -31,6 +31,7 @@ urlpatterns = [
 
     url(r'^document/create', views.DocumentCreate.as_view(), name='document-create'),
     url(r'^document/instance/create', views.DocumentInstanceCreate.as_view(), name='documentinstance-create'),
+    url(r'^document/instance/update/(?P<id>[0-9a-f-]+)$', views.my_view, name='documentinstance-update'),
     url(r'^document/update/(?P<pk>\d+)$', views.DocumentUpdate.as_view(), name='document-update'),
     url(r'^document/delete/(?P<pk>\d+)$', views.DocumentDelete.as_view(), name='document-delete'),
 

@@ -63,11 +63,13 @@
                 <th> Location</th>
                 <th> Status</th>
                 <th> Additional</th>
+                <th>Edit</th>
             </tr>
 
             {% for copy in copy_list %}
                 <tr>
                     <th>{{ copy.document.title }}</th>
+                    <th> <div><a href="{% url 'documentinstance-update' id=copy.id %}">Update this particular copy</a></th>
                     <th><strong>Level </strong> {{ copy.location.level }},
                         <strong>room </strong> {{ copy.location.room }}
                     </th>

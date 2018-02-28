@@ -19,7 +19,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse_lazy
-
+from .forms import MyForm
 
 def index(request):
     """
@@ -383,5 +383,13 @@ class DocumentInstanceCreate(CreateView):
 
 class DocumentUpdate(UpdateView):
     model = Document
-    fields = '__all__'
+    fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference'
     template_name_suffix = '_update_form'
+
+def my_view(request, id):
+    instance = get_object_or_404(DocumentInstance, id=id)
+    form = MyForm(request.POST or None, instance=instance)
+    if form.is_valid():
+        form.save()
+        return redirect('next_view')
+    return render(request, 'documentinstance_update.html', {'form': form})

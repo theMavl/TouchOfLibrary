@@ -22,3 +22,8 @@ class DueDateForm(forms.Form):
             raise ValidationError('Wrong date - out of limit borders')
 
         return data
+
+class MyForm(forms.ModelForm):
+    class Meta:
+        model = DocumentInstance
+        fields = '__all__'

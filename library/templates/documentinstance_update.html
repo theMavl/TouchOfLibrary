@@ -1,0 +1,11 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+{% if perms.library.change_documentinstance %}
+{{document.title}}:
+        <p>
+            <input type="text" name="" value="">
+</p>
+
+{% endif %}
+{% endblock %}
