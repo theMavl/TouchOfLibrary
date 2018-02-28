@@ -117,6 +117,8 @@ def get_document_detail(request, id):
     document = Document.objects.get(id=id)
     additional = document.type.fields.split(sep=";")
     copy_list = DocumentInstance.objects.filter(document_id=id)
+    document.quantity_synced = False
+    document.save()
 
     if user.is_authenticated:
         patron = PatronInfo.objects.filter(user_id=user.id)
@@ -412,11 +414,6 @@ class DocumentDelete(DeleteView):
     success_url = reverse_lazy('document')
 
 
-class DocumentInstanceCreate(CreateView):
-    model = DocumentInstance
-    fields = '__all__'
-
-
 class DocumentUpdate(UpdateView):
     model = Document
     fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference'
@@ -437,9 +434,11 @@ def instance_delete(request, id):
     instance = get_object_or_404(DocumentInstance, id=id)
     instance.document.quantity_synced = False
     instance.document.save()
+    copy = instance.document.id
     instance = get_object_or_404(DocumentInstance, id=id).delete()
-    form = DocumentInstanceDelete(request.POST or None, instance=instance)
-    if form.is_valid():
-        form.save()
-        return redirect('document-detail', id=instance.document.pk)
-    return render(request, 'documentinstance_delete.html', {'form': form})
+    return redirect('document-detail', id=copy)
+
+
+class DocumentInstanceCreate(CreateView):
+    model = DocumentInstance
+    fields = '__all__'

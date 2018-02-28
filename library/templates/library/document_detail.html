@@ -50,6 +50,7 @@
     {% endif %}
 
     {% if perms.library.change_reservation %}
+      <div><a href="{% url 'documentinstance-create' %}">Create instances for documents</a>
       <p><a href="{% url 'document-update' pk=document.pk %}">Update this document</a></p>
       <p><a href="{% url 'document-delete' pk=document.pk %}">DELETE this document</a></p>
     {% endif %}
@@ -140,6 +141,7 @@
                     {% if perms.library.change_documentinstance %}
                     <th> <div><a href="{% url 'documentinstance-update' id=copy.id %}">Update this particular copy</a>
                       <div><a href="{% url 'documentinstance-delete' id=copy.id %}">DELETE this particular copy</a>
+
                     </th>
                       {% endif %}
                 </tr>
