@@ -1,6 +1,8 @@
 import datetime
 from django import forms
 from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+from .models import PatronType
 from django.forms import ModelForm
 
 from library.models import DocumentInstance
