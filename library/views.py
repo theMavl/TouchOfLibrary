@@ -451,10 +451,17 @@ def instance_delete(request, id):
     return redirect('document-detail', id=copy)
 
 
-def instance_create(request):
+def instance_create(request, pk):
     instance = DocumentInstance.objects.create()
+    docs = Document.objects.all()
+    for doc in docs:
+        doc.pk
+        if str(doc.pk) == pk:
+            current_doc = doc
     form = DocumentInstanceCreate(request.POST or None, instance=instance)
     if form.is_valid():
+        form.instance.document = current_doc
         form.save()
-        return redirect('document')
+        doc_id = form.instance.document.id
+        return redirect('document-detail', id=doc_id)
     return render(request, 'documentinstance_create.html', {'form': form})

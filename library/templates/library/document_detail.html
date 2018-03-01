@@ -53,7 +53,7 @@
     {% endif %}
 
     {% if perms.library.change_reservation %}
-        <div><a href="{% url 'documentinstance-create' %}">Create instances for documents</a>
+        <div><a href="{% url 'documentinstance-create' pk=document.pk %}">Create instances for documents</a>
         <p><a href="{% url 'document-update' pk=document.pk %}">Update this document</a></p>
         <p><a href="{% url 'document-delete' pk=document.pk %}">DELETE this document</a></p>
     {% endif %}
