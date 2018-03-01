@@ -128,11 +128,12 @@ def get_document_detail(request, id):
                                    "copy_list": copy_list, "not_a_patron": True})
         patron = patron.first()
         if not document.is_reference:
-            if document.bestseller:
-                max_days = document.type.max_days_bestseller
+            if patron.patron_type.privileges:
+                max_days = document.type.max_days_privileges
             else:
-                if patron.patron_type.privileges:
-                    max_days = document.type.max_days_privileges
+                if document.bestseller:
+                    max_days = document.type.max_days_bestseller
+
                 else:
                     max_days = document.type.max_days
             due_date = (datetime.date.today() + datetime.timedelta(max_days)).strftime("%d %b %Y")
@@ -192,11 +193,12 @@ def giveout_confirmation(request, id):
     copy = reservation.document_copy
     patron = PatronInfo.objects.get(user_id=reservation.user.id)
 
-    if copy.document.bestseller:
-        max_days = copy.document.type.max_days_bestseller
+    if patron.patron_type.privileges:
+        max_days = copy.document.type.max_days_privileges
     else:
-        if patron.patron_type.privileges:
-            max_days = copy.document.type.max_days_privileges
+        if copy.document.bestseller:
+            max_days = copy.document.type.max_days_bestseller
+
         else:
             max_days = copy.document.type.max_days
     if request.method == 'POST':
