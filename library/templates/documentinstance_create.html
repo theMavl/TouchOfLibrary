@@ -2,11 +2,35 @@
 
 {% block content %}
     {% if perms.library.change_documentinstance %}
-        Please select the document you were redirected from
+    <h1>Document: {{current_doc}}</h1>
         <form action="" method="post">
-            <table>
-                {{ form.as_table }}
-            </table>
+        {% for field in form %}
+
+        {% if field.label == 'Status' %}
+        {{field.label}} {{field}}
+      </br>
+        {% elif field.label == 'Location' %}
+        {{field.label}} {{field}}
+</br>
+        {% elif field.label == 'Price' %}
+        {{field.label}} {{field}}
+</br>
+        {% elif field.label == 'Additional field1' and addfield.0 != None %}
+        {{addfield.0}} {{field}}
+</br>
+        {% elif field.label == 'Additional field2' and addfield.1 != None %}
+        {{addfield.1}} {{field}}
+</br>
+        {% elif field.label == 'Additional field3' and addfield.2 != None %}
+        {{addfield.2}} {{field}}
+</br>
+        {% elif field.label == 'Additional field4' and addfield.3 != None %}
+        {{addfield.3}} {{field}}
+</br>
+        {% elif field.label == 'Additional field5' and addfield.4 != None %}
+        {{addfield.4}} {{field}}
+        {% endif %}
+        {% endfor %}
             <input class="button" type="submit" name="submit" value="Submit">
             {% csrf_token %}
         </form>

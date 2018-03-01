@@ -430,6 +430,8 @@ def instance_update(request, id):
     instance.document.save()
     old_status = instance.status
     form = DocumentInstanceUpdate(request.POST or None, instance=instance)
+    addfield = instance.document.type.fields
+    addfield = addfield.split(';')
     if form.is_valid():
         form.save()
         if old_status == 'r':
@@ -439,7 +441,7 @@ def instance_update(request, id):
                     if log.document_copy.id == form.instance.id:
                         log.delete()
         return redirect('document-detail', id=instance.document.pk)
-    return render(request, 'documentinstance_update.html', {'form': form})
+    return render(request, 'documentinstance_update.html', {'form': form, 'addfield' : addfield})
 
 
 def instance_delete(request, id):
@@ -455,16 +457,14 @@ def instance_create(request, pk):
     instance = DocumentInstance.objects.create()
     docs = Document.objects.all()
     for doc in docs:
-<<<<<<< HEAD
-        
-=======
->>>>>>> ecef4efcb4b393e17bcb54e9360073a4212b3090
         if str(doc.pk) == pk:
             current_doc = doc
+    addfield = current_doc.type.fields
+    addfield = addfield.split(';')
     form = DocumentInstanceCreate(request.POST or None, instance=instance)
     if form.is_valid():
         form.instance.document = current_doc
         form.save()
         doc_id = form.instance.document.id
         return redirect('document-detail', id=doc_id)
-    return render(request, 'documentinstance_create.html', {'form': form})
+    return render(request, 'documentinstance_create.html', {'form': form, 'addfield' : addfield, 'current_doc' : current_doc})
