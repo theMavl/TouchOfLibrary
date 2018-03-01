@@ -5,7 +5,7 @@ from django.template import RequestContext
 from django.urls import reverse
 from django.views import generic
 
-from library.forms import DueDateForm
+from library.forms import DueDateForm, ReturnDocumentForm
 from .models import Document, Author, DocumentInstance, PatronInfo, Reservation, GiveOut, PatronType, Tag, \
     LibraryLocation, DocType
 from django.contrib.auth.decorators import login_required
@@ -18,7 +18,8 @@ import datetime
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
-
+from django.urls import reverse_lazy
+from .forms import DocumentInstanceUpdate, DocumentInstanceDelete, DocumentInstanceCreate
 
 def index(request):
     """
@@ -116,9 +117,16 @@ def get_document_detail(request, id):
     document = Document.objects.get(id=id)
     additional = document.type.fields.split(sep=";")
     copy_list = DocumentInstance.objects.filter(document_id=id)
+    document.quantity_synced = False
+    document.save()
 
     if user.is_authenticated:
-        patron = PatronInfo.objects.get(id=user.id)
+        patron = PatronInfo.objects.filter(user_id=user.id)
+        if not patron:
+            return render(request, 'library/document_detail.html',
+                          context={"document": document, "additional": additional,
+                                   "copy_list": copy_list, "not_a_patron": True})
+        patron = patron.first()
         if not document.is_reference:
             if document.bestseller:
                 max_days = document.type.max_days_bestseller
@@ -133,7 +141,7 @@ def get_document_detail(request, id):
             due_date = ""
         all_reserved = Reservation.objects.filter(user_id=user.id)
         all_checked_out = GiveOut.objects.filter(user_id=user.id)
-        if patron.patron_type.max_documents > len(all_reserved)+len(all_checked_out):
+        if patron.patron_type.max_documents > len(all_reserved) + len(all_checked_out):
             can_reserve = True
         else:
             can_reserve = False
@@ -151,7 +159,7 @@ def get_document_detail(request, id):
     else:
         return render(request, 'library/document_detail.html',
                       context={"document": document, "additional": additional,
-                               "copy_list": copy_list})
+                               "copy_list": copy_list, "not_a_patron": True})
 
 
 @permission_required('library.change_reservation')
@@ -193,7 +201,6 @@ def giveout_confirmation(request, id):
             max_days = copy.document.type.max_days
     if request.method == 'POST':
 
-
         form = DueDateForm(request.POST)
         form.max_days = max_days
         if form.is_valid():
@@ -214,8 +221,39 @@ def giveout_confirmation(request, id):
                                     "max_date": max_days})
 
     return render(request, 'library/giveout_details.html',
-                      context={'reservation': reservation,
-                               'form': form})
+                  context={'reservation': reservation,
+                           'form': form})
+
+
+@permission_required('library.delete_giveout')
+def return_document(request, id):
+    giveout = GiveOut.objects.get(id=id)
+    copy = giveout.document_instance
+    document = giveout.document
+    patron_user = giveout.user
+    patron_type = PatronInfo.objects.filter(user=patron_user)
+    if patron_type:
+        patron_type = patron_type.first().patron_type
+    else:
+        patron_type = None
+
+    if request.method == 'POST':
+
+        form = ReturnDocumentForm(request.POST)
+
+        if form.is_valid():
+            copy.status = 'a'
+            copy.holder = None
+            document.quantity_synced = False
+            copy.save()
+            document.save()
+            giveout.delete()
+            return redirect('patron-details', id=patron_user.id)
+    else:
+        form = ReturnDocumentForm(initial={"librarian_confirm": False})
+
+    return render(request, 'library/document_return.html',
+                  context={'giveout': giveout, 'patron_type': patron_type, 'overdue_days': 0, 'fine': 0.0, 'form': form})
 
 
 @login_required
@@ -371,12 +409,40 @@ class DocumentCreate(CreateView):
     fields = '__all__'
 
 
-class DocumentInstanceCreate(CreateView):
-    model = DocumentInstance
-    fields = '__all__'
+class DocumentDelete(DeleteView):
+    model = Document
+    success_url = reverse_lazy('document')
 
 
 class DocumentUpdate(UpdateView):
     model = Document
-    fields = '__all__'
+    fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference'
     template_name_suffix = '_update_form'
+
+def instance_update(request, id):
+    instance = get_object_or_404(DocumentInstance, id=id)
+    instance.document.quantity_synced = False
+    instance.document.save()
+    form = DocumentInstanceUpdate(request.POST or None, instance=instance)
+    if form.is_valid():
+        form.save()
+        return redirect('document-detail', id=instance.document.pk)
+    return render(request, 'documentinstance_update.html', {'form': form})
+
+
+def instance_delete(request, id):
+    instance = get_object_or_404(DocumentInstance, id=id)
+    instance.document.quantity_synced = False
+    instance.document.save()
+    copy = instance.document.id
+    instance = get_object_or_404(DocumentInstance, id=id).delete()
+    return redirect('document-detail', id=copy)
+
+
+def instance_create(request):
+    instance = DocumentInstance.objects.create()
+    form = DocumentInstanceCreate(request.POST or None, instance=instance)
+    if form.is_valid():
+        form.save()
+        return redirect('document')
+    return render(request, 'documentinstance_create.html', {'form': form})
