@@ -1,14 +1,18 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-{% if perms.library.change_documentinstance %}
- <form action="" method="post">
-   <table>
-{{form.as_table}}
-</table>
-<input class="button" type="submit" name="submit" value="Submit">
-{% csrf_token %}
-</form>
+    {% if perms.library.change_documentinstance %}
+        {% if form.instance.status == 'r' %}
+            <h1>You are trying to update reserved copy!</h1>
+            <h1>Remember that if you change its status, reservation will be canceled</h1>
+        {% endif %}
+        <form action="" method="post">
+            <table>
+                {{ form.as_table }}
+            </table>
+            <input class="button" type="submit" name="submit" value="Submit">
+            {% csrf_token %}
+        </form>
 
-{% endif %}
+    {% endif %}
 {% endblock %}

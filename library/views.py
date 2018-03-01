@@ -21,6 +21,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse_lazy
 from .forms import DocumentInstanceUpdate, DocumentInstanceDelete, DocumentInstanceCreate
 
+
 def index(request):
     """
     home page template
@@ -255,7 +256,8 @@ def return_document(request, id):
         form = ReturnDocumentForm(initial={"librarian_confirm": False})
 
     return render(request, 'library/document_return.html',
-                  context={'giveout': giveout, 'patron_type': patron_type, 'overdue_days': 0, 'fine': 0.0, 'form': form})
+                  context={'giveout': giveout, 'patron_type': patron_type, 'overdue_days': 0, 'fine': 0.0,
+                           'form': form})
 
 
 @login_required
@@ -421,13 +423,21 @@ class DocumentUpdate(UpdateView):
     fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference'
     template_name_suffix = '_update_form'
 
+
 def instance_update(request, id):
     instance = get_object_or_404(DocumentInstance, id=id)
     instance.document.quantity_synced = False
     instance.document.save()
+    old_status = instance.status
     form = DocumentInstanceUpdate(request.POST or None, instance=instance)
     if form.is_valid():
         form.save()
+        if old_status == 'r':
+            if form.instance.status != 'r':
+                reservations = Reservation.objects.all()
+                for log in reservations:
+                    if log.document_copy.id == form.instance.id:
+                        log.delete()
         return redirect('document-detail', id=instance.document.pk)
     return render(request, 'documentinstance_update.html', {'form': form})
 

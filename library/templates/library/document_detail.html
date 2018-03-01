@@ -9,7 +9,8 @@
             .greentext {
                 color: palegreen;
             }
-            .highlight{
+
+            .highlight {
                 color: lightseagreen;
             }
         </style>
@@ -36,7 +37,9 @@
             {% elif given_out %}
                 <p><strong>You must return copy till {{ given_out.document_instance.due_back }}</strong></p>
             {% elif not not_a_patron %}
-                <p><strong> You can order this {{ document.type }} for <b class="highlight">{{ max_days }} </b> days. If you check it out today, you will have to return it till <b class="highlight">{{ due_date }}</b></strong></p>
+                <p><strong> You can order this {{ document.type }} for <b class="highlight">{{ max_days }} </b> days. If
+                    you check it out today, you will have to return it till <b
+                            class="highlight">{{ due_date }}</b></strong></p>
             {% endif %}
             {% if given_out %}
                 <p><b>Given out to you</b></p>
@@ -50,9 +53,9 @@
     {% endif %}
 
     {% if perms.library.change_reservation %}
-      <div><a href="{% url 'documentinstance-create' %}">Create instances for documents</a>
-      <p><a href="{% url 'document-update' pk=document.pk %}">Update this document</a></p>
-      <p><a href="{% url 'document-delete' pk=document.pk %}">DELETE this document</a></p>
+        <div><a href="{% url 'documentinstance-create' %}">Create instances for documents</a>
+        <p><a href="{% url 'document-update' pk=document.pk %}">Update this document</a></p>
+        <p><a href="{% url 'document-delete' pk=document.pk %}">DELETE this document</a></p>
     {% endif %}
     {#Table starts:#}
 
@@ -65,9 +68,9 @@
                 <th> Status</th>
                 <th> Additional</th>
                 {% if perms.library.change_documentinstance %}
-                  {% if copy.status != 'g' %}
-                <th>Edit</th>
-                {% endif %}
+                    {% if copy.status != 'g' %}
+                        <th>Edit</th>
+                    {% endif %}
                 {% endif %}
             </tr>
 
@@ -113,7 +116,8 @@
                     {% elif copy.status == 'r' %}
                         {% if user.is_authenticated and reserved and reserved.first.document_copy == copy %}
                             <th bgcolor="#ffa07a" title="Cancel booking">
-                                <a href="{% url 'reserve-document' copy_id=copy.id %}"> Reserved on you till {{ reserved.first.due_date }}</a>
+                                <a href="{% url 'reserve-document' copy_id=copy.id %}"> Reserved on you
+                                    till {{ reserved.first.due_date }}</a>
                             </th>
                         {% else %}
                             <th bgcolor="#ffa07a">
@@ -141,13 +145,17 @@
                         {% endfor %}
                     </th>
                     {% if perms.library.change_documentinstance %}
-                    {% if copy.status != 'g' %}
-                    <th> <div><a href="{% url 'documentinstance-update' id=copy.id %}">Update this particular copy</a>
-                      <div><a href="{% url 'documentinstance-delete' id=copy.id %}">DELETE this particular copy</a>
-
-                    </th>
-                      {% endif %}
-                      {% endif %}
+                        {% if copy.status != 'g' %}
+                            <th>
+                                <div><a href="{% url 'documentinstance-update' id=copy.id %}">Update this particular
+                                    copy</a>
+                                    <div><a href="{% url 'documentinstance-delete' id=copy.id %}">DELETE this particular
+                                        copy</a>
+                                        {% else %}
+                            <th>Given out documents can not be updated or deleted</th>
+                            </th>
+                        {% endif %}
+                    {% endif %}
                 </tr>
             {% endfor %}
         </table>
