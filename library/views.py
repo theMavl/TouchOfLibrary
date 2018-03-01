@@ -455,7 +455,10 @@ def instance_create(request, pk):
     instance = DocumentInstance.objects.create()
     docs = Document.objects.all()
     for doc in docs:
+<<<<<<< HEAD
         
+=======
+>>>>>>> ecef4efcb4b393e17bcb54e9360073a4212b3090
         if str(doc.pk) == pk:
             current_doc = doc
     form = DocumentInstanceCreate(request.POST or None, instance=instance)
