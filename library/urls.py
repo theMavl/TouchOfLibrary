@@ -30,6 +30,9 @@ urlpatterns = [
 
     url(r'^patrons/$', views.patrons_list, name='patrons-list'),
     url(r'^patrons/(?P<id>\d+)$', views.patron_details, name='patron-details'),
+    url(r'^patron_update/(?P<pk>\d+)$', views.edit_patron, name='patron_edit'),
+    url(r'^patron_add/$', views.add_patron, name='patron-add'),
+    url(r'^patron_delete/(?P<pk>\d+)$', views.delete_patron, name='patron-delete'),
 
     url(r'^document/create', views.DocumentCreate.as_view(), name='document-create'),
     url(r'^document/instance/create/(?P<pk>[0-9a-f-]+)$', views.instance_create, name='documentinstance-create'),

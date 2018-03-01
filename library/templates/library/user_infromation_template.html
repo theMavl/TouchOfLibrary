@@ -33,7 +33,17 @@
         </tr>
     </table>
 </div>
+
 <hr>
+    {% if perms.library.change_user and perms.library.change_patroninfo %}
+        <p><a href="{% url 'patron_edit' pk=patron_user.id%}"> Edit this patron </a></p>
+    {% endif %}
+<hr>
+    {% if perms.library.delete_user and perms.library.delete_patroninfo %}
+        <p><a href="{% url 'patron-delete' pk=patron_user.id%}"> Delete this patron </a></p>
+    {% endif %}
+<hr>
+
 {% if reservation_table %}
     <div>
         <table border="1" align="left" width="80%">

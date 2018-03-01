@@ -5,7 +5,7 @@ from django.template import RequestContext
 from django.urls import reverse
 from django.views import generic
 
-from library.forms import DueDateForm, ReturnDocumentForm
+from library.forms import DueDateForm, ReturnDocumentForm, AddPatron, EditPatron, DeletePatron
 from .models import Document, Author, DocumentInstance, PatronInfo, Reservation, GiveOut, PatronType, Tag, \
     LibraryLocation, DocType
 from django.contrib.auth.decorators import login_required
@@ -464,3 +464,86 @@ def instance_create(request, pk):
         doc_id = form.instance.document.id
         return redirect('document-detail', id=doc_id)
     return render(request, 'documentinstance_create.html', {'form': form})
+
+
+@permission_required('library.add_user', 'library.add_patroninfo')
+def add_patron(request):
+    if request.method == 'POST':
+        form = AddPatron(request.POST)
+
+        if form.is_valid():
+            created_user = User.objects.create_user(username=form.cleaned_data['username'],
+                                                    email=form.cleaned_data['email'],
+                                                    password=form.cleaned_data['password'],
+                                                    first_name=form.cleaned_data['name'],
+                                                    last_name=form.cleaned_data['surname'])
+            PatronInfo.objects.create(user=created_user,
+                                      phone_number=form.cleaned_data['phone_number'],
+                                      address=form.cleaned_data['address'],
+                                      telegram=form.cleaned_data['telegram'],
+                                      patron_type=form.cleaned_data['type'])
+
+            return HttpResponseRedirect('/library/patrons/')
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = AddPatron(initial={'name': "", 'surname': "",
+                                  'email': "", 'phone_number': '8',
+                                  'telegram': "@", 'password': ''})
+
+    return render(request, 'library/patron_add.html', {'form': form})
+
+
+@permission_required('library.change_user', 'library.change_patroninfo')
+def edit_patron(request, pk):
+    if request.method == 'POST':
+        form = EditPatron(request.POST)
+
+        if form.is_valid():
+            edited_user = User.objects.get(id=pk)
+            edited_patron_info = PatronInfo.objects.get(user_id=pk)
+
+            edited_user.username = form.cleaned_data['username']
+            edited_user.save()
+            edited_user.email = form.cleaned_data['email']
+            edited_user.set_password(form.cleaned_data['password'])
+            edited_user.first_name = form.cleaned_data['name']
+            edited_user.last_name = form.cleaned_data['surname']
+            edited_user.save()
+
+            edited_patron_info.phone_number = form.cleaned_data['phone_number']
+            edited_patron_info.address = form.cleaned_data['address']
+            edited_patron_info.telegram = form.cleaned_data['telegram']
+            edited_patron_info.patron_type = form.cleaned_data['type']
+            edited_patron_info.save()
+
+            return HttpResponseRedirect('/library/patrons/' + str(pk))
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        patron = PatronInfo.objects.get(user_id=pk)
+        form = EditPatron(initial={'username': patron.user.username, 'password': "",
+                                   'name': patron.user.first_name, 'surname': patron.user.last_name,
+                                   'email': patron.user.email, 'phone_number': patron.phone_number,
+                                   'telegram': patron.telegram, 'address': patron.address,
+                                   'type': patron.patron_type})
+
+    return render(request, 'library/patron_add.html', {'form': form})
+
+
+@permission_required('library.delete_user', 'library.delete_patroninfo')
+def delete_patron(request, pk):
+    if request.method == 'POST':
+        form = DeletePatron(request.POST)
+
+        if form.is_valid():
+            current_user = User.objects.get(id=pk)
+            current_patron = PatronInfo.objects.get(user_id=pk)
+
+            current_user.delete()
+            current_patron.delete()
+
+            return HttpResponseRedirect('/library/patrons/')
+    else:
+        form = DeletePatron(initial={'comment': ''})
+    return render(request, 'library/patron_delete.html', {'form': form})
