@@ -3,7 +3,7 @@
 {% block content %}
 
     <hr>
-    {% if perms.library.change_reservation %}
+    {% if perms.auth.add_user %}
         <p><a href="{% url 'patron-add' %}"> Register new patron </a></p>
     {% endif %}
     <hr>

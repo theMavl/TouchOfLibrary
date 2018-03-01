@@ -35,11 +35,11 @@
 </div>
 
 <hr>
-    {% if perms.library.change_user and perms.library.change_patroninfo %}
+    {% if perms.auth.change_user %}
         <p><a href="{% url 'patron_edit' pk=patron_user.id%}"> Edit this patron </a></p>
     {% endif %}
 <hr>
-    {% if perms.library.delete_user and perms.library.delete_patroninfo %}
+    {% if perms.auth.delete_user %}
         <p><a href="{% url 'patron-delete' pk=patron_user.id%}"> Delete this patron </a></p>
     {% endif %}
 <hr>

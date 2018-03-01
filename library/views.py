@@ -424,7 +424,7 @@ class DocumentUpdate(UpdateView):
     template_name_suffix = '_update_form'
 
 
-@permission_required('library.add_user', 'library.add_patroninfo')
+@permission_required('auth.add_user')
 def add_patron(request):
     if request.method == 'POST':
         form = AddPatron(request.POST)
@@ -452,7 +452,7 @@ def add_patron(request):
     return render(request, 'library/patron_add.html', {'form': form})
 
 
-@permission_required('library.change_user', 'library.change_patroninfo')
+@permission_required('auth.change_user')
 def edit_patron(request, pk):
     if request.method == 'POST':
         form = EditPatron(request.POST)
@@ -489,7 +489,7 @@ def edit_patron(request, pk):
     return render(request, 'library/patron_add.html', {'form': form})
 
 
-@permission_required('library.delete_user', 'library.delete_patroninfo')
+@permission_required('auth.delete_user')
 def delete_patron(request, pk):
     if request.method == 'POST':
         form = DeletePatron(request.POST)
