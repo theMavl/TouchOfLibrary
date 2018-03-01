@@ -35,7 +35,7 @@ class ReturnDocumentForm(forms.Form):
 class DocumentInstanceUpdate(forms.ModelForm):
     class Meta:
         model = DocumentInstance
-        fields = '__all__'
+        fields = 'status','location','price','additional_field1','additional_field2','additional_field3','additional_field4','additional_field5'
 
 class DocumentInstanceDelete(forms.ModelForm):
     class Meta:

@@ -455,7 +455,7 @@ def instance_create(request, pk):
     instance = DocumentInstance.objects.create()
     docs = Document.objects.all()
     for doc in docs:
-        doc.pk
+        
         if str(doc.pk) == pk:
             current_doc = doc
     form = DocumentInstanceCreate(request.POST or None, instance=instance)
