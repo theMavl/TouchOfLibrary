@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
 from library.forms import DeletePatron
-from library.models import PatronInfo, Reservation
+from library.models import PatronInfo, Reservation, GiveOut
 
 
 @permission_required('auth.delete_user')
@@ -15,6 +15,10 @@ def delete_patron(request, pk):
         if form.is_valid():
             current_user = User.objects.get(id=pk)
             current_patron = PatronInfo.objects.get(user_id=pk)
+            giveouts = GiveOut.objects.filter(user=current_user).all()
+            if giveouts:
+                return HttpResponseRedirect('/library/patrons/')
+
             reservations = Reservation.objects.filter(user=current_user).all()
             for r in reservations:
                 r.document_copy.status = 'a'
