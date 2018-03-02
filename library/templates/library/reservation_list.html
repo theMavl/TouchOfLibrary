@@ -19,7 +19,7 @@
                 <tr>
                     <th> {{ reservation.document_copy }}</th>
                     <th> {{ reservation.document.type }}</th>
-                    <th> {{ reservation.user }} {{ user.first_name }} {{ user.last_name }}  </th>
+                    <th> {{ reservation.user }} {{ reservation.user.first_name }} {{ reservation.user.last_name }}  </th>
                     {% if reservation.document.quantity_real > 0 %}
                         <th bgcolor="#98fb98" title="Give out one copy of this {{ reservation.document.type }}">
                             <a href="{% url 'giveout-confirmation' id=reservation.id %}"> Give out </a>
