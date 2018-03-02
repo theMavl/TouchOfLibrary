@@ -14,9 +14,6 @@ def get_document_detail(request, id):
     document = Document.objects.get(id=id)
     additional = document.type.fields.split(sep=";")
     copy_list = DocumentInstance.objects.filter(document_id=id)
-    document.quantity_synced = False
-    document.save()
-
     if user.is_authenticated:
         patron = PatronInfo.objects.filter(user_id=user.id)
         if not patron:

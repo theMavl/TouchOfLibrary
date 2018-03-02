@@ -16,6 +16,9 @@ def instance_create(request, pk):
         form.instance.document = current_doc
         form.save()
         doc_id = form.instance.document.id
+        current_doc.quantity_synced = False
+        current_doc.save()
         return redirect('document-detail', id=doc_id)
+    instance.delete()
     return render(request, 'documentinstance_create.html',
                   {'form': form, 'addfield': addfield, 'current_doc': current_doc})
