@@ -13,23 +13,30 @@ def add_patron(request):
         form = AddPatron(request.POST)
 
         if form.is_valid():
+            password = User.objects.make_random_password()
             created_user = User.objects.create_user(username=form.cleaned_data['username'],
                                                     email=form.cleaned_data['email'],
-                                                    password=form.cleaned_data['password'],
+                                                    password=password,
                                                     first_name=form.cleaned_data['name'],
                                                     last_name=form.cleaned_data['surname'])
-            PatronInfo.objects.create(user=created_user,
-                                      phone_number=form.cleaned_data['phone_number'],
-                                      address=form.cleaned_data['address'],
-                                      telegram=form.cleaned_data['telegram'],
-                                      patron_type=form.cleaned_data['type'])
+            created_patron = PatronInfo.objects.create(user=created_user,
+                                                       phone_number=form.cleaned_data['phone_number'],
+                                                       address=form.cleaned_data['address'],
+                                                       telegram=form.cleaned_data['telegram'],
+                                                       patron_type=form.cleaned_data['type'])
 
-            return HttpResponseRedirect('/library/patrons/')
+            return render(request, 'library/registration_info.html',
+                          {'username': created_user.username, 'password': password, 'email': created_user.email,
+                           'patron_id': created_user.id,
+                           'full_name': created_user.first_name + " " + created_user.last_name,
+                           'phone': created_patron.phone_number, 'address': created_patron.address,
+                           'telegram': created_patron.telegram,
+                           'patron_type': created_patron.patron_type})
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = AddPatron(initial={'name': "", 'surname': "",
-                                  'email': "", 'phone_number': '8',
+                                  'email': "",
                                   'telegram': "@", 'password': ''})
 
     return render(request, 'library/patron_add.html', {'form': form})

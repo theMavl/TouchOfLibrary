@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from library.forms import EditPatron
+from library.forms import EditPatron, AddPatron
 from library.models import PatronInfo
 
 
@@ -16,10 +16,7 @@ def edit_patron(request, pk):
             edited_user = User.objects.get(id=pk)
             edited_patron_info = PatronInfo.objects.get(user_id=pk)
 
-            edited_user.username = form.cleaned_data['username']
-            edited_user.save()
             edited_user.email = form.cleaned_data['email']
-            edited_user.set_password(form.cleaned_data['password'])
             edited_user.first_name = form.cleaned_data['name']
             edited_user.last_name = form.cleaned_data['surname']
             edited_user.save()
@@ -35,10 +32,10 @@ def edit_patron(request, pk):
     # if a GET (or any other method) we'll create a blank form
     else:
         patron = PatronInfo.objects.get(user_id=pk)
-        form = EditPatron(initial={'username': patron.user.username, 'password': "",
+        form = EditPatron(initial={'username': patron.user.username,
                                    'name': patron.user.first_name, 'surname': patron.user.last_name,
                                    'email': patron.user.email, 'phone_number': patron.phone_number,
                                    'telegram': patron.telegram, 'address': patron.address,
                                    'type': patron.patron_type})
 
-    return render(request, 'library/patron_add.html', {'form': form})
+    return render(request, 'library/patron_edit.html', {'form': form})

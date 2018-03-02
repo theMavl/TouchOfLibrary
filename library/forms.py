@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from .models import PatronType
 from django.forms import ModelForm
+from django.contrib.auth.models import User
 
 from library.models import DocumentInstance
 
@@ -34,42 +35,41 @@ class ReturnDocumentForm(forms.Form):
         if not librarian_confirm:
             raise ValidationError('You must confirm the return')
 
+
 class DocumentInstanceUpdate(forms.ModelForm):
     class Meta:
         model = DocumentInstance
-        fields = 'status','location','price','additional_field1','additional_field2','additional_field3','additional_field4','additional_field5'
+        fields = 'status', 'location', 'price', 'additional_field1', 'additional_field2', 'additional_field3', 'additional_field4', 'additional_field5'
+
 
 class DocumentInstanceDelete(forms.ModelForm):
     class Meta:
         model = DocumentInstance
         fields = '__all__'
 
+
 class DocumentInstanceCreate(forms.ModelForm):
     class Meta:
         model = DocumentInstance
-        fields = 'status','location','price','additional_field1','additional_field2','additional_field3','additional_field4','additional_field5'
+        fields = 'status', 'location', 'price', 'additional_field1', 'additional_field2', 'additional_field3', 'additional_field4', 'additional_field5'
 
 
 class AddPatron(forms.Form):
-
     username = forms.CharField(label="Login", max_length=20, required=True)
-    password = forms.CharField(max_length=30, required=True, widget=forms.PasswordInput)
     name = forms.CharField(max_length=20, required=True)
-    surname = forms.CharField(max_length=20, required=True)
+    surname = forms.CharField(max_length=200, required=True)
     email = forms.EmailField(required=True)
     phone_number = forms.CharField(required=True)
     address = forms.CharField(required=True)
     telegram = forms.CharField(required=False)
 
-    type = forms.ModelChoiceField(label="Patron Group: ", queryset=PatronType.objects.all())
+    type = forms.ModelChoiceField(label="Patron Group", queryset=PatronType.objects.all())
 
-    def clean_password(self):
-        data = self.cleaned_data['password']
-
-        if str(data).__contains__(" "):
-            raise ValidationError('Password must not contain spaces')
-
-        return data
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        if User.objects.filter(username=username):
+            raise ValidationError('The username already exist')
+        return username
 
     def clean_name(self):
         data = self.cleaned_data['name']
@@ -115,25 +115,15 @@ class AddPatron(forms.Form):
 
 
 class EditPatron(forms.Form):
-
-    username = forms.CharField(label="Login", max_length=20, required=True)
-    password = forms.CharField(max_length=30, required=True, widget=forms.PasswordInput)
+    username = forms.CharField(label="Login", max_length=20, required=False, disabled=True)
     name = forms.CharField(max_length=20, required=True)
     surname = forms.CharField(max_length=20, required=True)
     email = forms.EmailField(required=True)
     phone_number = forms.CharField(required=True)
-    address = forms.CharField(required=True)
+    address = forms.CharField(max_length=200, required=True)
     telegram = forms.CharField(required=False)
 
     type = forms.ModelChoiceField(label="Patron Group: ", queryset=PatronType.objects.all())
-
-    def clean_password(self):
-        data = self.cleaned_data['password']
-
-        if str(data).__contains__(" "):
-            raise ValidationError('Password must not contain spaces')
-
-        return data
 
     def clean_name(self):
         data = self.cleaned_data['name']
@@ -179,6 +169,5 @@ class EditPatron(forms.Form):
 
 
 class DeletePatron(forms.Form):
-
     comment = forms.CharField(max_length=30, required=False)
-
+    

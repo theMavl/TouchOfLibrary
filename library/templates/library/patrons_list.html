@@ -1,15 +1,11 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-
-    <hr>
-    {% if perms.auth.add_user %}
-        <p><a href="{% url 'patron-add' %}"> Register new patron </a></p>
-    {% endif %}
-    <hr>
-
     {% if perms.auth.change_user %}
         <h1>Registered Patrons</h1>
+        {% if perms.auth.add_user %}
+            <p><a href="{% url 'patron-add' %}"> Register new patron </a></p>
+        {% endif %}
         <table border="1" align="left" width="80%">
             <tr>
                 <th> Username</th>

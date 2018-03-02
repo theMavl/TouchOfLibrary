@@ -30,9 +30,9 @@ urlpatterns = [
 
     url(r'^patrons/$', patrons_list, name='patrons-list'),
     url(r'^patrons/(?P<id>\d+)$', patron_details, name='patron-details'),
-    url(r'^patron_update/(?P<pk>\d+)$', edit_patron, name='patron_edit'),
-    url(r'^patron_add/$', add_patron, name='patron-add'),
-    url(r'^patron_delete/(?P<pk>\d+)$', delete_patron, name='patron-delete'),
+    url(r'^patrons/(?P<pk>\d+)/edit$', edit_patron, name='patron_edit'),
+    url(r'^patrons/add$', add_patron, name='patron-add'),
+    url(r'^patrons/(?P<pk>\d+)/delete$', delete_patron, name='patron-delete'),
 
     url(r'^document/create', DocumentCreate.as_view(), name='document-create'),
     url(r'^document/instance/create/(?P<pk>[0-9a-f-]+)$', instance_create, name='documentinstance-create'),

@@ -8,7 +8,7 @@ from library.models import Document, Author, DocumentInstance, PatronInfo, Patro
 
 
 @permission_required('library.add_document', 'library.add_user', 'library.add_patroninfo')
-def populate_db():
+def populate_db(request):
     perms_user = Permission.objects.filter(content_type=ContentType.objects.get(app_label="auth", model="user"))
     perms_document = Permission.objects.filter(
         content_type=ContentType.objects.get(app_label="library", model="document"))

@@ -15,8 +15,14 @@
             }
         </style>
     </head>
-    <h1>{{ document.title }}</h1>
-    <h4>{{ document.type }}</h4>
+    <div><h1>{{ document.title }}</h1>
+        <h4>{{ document.type }}</h4>
+        {% if perms.library.change_reservation %}
+            <a href="{% url 'documentinstance-create' pk=document.pk %}">New copy</a> |
+            <a href="{% url 'document-update' pk=document.pk %}">Edit</a> |
+            <a href="{% url 'document-delete' pk=document.pk %}">Delete</a>
+        {% endif %}</div>
+    <br>
     <p><strong>Authors:</strong> <a href=""></a>
 
         {% for author in document.authors.all %}
@@ -52,11 +58,6 @@
         <p class="redtext">There are no copies in the library yet</p>
     {% endif %}
 
-    {% if perms.library.change_reservation %}
-        <div><a href="{% url 'documentinstance-create' pk=document.pk %}">Create instances for documents</a>
-        <p><a href="{% url 'document-update' pk=document.pk %}">Update this document</a></p>
-        <p><a href="{% url 'document-delete' pk=document.pk %}">DELETE this document</a></p>
-    {% endif %}
     {#Table starts:#}
 
     {% if copy_list and not document.is_reference %}
@@ -69,7 +70,7 @@
                 <th> Additional</th>
                 {% if perms.library.change_documentinstance %}
                     {% if copy.status != 'g' %}
-                        <th>Edit</th>
+                        <th>Actions</th>
                     {% endif %}
                 {% endif %}
             </tr>
@@ -147,13 +148,10 @@
                     {% if perms.library.change_documentinstance %}
                         {% if copy.status != 'g' %}
                             <th>
-                                <div><a href="{% url 'documentinstance-update' id=copy.id %}">Update this particular
-                                    copy</a>
-                                    <div><a href="{% url 'documentinstance-delete' id=copy.id %}">DELETE this particular
-                                        copy</a>
+                                <div><a href="{% url 'documentinstance-update' id=copy.id %}">Edit copy</a>
+                                    <div><a href="{% url 'documentinstance-delete' id=copy.id %}">Delete copy</a>
                                         {% else %}
                             <th>Given out documents can not be updated or deleted</th>
-                            </th>
                         {% endif %}
                     {% endif %}
                 </tr>
