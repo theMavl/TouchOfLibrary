@@ -3,7 +3,7 @@
 <head>
 </head>
 <body>
-<h1>Patron detail</h1>
+
 <div>
     <p>Personal data</p>
     <table>
@@ -20,6 +20,10 @@
             <td>{{ patron_user.email }}</td>
         </tr>
         <tr>
+            <td><b>Patron type: </b></td>
+            <td>{{ patron_info.patron_type }}</td>
+        </tr>
+        <tr>
             <td><b>Address:</b></td>
             <td>{{ patron_info.address }}</td>
         </tr>
@@ -33,17 +37,7 @@
         </tr>
     </table>
 </div>
-
 <hr>
-    {% if perms.auth.change_user %}
-        <p><a href="{% url 'patron_edit' pk=patron_user.id%}"> Edit this patron </a></p>
-    {% endif %}
-<hr>
-    {% if perms.auth.delete_user %}
-        <p><a href="{% url 'patron-delete' pk=patron_user.id%}"> Delete this patron </a></p>
-    {% endif %}
-<hr>
-
 {% if reservation_table %}
     <div>
         <table border="1" align="left" width="80%">
@@ -96,9 +90,16 @@
                     <th>
                         <a href="{{ issuance.document.get_absolute_url }}">{{ issuance.document_instance.summary }}</a>
                     </th>
-                    <th> {{ issuance.document_instance.due_back }}</th>
+                    {% if issuance.document_instance.is_overdue %}
+                        <th bgcolor="#ff6347">{{ issuance.document_instance.due_back }}</th>
+                    {% else %}
+                        <th>
+                            {{ issuance.document_instance.due_back }}</th>
+                    {% endif %}
                     {% if perms.library.change_reservation and perms.library.delete_giveout %}
-                        <th><div><a href="{{ issuance.document_instance.form_return_request_mail }}">Request return</a></div>
+                        <th>
+                            <div><a href="{{ issuance.document_instance.form_return_request_mail }}">Request return</a>
+                            </div>
                             <div><a href="{{ issuance.get_absolute_url }}">Accept return</a></div>
                         </th>
                     {% endif %}

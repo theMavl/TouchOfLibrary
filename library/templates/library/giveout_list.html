@@ -23,7 +23,12 @@
                     <th>
                         <a href="{% url 'patron-details' id=giveout.user.id %}">{{ giveout.user.first_name }} {{ giveout.user.last_name }}
                             ({{ giveout.patron.patron_type }})</a></th>
-                    <th> {{ giveout.document_instance.due_back }}</th>
+                    {% if giveout.document_instance.is_overdue %}
+                        <th bgcolor="#ff6347">{{ giveout.document_instance.due_back }}</th>
+                    {% else %}
+                        <th>
+                            {{ giveout.document_instance.due_back }}</th>
+                    {% endif %}
                     <th><a href="{{ giveout.document_instance.form_return_request_mail }}">Request to return</a></th>
                 </tr>
             {% endfor %}

@@ -98,6 +98,15 @@ class DocumentInstance(models.Model):
         return '%s %s "%s" (%s)' % (str(self.document.type).lower(),
                                     self.document.str_authors(), self.document.title, fields_str)
 
+    @property
+    def is_overdue(self):
+        if self.due_back is None:
+            return False
+        if datetime.date.today() > self.due_back:
+            return True
+        else:
+            return False
+
     # instance attributes
     def __str__(self):
         return '%s (%s)' % (self.document.title, self.id)
