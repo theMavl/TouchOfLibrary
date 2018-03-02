@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from . import views
+from library.views import *
 
 # Maintenance routines
 from library.models import Reservation
@@ -11,35 +11,35 @@ except:
     pass
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^dashboard/$', views.dashboard, name='dashboard'),
+    url(r'^$', index, name='index'),
+    url(r'^dashboard/$', dashboard, name='dashboard'),
 
-    url(r'^document/$', views.DocumentListView.as_view(), name='document'),
-    url(r'^document/(?P<id>\d+)$', views.get_document_detail, name='document-detail'),
+    url(r'^document/$', DocumentListView.as_view(), name='document'),
+    url(r'^document/(?P<id>\d+)$', get_document_detail, name='document-detail'),
 
-    url(r'^authors/$', views.AuthorsListView.as_view(), name='authors'),
-    url(r'^authors/(?P<pk>\d+)$', views.AuthorDetailView.as_view(), name='author-detail'),
+    url(r'^authors/$', AuthorsListView.as_view(), name='authors'),
+    url(r'^authors/(?P<pk>\d+)$', AuthorDetailView.as_view(), name='author-detail'),
 
-    url(r'^reserved/$', views.reservation_list, name='reservation-list'),
-    url(r'^reserve_document/(?P<copy_id>[0-9a-z-]+)$', views.reserve_document, name='reserve-document'),
+    url(r'^reserved/$', reservation_list, name='reservation-list'),
+    url(r'^reserve_document/(?P<copy_id>[0-9a-z-]+)$', reserve_document, name='reserve-document'),
 
-    url(r'^issued/$', views.giveout_list, name='giveout-list'),
-    url(r'^issued/(?P<id>\d+)$', views.giveout_confirmation, name='giveout-confirmation'),
+    url(r'^issued/$', giveout_list, name='giveout-list'),
+    url(r'^issued/(?P<id>\d+)$', giveout_confirmation, name='giveout-confirmation'),
 
-    url(r'^return_document/(?P<id>\d+)$', views.return_document, name='return-document'),
+    url(r'^return_document/(?P<id>\d+)$', return_document, name='return-document'),
 
-    url(r'^patrons/$', views.patrons_list, name='patrons-list'),
-    url(r'^patrons/(?P<id>\d+)$', views.patron_details, name='patron-details'),
-    url(r'^patron_update/(?P<pk>\d+)$', views.edit_patron, name='patron_edit'),
-    url(r'^patron_add/$', views.add_patron, name='patron-add'),
-    url(r'^patron_delete/(?P<pk>\d+)$', views.delete_patron, name='patron-delete'),
+    url(r'^patrons/$', patrons_list, name='patrons-list'),
+    url(r'^patrons/(?P<id>\d+)$', patron_details, name='patron-details'),
+    url(r'^patron_update/(?P<pk>\d+)$', edit_patron, name='patron_edit'),
+    url(r'^patron_add/$', add_patron, name='patron-add'),
+    url(r'^patron_delete/(?P<pk>\d+)$', delete_patron, name='patron-delete'),
 
-    url(r'^document/create', views.DocumentCreate.as_view(), name='document-create'),
-    url(r'^document/instance/create/(?P<pk>[0-9a-f-]+)$', views.instance_create, name='documentinstance-create'),
-    url(r'^document/instance/update/(?P<id>[0-9a-f-]+)$', views.instance_update, name='documentinstance-update'),
-    url(r'^document/instance/delete/(?P<id>[0-9a-f-]+)$', views.instance_delete, name='documentinstance-delete'),
-    url(r'^document/update/(?P<pk>\d+)$', views.DocumentUpdate.as_view(), name='document-update'),
-    url(r'^document/delete/(?P<pk>\d+)$', views.DocumentDelete.as_view(), name='document-delete'),
+    url(r'^document/create', DocumentCreate.as_view(), name='document-create'),
+    url(r'^document/instance/create/(?P<pk>[0-9a-f-]+)$', instance_create, name='documentinstance-create'),
+    url(r'^document/instance/update/(?P<id>[0-9a-f-]+)$', instance_update, name='documentinstance-update'),
+    url(r'^document/instance/delete/(?P<id>[0-9a-f-]+)$', instance_delete, name='documentinstance-delete'),
+    url(r'^document/update/(?P<pk>\d+)$', DocumentUpdate.as_view(), name='document-update'),
+    url(r'^document/delete/(?P<pk>\d+)$', DocumentDelete.as_view(), name='document-delete'),
 
-    url(r'^populate_database/$', views.populate_db, name='debug-populate-database'),
+    url(r'^populate_database/$', populate_db, name='debug-populate-database'),
 ]
