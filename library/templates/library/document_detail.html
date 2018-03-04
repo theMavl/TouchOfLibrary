@@ -149,7 +149,7 @@
                         {% if copy.status != 'g' %}
                             <th>
                                 <div><a href="{% url 'documentinstance-update' id=copy.id %}">Edit copy</a>
-                                    <div><a href="{% url 'documentinstance-delete' id=copy.id %}">Delete copy</a>
+                                    <div><a href="{% url 'documentinstance-deleteconfirm' id=copy.id %}">Delete copy</a>
                                         {% else %}
                             <th>Given out documents can not be updated or deleted</th>
                         {% endif %}

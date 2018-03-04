@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    {% if perms.library.change_documentinstance %}
+    You are deleting a copy of {{instance.document.title}} document
+    </br>
+    Are you sure want to remove that copy from the library?
+  </br>
+    Reservations (if exists) will be canceled
+  </br>
+    <div><a href="{% url 'documentinstance-delete' id=id %}">Delete copy</a>
+
+    {% endif %}
+{% endblock %}
