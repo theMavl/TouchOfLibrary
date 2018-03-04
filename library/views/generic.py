@@ -30,7 +30,7 @@ class AuthorDetailView(generic.DetailView):
 
 class DocumentCreate(CreateView):
     model = Document
-    fields = '__all__'
+    fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference',
 
 
 class DocumentDelete(DeleteView):

@@ -4,11 +4,12 @@
         <h2>Give out confirmation</h2>
 
         <h4>Order: {{ reservation.document_copy.summary }}</h4>
-        <p>Borrower: {{ reservation.user }}(Patron type)</p>
+        <p>Location: {{ reservation.document_copy.location }}</p>
+        <p>Borrower: {{ reservation.user.first_name }} {{ reservation.user.last_name }} ({{ patron_type }})</p>
         <form action="" method="post">
             {% csrf_token %}
             {{ form }}
-       <input type="submit" name="accept_order" value="Accept"/>
+            <p><input type="submit" name="accept_order" value="Accept"/></p>
         </form>
     {% else %}
         You are not allowed to be here
