@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Author, Document, DocumentInstance, DocType, LibraryLocation, PatronInfo, Tag, GiveOut, PatronType, Reservation
+from .models import Author, Document, DocumentInstance, DocType, LibraryLocation, PatronInfo, Tag, GiveOut, PatronType, \
+    Reservation, GiveOutLogEntry
 
 admin.site.register(PatronInfo)
 admin.site.register(PatronType)
@@ -14,3 +15,4 @@ admin.site.register(LibraryLocation)
 
 admin.site.register(GiveOut)
 admin.site.register(Reservation)
+admin.site.register(GiveOutLogEntry)

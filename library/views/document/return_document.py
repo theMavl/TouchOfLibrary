@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import permission_required
-from library.models import PatronInfo, GiveOut
+from library.models import PatronInfo, GiveOut, GiveOutLogEntry
 from django.shortcuts import render, redirect
 from library.forms import ReturnDocumentForm
 
@@ -10,9 +10,10 @@ def return_document(request, id):
     copy = giveout.document_instance
     document = giveout.document
     patron_user = giveout.user
-    patron_type = PatronInfo.objects.filter(user=patron_user)
-    if patron_type:
-        patron_type = patron_type.first().patron_type
+    patron = PatronInfo.objects.filter(user=patron_user)
+    if patron:
+        patron = patron.first()
+        patron_type = patron.patron_type
     else:
         patron_type = None
 
@@ -21,6 +22,9 @@ def return_document(request, id):
         form = ReturnDocumentForm(request.POST)
 
         if form.is_valid():
+            GiveOutLogEntry.objects.create(timestamp_given_out=giveout.timestamp, timestamp_due_back=copy.due_back,
+                                           user=copy.holder, patron_information=patron,
+                                           document_instance_summary=copy.summary())
             copy.status = 'a'
             copy.holder = None
             document.quantity_synced = False

@@ -88,8 +88,8 @@ class DocumentInstance(models.Model):
         return "mailto:%s?subject=Return document to Library&body=Dear %s %s,%sThis is Touch of Library. " \
                "Please return %s to the library as soon as possible." \
                "%sRegards,%sTouch of Library." % (
-               self.holder.email, self.holder.first_name, self.holder.last_name, n_line, self.summary(), n_line,
-               n_line[:3])
+                   self.holder.email, self.holder.first_name, self.holder.last_name, n_line, self.summary(), n_line,
+                   n_line[:3])
 
     def summary(self):
         fields = [self.additional_field1, self.additional_field2,
@@ -184,7 +184,9 @@ class PatronInfo(models.Model):
         return reverse('patron-details', args=[str(self.user_id)])
 
     def __str__(self):
-        return '[%d] %s %s' % (self.user.id, self.user.first_name, self.user.last_name)
+        return '[%d] %s %s (%s), %s, %s, TG: %s' % (
+        self.user.id, self.user.first_name, self.user.last_name, self.patron_type, self.phone_number, self.address,
+        self.telegram)
 
 
 class PatronType(models.Model):
@@ -206,6 +208,13 @@ class GiveOut(models.Model):
     document = models.ForeignKey('Document', on_delete=models.PROTECT, null=True)
     document_instance = models.ForeignKey('DocumentInstance', on_delete=models.PROTECT, null=True)
     timestamp = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('document_instance__due_back', )
+
+    @property
+    def is_overdue(self):
+        return self.document_instance.is_overdue
 
     def get_absolute_url(self):
         return reverse('return-document', args=[str(self.id)])
@@ -249,3 +258,21 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.caption
+
+
+class GiveOutLogEntry(models.Model):
+    timestamp_given_out = models.DateTimeField()
+    timestamp_due_back = models.DateTimeField()
+    timestamp_returned = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True)
+    patron_information = models.CharField(max_length=200)
+    document_instance_summary = models.CharField(max_length=200)
+
+    def is_overdue(self):
+        if self.timestamp_due_back.date() < self.timestamp_returned.date():
+            return True
+        return False
+
+    def __str__(self):
+        return "[" + str(self.timestamp_given_out.date()) + " - " + str(self.timestamp_returned.date()) + "] " + str(
+            self.patron_information) + " | " + str(self.document_instance_summary)

@@ -107,9 +107,38 @@
             {% endfor %}
         </table>
     </div>
-
 {% else %}
     <div>No issued documents</div>
+{% endif %}
+<hr>
+{% if giveout_log_table %}
+    <div>
+        <table border="1" align="left" width="80%">
+            <caption> History of give out</caption>
+            <tr>
+                <th> Date issued</th>
+                <th> Due date</th>
+                <th> Date returned</th>
+                <th> Document</th>
+            </tr>
+
+            {% for issuance in giveout_log_table %}
+                {% if issuance.is_overdue %}
+                    <tr bgcolor="#ff6347">
+                        {% else %}
+                    <tr>
+                {% endif %}
+            <th>{{ issuance.timestamp_given_out.date }}</th>
+            <th>{{ issuance.timestamp_due_back.date }}</th>
+            <th>{{ issuance.timestamp_returned.date }}</th>
+            <th>{{ issuance.document_instance_summary }}</th>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% else %}
+    <div>No booking history</div>
 {% endif %}
 </body>
 </html>
