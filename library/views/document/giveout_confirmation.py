@@ -46,4 +46,5 @@ def giveout_confirmation(request, id):
 
     return render(request, 'library/giveout_details.html',
                   context={'reservation': reservation,
+                           'patron_type': patron.patron_type,
                            'form': form})

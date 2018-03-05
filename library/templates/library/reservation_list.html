@@ -8,18 +8,16 @@
         </head>
         <body>
         <table border="1" align="left" width="80%">
-            <caption>All user reservations</caption>
+            <h1>All reservations</h1>
             <tr>
-                <th> Title</th>
-                <th> Type</th>
-                <th> User</th>
-                <th></th>
+                <th> Document</th>
+                <th> Patron</th>
+                <th> Actions</th>
             </tr>
             {% for reservation in reservations %}
                 <tr>
-                    <th> {{ reservation.document_copy }}</th>
-                    <th> {{ reservation.document.type }}</th>
-                    <th> {{ reservation.user }} {{ reservation.user.first_name }} {{ reservation.user.last_name }}  </th>
+                    <th> {{ reservation.document_copy.summary }}</th>
+                    <th> <a href="{% url 'patron-details' id=reservation.user.id %}">{{ reservation.user.first_name }} {{ reservation.user.last_name }}</a></th>
                     {% if reservation.document.quantity_real > 0 %}
                         <th bgcolor="#98fb98" title="Give out one copy of this {{ reservation.document.type }}">
                             <a href="{% url 'giveout-confirmation' id=reservation.id %}"> Give out </a>
