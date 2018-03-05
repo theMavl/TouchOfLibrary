@@ -5,6 +5,8 @@
     <p>{{ author.date_born }}-{{ author.date_died }}
     <p><strong>Documents by this author:</strong>
     <!-- TODO: docs by author (D3) -->
-
+    <a href="{% url 'author-update' id=author.id %}">Update</a>
+    </br>
+    <a href="{% url 'author-deleteconfirm' id=author.id %}">Delete</a>
 
 {% endblock %}

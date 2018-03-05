@@ -1,0 +1,11 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    {% if perms.library.change_documentinstance %}
+        <h1>You are deleting an author {{ instance.first_name }} {{ instance.last_name }}</h1>
+
+        </br>
+        <div><a href="{% url 'author-delete' id=id %}">Delete him</a>
+
+    {% endif %}
+{% endblock %}

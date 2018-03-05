@@ -21,6 +21,8 @@ about user-->
         <hr>
         <p>Documents</p>
         <div><a href="{% url 'document-create' %}">New document</a></div>
+        <p>Authors</p>
+        <div><a href="{% url 'author-create' %}">New author</a></div>
     {% else %}
         {% include "library/user_infromation_template.html" %}
     {% endif %}

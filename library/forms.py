@@ -6,7 +6,7 @@ from .models import PatronType
 from django.forms import ModelForm
 from django.contrib.auth.models import User
 
-from library.models import DocumentInstance
+from library.models import DocumentInstance, Author
 
 
 class DueDateForm(forms.Form):
@@ -170,4 +170,21 @@ class EditPatron(forms.Form):
 
 class DeletePatron(forms.Form):
     comment = forms.CharField(max_length=30, required=False)
-    
+
+
+class AuthorUpdate(forms.ModelForm):
+    class Meta:
+        model = Author
+        fields = '__all__'
+
+
+class AuthorDelete(forms.ModelForm):
+    class Meta:
+        model = Author
+        fields = '__all__'
+
+
+class AuthorCreate(forms.ModelForm):
+    class Meta:
+        model = Author
+        fields = '__all__'

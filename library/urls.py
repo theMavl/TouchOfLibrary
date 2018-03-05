@@ -1,9 +1,13 @@
 from django.conf.urls import url
 
+from library.forms import AuthorDelete
 from library.views import *
 
 # Maintenance routines
 from library.models import Reservation
+from library.views.author import author_create, author_delete
+from library.views.author.author_delete import author_deleteconfirm
+from library.views.author.author_update import author_update
 
 try:
     Reservation.clean_old_reservations()
@@ -38,9 +42,15 @@ urlpatterns = [
     url(r'^document/instance/create/(?P<pk>[0-9a-f-]+)$', instance_create, name='documentinstance-create'),
     url(r'^document/instance/update/(?P<id>[0-9a-f-]+)$', instance_update, name='documentinstance-update'),
     url(r'^document/instance/delete/(?P<id>[0-9a-f-]+)$', instance_delete, name='documentinstance-delete'),
-    url(r'^document/instance/delete/confirm/(?P<id>[0-9a-f-]+)$', instance_deleteconfirm, name='documentinstance-deleteconfirm'),
+    url(r'^document/instance/delete/confirm/(?P<id>[0-9a-f-]+)$', instance_deleteconfirm,
+        name='documentinstance-deleteconfirm'),
     url(r'^document/update/(?P<pk>\d+)$', DocumentUpdate.as_view(), name='document-update'),
     url(r'^document/delete/(?P<pk>\d+)$', DocumentDelete.as_view(), name='document-delete'),
+
+    url(r'^authors/create', author_create, name='author-create'),
+    url(r'^authors/update/(?P<id>\d+)$', author_update, name='author-update'),
+    url(r'^authors/delete/confirm/(?P<id>\d+)$', author_deleteconfirm, name='author-deleteconfirm'),
+    url(r'^authors/delete/(?P<id>\d+)$', author_delete, name='author-delete'),
 
     url(r'^populate_database/$', populate_db, name='debug-populate-database'),
 ]
