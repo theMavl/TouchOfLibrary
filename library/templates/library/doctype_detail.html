@@ -1,6 +1,7 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
+    {% if perms.library.change_giveout %}
     <h1>{{doctype.name }}</h1>
     <h2>Properties:</h2>
   </br>
@@ -17,7 +18,8 @@
       <a href="{% url 'type-update' id=doctype.id %}">Update</a>
       <a href="{% url 'type-deleteconfirm' id=doctype.id %}">Delete</a>
     </br>
-
+  {% else %} You are not allowed to be here
+{% endif %}
 
 
 {% endblock %}

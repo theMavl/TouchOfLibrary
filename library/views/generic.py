@@ -1,6 +1,7 @@
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.contrib.auth.decorators import permission_required
 
 from library.models import Document, Author, DocType
 
@@ -42,7 +43,6 @@ class DocumentUpdate(UpdateView):
     model = Document
     fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference'
     template_name_suffix = '_update_form'
-
 
 class TypeListView(generic.ListView):
     """
