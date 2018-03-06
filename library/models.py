@@ -160,6 +160,9 @@ class DocType(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('types-detail', args=[str(self.id)])
+
 
 class PatronInfo(models.Model):
     """

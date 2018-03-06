@@ -1,0 +1,23 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>{{doctype.name }}</h1>
+    <h2>Properties:</h2>
+  </br>
+    Additional fields: {{doctype.fields}}
+  </br>
+    Entries of that type can be checked out for maximum <strong>{{doctype.max_days}}</strong> days
+      </br>
+    If bestseller - for <strong>{{doctype.max_days_bestseller}}</strong> days maximum
+      </br>
+    Privileged users can check out for  <strong>{{doctype.max_days_privileges}}</strong> days
+
+    </br>
+      Librarian features:
+      <a href="{% url 'type-update' id=doctype.id %}">Update</a>
+      <a href="{% url 'type-deleteconfirm' id=doctype.id %}">Delete</a>
+    </br>
+
+
+
+{% endblock %}

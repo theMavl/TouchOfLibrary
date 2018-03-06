@@ -2,7 +2,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
-from library.models import Document, Author
+from library.models import Document, Author, DocType
 
 
 class DocumentListView(generic.ListView):
@@ -42,3 +42,17 @@ class DocumentUpdate(UpdateView):
     model = Document
     fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference'
     template_name_suffix = '_update_form'
+
+
+class TypeListView(generic.ListView):
+    """
+    page with all DocTypes
+    """
+    model = DocType
+    paginate_by = 10
+
+class TypeDetailView(generic.DetailView):
+    """
+    page with information about DocType
+    """
+    model = DocType
