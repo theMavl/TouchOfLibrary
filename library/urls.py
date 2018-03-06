@@ -8,6 +8,10 @@ from library.models import Reservation
 from library.views.author import author_create, author_delete
 from library.views.author.author_delete import author_deleteconfirm
 from library.views.author.author_update import author_update
+from library.views.type.type_create import type_create
+from library.views.type.type_update import type_update
+from library.views.type.type_delete import type_delete
+from library.views.type.type_delete import type_deleteconfirm
 
 try:
     Reservation.clean_old_reservations()
@@ -51,6 +55,13 @@ urlpatterns = [
     url(r'^authors/update/(?P<id>\d+)$', author_update, name='author-update'),
     url(r'^authors/delete/confirm/(?P<id>\d+)$', author_deleteconfirm, name='author-deleteconfirm'),
     url(r'^authors/delete/(?P<id>\d+)$', author_delete, name='author-delete'),
+
+    url(r'^types/$', TypeListView.as_view(), name='types'),
+    url(r'^types/(?P<pk>\d+)$', TypeDetailView.as_view(), name='types-detail'),
+    url(r'^types/create', type_create, name='type-create'),
+    url(r'^types/update/(?P<id>\d+)$', type_update, name='type-update'),
+    url(r'^types/delete/confirm/(?P<id>\d+)$', type_deleteconfirm, name='type-deleteconfirm'),
+    url(r'^types/delete/(?P<id>\d+)$', type_delete, name='type-delete'),
 
     url(r'^populate_database/$', populate_db, name='debug-populate-database'),
 ]

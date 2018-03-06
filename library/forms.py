@@ -6,7 +6,7 @@ from .models import PatronType
 from django.forms import ModelForm
 from django.contrib.auth.models import User
 
-from library.models import DocumentInstance, Author
+from library.models import DocumentInstance, Author, DocType
 
 
 class DueDateForm(forms.Form):
@@ -189,4 +189,21 @@ class AuthorDelete(forms.ModelForm):
 class AuthorCreate(forms.ModelForm):
     class Meta:
         model = Author
+        fields = '__all__'
+
+class TypeCreate(forms.ModelForm):
+    class Meta:
+        model = DocType
+        fields = '__all__'
+
+
+class TypeUpdate(forms.ModelForm):
+    class Meta:
+        model = DocType
+        fields = '__all__'
+
+
+class TypeDelete(forms.ModelForm):
+    class Meta:
+        model = DocType
         fields = '__all__'

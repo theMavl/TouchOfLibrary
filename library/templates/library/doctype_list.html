@@ -1,0 +1,21 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    {% if perms.library.change_giveout %}
+    <h1>Types</h1>
+
+    {% if doctype_list %}
+        <ul>
+            {% for type in doctype_list %}
+                <li>
+                    <a href="{{ type.get_absolute_url }}">{{ type.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>There are no DocTypes yet.</p>
+    {% endif %}
+
+  {% else %} You are not allowed to be here
+  {% endif %}
+{% endblock %}
