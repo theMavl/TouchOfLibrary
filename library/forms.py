@@ -169,7 +169,9 @@ class EditPatron(forms.Form):
 
 
 class DeletePatron(forms.Form):
-    comment = forms.CharField(max_length=30, required=False)
+
+    librarian_confirmation = forms.BooleanField()
+
 
 
 class AuthorUpdate(forms.ModelForm):

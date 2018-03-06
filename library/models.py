@@ -85,11 +85,13 @@ class DocumentInstance(models.Model):
 
     def form_return_request_mail(self):
         n_line = "%0A%0A"
-        return "mailto:%s?subject=Return document to Library&body=Dear %s %s,%sThis is Touch of Library. " \
+        message = "mailto:%s?subject=Return document to Library&body=Dear %s %s,%sThis is Touch of Library. " \
                "Please return %s to the library as soon as possible." \
                "%sRegards,%sTouch of Library." % (
                    self.holder.email, self.holder.first_name, self.holder.last_name, n_line, self.summary(), n_line,
                    n_line[:3])
+        print(message)
+        return message
 
     def summary(self):
         fields = [self.additional_field1, self.additional_field2,
@@ -175,6 +177,15 @@ class PatronInfo(models.Model):
     # Patron features
     def get_name(self):
         return "kek"
+
+    def form_mail_about_deletion(self):
+        n_line = "%0A%0A"
+        return "mailto:%s?subject=The deletion of your account in Library&body=Dear %s %s,%sThis is Touch of Library. " \
+               "We inform you that your account has been deleted." \
+               "%sReason:" \
+               "%sRegards,%sTouch of Library." % (
+                   self.user.email, self.user.first_name, self.user.last_name, n_line, n_line, n_line,
+                   n_line[:3])
 
     class Meta:
         verbose_name = "Patron's Information"
