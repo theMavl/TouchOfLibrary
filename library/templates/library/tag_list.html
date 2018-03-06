@@ -1,0 +1,28 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1> Tags </h1>
+    <hr>
+    <div><a href="{% url 'tag-create' %}">Create New Tag </a></div>
+    <hr>
+    {% if tag_list %}
+        <table border="1" align="left" width="80%">
+            <tr>
+                <th> Caption</th>
+                <th> Edit</th>
+                <th> Delete</th>
+            </tr>
+            {% for tag in tag_list %}
+
+                <tr>
+                    <td>{{ tag.caption }} </td>
+                    <td><a href="{{ tag.edit_url }}"> Edit Tag </a></td>
+                    <td><a href="{{ tag.delete_url }}"> Delete Tag </a></td>
+                </tr>
+
+            {% endfor %}
+        </table>
+    {% else %}
+        <p> There are no Tags yet.</p>
+    {% endif %}
+{% endblock %}

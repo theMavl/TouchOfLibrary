@@ -3,7 +3,7 @@ from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import permission_required
 
-from library.models import Document, Author, DocType
+from library.models import Document, Author, DocType, Tag
 
 
 class DocumentListView(generic.ListView):
@@ -56,3 +56,12 @@ class TypeDetailView(generic.DetailView):
     page with information about DocType
     """
     model = DocType
+
+
+class TagListView(generic.ListView):
+    """
+    page with all Tags
+    """
+    model = Tag
+    paginate_by = 10
+

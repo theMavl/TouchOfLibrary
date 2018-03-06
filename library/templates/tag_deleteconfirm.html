@@ -1,0 +1,29 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    {% if perms.library.delete_tag %}
+
+        <h1>You are deleting tag "{{ instance.caption }}"" </h1>
+
+        {% if not wrong_docs %}
+            <div> <a href="{% url 'tag-delete' id=id %}">Delete</a> </div>
+
+            <hr>
+
+        {% else %}
+            <hr>
+            This tag is associated with next document(s), delete it(them) before deleting tag.
+            <hr>
+            <table border="1" align="left" width="80%">
+                <tr>
+                    <th> Title </th>
+                </tr>
+                {% for docs in wrong_docs %}
+                    <tr>
+                        <td><a href="{{ docs.get_absolute_url }}">{{ docs.title }} </a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    {% endif %}
+{% endblock %}

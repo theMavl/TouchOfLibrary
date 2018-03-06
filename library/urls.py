@@ -1,5 +1,10 @@
 from django.conf.urls import url
 
+from library.views.tag.tag_create import tag_create
+from library.views.tag.tag_update import tag_update
+from library.views.tag.tag_delete import tag_delete
+from library.views.tag.tag_delete import tag_deleteconfirm
+
 from library.forms import AuthorDelete
 from library.views import *
 
@@ -62,6 +67,13 @@ urlpatterns = [
     url(r'^types/update/(?P<id>\d+)$', type_update, name='type-update'),
     url(r'^types/delete/confirm/(?P<id>\d+)$', type_deleteconfirm, name='type-deleteconfirm'),
     url(r'^types/delete/(?P<id>\d+)$', type_delete, name='type-delete'),
+
+    url(r'^tags/$', TagListView.as_view(), name='tags'),
+    url(r'^tags/create', tag_create, name='tag-create'),
+    url(r'^tags/update/(?P<id>\d+)$', tag_update, name='tag-update'),
+    url(r'^tags/delete/confirm/(?P<id>\d+)$', tag_deleteconfirm, name='tag-deleteconfirm'),
+    url(r'^tags/delete/(?P<id>\d+)$', tag_delete, name='tag-delete'),
+
 
     url(r'^populate_database/$', populate_db, name='debug-populate-database'),
 ]

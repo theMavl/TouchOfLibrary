@@ -273,6 +273,18 @@ class Tag(models.Model):
     def __str__(self):
         return self.caption
 
+    def get_absolute_url(self):
+        return reverse('tags-detail', args=[str(self.id)])
+
+    def create_url(self):
+        return reverse('tag-create')
+
+    def edit_url(self):
+        return reverse('tag-update', args=[str(self.id)])
+
+    def delete_url(self):
+        return reverse('tag-deleteconfirm', args=[str(self.id)])
+
 
 class GiveOutLogEntry(models.Model):
     timestamp_given_out = models.DateTimeField()
