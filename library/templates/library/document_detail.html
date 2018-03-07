@@ -54,6 +54,10 @@
 
     {% if not user.is_authenticated and copy_list %}
         <p>To check out that {{ document.type }} you need to login</p>
+        {% elif not user.is_active %}
+        <p>You need to verify your email address!</p>
+        {% elif not user.is_active %}
+        <p>You need to verify your email address!</p>
     {% elif not copy_list %}
         <p class="redtext">There are no copies in the library yet</p>
     {% endif %}
@@ -85,7 +89,7 @@
                     {% if copy.status == 'a' %}
                         {% if user.is_authenticated %}
                             {% if not_a_patron %}
-                                <th bgcolor="#90ee90" title="You have no patron status">
+                                <th bgcolor="#90ee90" title="You have no patron status. Please visit the Library to confirm your account">
                                     In library
                                 </th>
                             {% elif not can_reserve %}

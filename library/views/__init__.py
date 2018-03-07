@@ -7,4 +7,6 @@ from library.views.instance import *
 from library.views.list import *
 from library.views.generic import *
 
+from library.views.registration import *
+
 from library.views.debug import populate_db
