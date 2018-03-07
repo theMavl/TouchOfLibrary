@@ -109,10 +109,13 @@
                     {% elif copy.status == 'g' %}
                         <th bgcolor="#ff6347" title="Will be available on {{ copy.due_back }}">
                             Given out
+
                             {% if perms.library.change_reservation %} to
                                 <a href="{% url 'patron-details' id=copy.holder.id %}">{{ copy.holder }}</a>.
                                 <a href="{{ copy.form_return_request_mail }}">Request to return</a>
-                            {% elif copy.id == given_out.first.document_instance.id %} to you {% endif %}
+                            {% elif copy.id == given_out.document_instance.id %} to you
+                                <p>Overdue: {{ copy.overdue_days }}</p>
+                            {% endif %}
                         </th>
                     {% elif copy.status == 'r' %}
                         {% if user.is_authenticated and reserved and reserved.first.document_copy == copy %}

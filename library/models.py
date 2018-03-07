@@ -93,6 +93,19 @@ class DocumentInstance(models.Model):
         print(message)
         return message
 
+    def overdue_days(self):
+        if (self.status == 'g') & (datetime.date.today() > self.due_back):
+            return (datetime.date.today()-self.due_back).days
+        else:
+            return 0
+
+    def fine(self):
+        overdue = self.overdue_days()
+        if overdue*100 > self.price:
+            return self.price
+        else:
+            return overdue*100
+
     def summary(self):
         fields = [self.additional_field1, self.additional_field2,
                   self.additional_field3, self.additional_field4, self.additional_field5]

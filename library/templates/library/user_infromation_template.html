@@ -80,6 +80,7 @@
                 <th> Timestamp</th>
                 <th> Document</th>
                 <th> Return date</th>
+                <th> Overdue days</th>
                 {% if perms.library.change_reservation %}
                     <th> Actions</th> {% endif %}
             </tr>
@@ -92,6 +93,7 @@
                     </th>
                     {% if issuance.document_instance.is_overdue %}
                         <th bgcolor="#ff6347">{{ issuance.document_instance.due_back }}</th>
+                        <th bgcolor="#ff6347">{{ issuance.document_instance.overdue_days }}</th>
                     {% else %}
                         <th>
                             {{ issuance.document_instance.due_back }}</th>
