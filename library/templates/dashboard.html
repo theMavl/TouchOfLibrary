@@ -31,6 +31,11 @@ about user-->
         <div><a href="{% url 'type-create' %}">Create new one</a></div>
         <hr>
     {% else %}
+        {% if not user.is_active %}
+            <h3>Your account is not active</h3>
+        {% elif patron.patron_type == None %}
+            <h3>Your patron card is not verified. Please visit Touch of Library.</h3>
+        {% endif %}
         {% include "library/user_infromation_template.html" %}
     {% endif %}
 {% endblock %}

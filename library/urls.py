@@ -68,12 +68,15 @@ urlpatterns = [
     url(r'^types/delete/confirm/(?P<id>\d+)$', type_deleteconfirm, name='type-deleteconfirm'),
     url(r'^types/delete/(?P<id>\d+)$', type_delete, name='type-delete'),
 
+    url(r'^signup/$', signup, name='signup'),
+    url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        activate, name='activate'),
+
     url(r'^tags/$', TagListView.as_view(), name='tags'),
     url(r'^tags/create', tag_create, name='tag-create'),
     url(r'^tags/update/(?P<id>\d+)$', tag_update, name='tag-update'),
     url(r'^tags/delete/confirm/(?P<id>\d+)$', tag_deleteconfirm, name='tag-deleteconfirm'),
     url(r'^tags/delete/(?P<id>\d+)$', tag_delete, name='tag-delete'),
-
 
     url(r'^populate_database/$', populate_db, name='debug-populate-database'),
 ]

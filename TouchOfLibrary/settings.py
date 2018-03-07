@@ -50,10 +50,15 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'TouchOfLibrary.urls'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_USE_TLS = True
+#EMAIL_USE_SSL = True
+EMAIL_HOST = 'smtp.mailtrap.io'
+EMAIL_HOST_USER = '***REMOVED***'
+EMAIL_HOST_PASSWORD = '***REMOVED***'
+EMAIL_PORT = '2525'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
         'DIRS': ['./templates', ],
         'APP_DIRS': True,
         'OPTIONS': {

@@ -16,7 +16,7 @@ def get_document_detail(request, id):
     copy_list = DocumentInstance.objects.filter(document_id=id)
     if user.is_authenticated:
         patron = PatronInfo.objects.filter(user_id=user.id)
-        if not patron:
+        if not patron or patron.first().patron_type is None:
             return render(request, 'library/document_detail.html',
                           context={"document": document, "additional": additional,
                                    "copy_list": copy_list, "not_a_patron": True})
