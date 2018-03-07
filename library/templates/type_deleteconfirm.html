@@ -6,6 +6,16 @@
         {% if count == 0 %}
         <div><a href="{% url 'type-delete' id=id %}">Delete</a>
           {% else %} This type is associated with some documents, delete them before deleting type.
+          <table border="1" align="left" width="80%">
+              <tr>
+                  <th> Title </th>
+              </tr>
+              {% for docs in wrong_docs %}
+                  <tr>
+                      <td><a href="{{ docs.get_absolute_url }}">{{ docs.title }} </a></td>
+                  </tr>
+              {% endfor %}
+          </table>
           {% endif %}
         </br>
 
