@@ -1,5 +1,9 @@
 {% autoescape off %}
-    Hi {{ user.username }},
-    Please click on the link to confirm your registration,
+    Dear {{ user.first_name }} {{ user.last_name }},
+
+    Please use the following link to confirm your email:
     http://{{ domain }}/library/activate/{{ uid }}/{{ token }}
+
+    Regards,
+    Touch of Library.
 {% endautoescape %}

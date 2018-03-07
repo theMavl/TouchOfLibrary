@@ -1,9 +1,11 @@
+{% extends "base_generic.html" %}
+
 {% block content %}
     <h2>Sign up</h2>
     <form method="post">
         {% csrf_token %}
         {% for field in form %}
-            <p>
+            <div>
                 {{ field.label_tag }}<br>
                 {{ field }}
                 {% if field.help_text %}
@@ -13,6 +15,8 @@
                     <p style="color: red">{{ error }}</p>
                 {% endfor %}
         {% endfor %}
+        </div>
+    <br>
         <p><button type="submit">Sign up</button></p>
     </form>
 {% endblock %}

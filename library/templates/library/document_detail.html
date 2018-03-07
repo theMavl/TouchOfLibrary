@@ -89,7 +89,7 @@
                     {% if copy.status == 'a' %}
                         {% if user.is_authenticated %}
                             {% if not_a_patron %}
-                                <th bgcolor="#90ee90" title="You have no patron status. Please visit the Library to confirm your account">
+                                <th bgcolor="#90ee90" title="Your account is limited. Please visit Touch of Library for further information.">
                                     In library
                                 </th>
                             {% elif not can_reserve %}

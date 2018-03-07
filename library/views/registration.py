@@ -26,11 +26,11 @@ def signup(request):
                                                        patron_type=None)
             created_patron.save()
             current_site = get_current_site(request)
-            mail_subject = 'Activate your blog account.'
+            mail_subject = 'Touch of Library: Account activation'
             message = render_to_string('acc_active_email.html', {
                 'user': user,
                 'domain': current_site.domain,
-                'uid':  str(urlsafe_base64_encode(force_bytes(user.pk)))[2:-1],
+                'uid': str(urlsafe_base64_encode(force_bytes(user.pk)))[2:-1],
                 'token': account_activation_token.make_token(user),
             })
             to_email = form.cleaned_data.get('email')
@@ -55,6 +55,9 @@ def activate(request, uidb64, token):
         user.save()
         login(request, user)
         # return redirect('home')
-        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+        return HttpResponse(
+            'Thank you for your email confirmation. Registration is complete. '
+            'However, your account have limited rights. '
+            'In order to confirm your patron card, please visit Touch of Library.')
     else:
         return HttpResponse('Activation link is invalid!')

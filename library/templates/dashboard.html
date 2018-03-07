@@ -34,7 +34,7 @@ about user-->
         {% if not user.is_active %}
             <h3>Your account is not active</h3>
         {% elif patron.patron_type == None %}
-            <h3>Your patron card is not verified. Please visit Touch of Library.</h3>
+            <h3>Your account is limited. Please visit Touch of Library for further information.</h3>
         {% endif %}
         {% include "library/user_infromation_template.html" %}
     {% endif %}
