@@ -21,11 +21,15 @@ about user-->
         <hr>
         <p>Documents</p>
         <div><a href="{% url 'document-create' %}">New document</a></div>
+        <div><a href="{% url 'tags' %}">All existing tags </a></div>
+        <hr>
         <p>Authors</p>
         <div><a href="{% url 'author-create' %}">New author</a></div>
+        <hr>
         <p>Types</p>
         <div><a href="{% url 'types' %}">All Document Types</a></div>
         <div><a href="{% url 'type-create' %}">Create new one</a></div>
+        <hr>
     {% else %}
         {% include "library/user_infromation_template.html" %}
     {% endif %}

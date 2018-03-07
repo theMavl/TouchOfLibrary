@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    {% if perms.library.change_tag %}
+        <h1> Tag: {{ form.instance.caption }} </h1>
+        <form action="" method="post">
+            <table>
+                {{ form.as_table }}
+            </table>
+            <input class="button" type="submit" name="submit" value="Submit">
+            {% csrf_token %}
+        </form>
+
+    {% endif %}
+{% endblock %}

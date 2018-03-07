@@ -6,7 +6,7 @@ from .models import PatronType
 from django.forms import ModelForm
 from django.contrib.auth.models import User
 
-from library.models import DocumentInstance, Author, DocType
+from library.models import DocumentInstance, Author, DocType, Tag
 
 
 class DueDateForm(forms.Form):
@@ -206,4 +206,22 @@ class TypeUpdate(forms.ModelForm):
 class TypeDelete(forms.ModelForm):
     class Meta:
         model = DocType
+        fields = '__all__'
+
+
+class TagCreate(forms.ModelForm):
+    class Meta:
+        model = Tag
+        fields = '__all__'
+
+
+class TagUpdate(forms.ModelForm):
+    class Meta:
+        model = Tag
+        fields = '__all__'
+
+
+class TagDelete(forms.ModelForm):
+    class Meta:
+        model = Tag
         fields = '__all__'
