@@ -13,6 +13,7 @@
                 <th> Document</th>
                 <th> Patron</th>
                 <th> Due date</th>
+                <th> Overdue days </th>
                 <th> Actions</th>
             </tr>
 
@@ -25,6 +26,7 @@
                             ({{ giveout.patron.patron_type }})</a></th>
                     {% if giveout.document_instance.is_overdue %}
                         <th bgcolor="#ff6347">{{ giveout.document_instance.due_back }}</th>
+                        <th bgcolor="#ff6347">{{ giveout.document_instance.overdue_days }}</th>
                     {% else %}
                         <th>
                             {{ giveout.document_instance.due_back }}</th>

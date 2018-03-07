@@ -1,14 +1,20 @@
-<!DOCTYPE html>
+{% extends 'base_generic.html' %}
+{% block content %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
+<h2>The removal of user "{{ patron.user.username }}"</h2>
+    <h3><a href="{{ patron.form_mail_about_deletion }}">Send message to user with reason of deletion</a></h3>
+    <p>As a librarian, I confirm, that I have informed the user about the removal of his account</p>
     <form action="" method="post">
         {% csrf_token %}
         {{ form.as_p }}
+
         <input type="submit" value="Delete User" />
     </form>
 </body>
 </html>
+{% endblock %}

@@ -40,6 +40,8 @@ def get_document_detail(request, id):
             can_reserve = True
         else:
             can_reserve = False
+
+
         reserved = Reservation.objects.filter(user_id=user.id, document_id=document.id)
         given_out = GiveOut.objects.filter(user=user, document=document)
         return render(request, 'library/document_detail.html',

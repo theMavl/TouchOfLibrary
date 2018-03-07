@@ -36,5 +36,7 @@ def return_document(request, id):
         form = ReturnDocumentForm(initial={"librarian_confirm": False})
 
     return render(request, 'library/document_return.html',
-                  context={'giveout': giveout, 'patron_type': patron_type, 'overdue_days': 0, 'fine': 0.0,
+                  context={'giveout': giveout, 'patron_type': patron_type,
+                           'overdue_days': giveout.document_instance.overdue_days(),
+                           'fine': giveout.document_instance.fine(),
                            'form': form})

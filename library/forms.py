@@ -6,7 +6,7 @@ from .models import PatronType
 from django.forms import ModelForm
 from django.contrib.auth.models import User
 
-from library.models import DocumentInstance, Author, DocType
+from library.models import DocumentInstance, Author, DocType, Tag
 
 
 class DueDateForm(forms.Form):
@@ -169,7 +169,9 @@ class EditPatron(forms.Form):
 
 
 class DeletePatron(forms.Form):
-    comment = forms.CharField(max_length=30, required=False)
+
+    librarian_confirmation = forms.BooleanField()
+
 
 
 class AuthorUpdate(forms.ModelForm):
@@ -208,6 +210,7 @@ class TypeDelete(forms.ModelForm):
         fields = '__all__'
 
 
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -222,3 +225,21 @@ class SignupForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2', 'first_name', 'last_name')
+
+        
+class TagCreate(forms.ModelForm):
+    class Meta:
+        model = Tag
+        fields = '__all__'
+
+
+class TagUpdate(forms.ModelForm):
+    class Meta:
+        model = Tag
+        fields = '__all__'
+
+
+class TagDelete(forms.ModelForm):
+    class Meta:
+        model = Tag
+        fields = '__all__'
