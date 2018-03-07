@@ -14,13 +14,16 @@
                 <th> Telegram Alias</th>
             </tr>
             {% for record in patrons %}
-
-                <tr>
-                    <td><a href="{{ record.get_absolute_url }}">{{ record.user.username }} </a></td>
-                    <td>{{ record.user.first_name }} {{ record.user.last_name }} </td>
-                    <td>{{ record.patron_type }} </td>
-                    <td>{{ record.telegram }}  </td>
-                </tr>
+                {% if record.user.is_active %}
+                    <tr>
+                        {% else %}
+                    <tr bgcolor="#A9A9A9">
+                {% endif %}
+            <td><a href="{{ record.get_absolute_url }}">{{ record.user.username }} </a></td>
+            <td>{{ record.user.first_name }} {{ record.user.last_name }} </td>
+            <td>{{ record.patron_type }} </td>
+            <td>{{ record.telegram }}  </td>
+            </tr>
 
             {% endfor %}
         </table>
