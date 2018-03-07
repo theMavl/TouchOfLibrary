@@ -1,0 +1,12 @@
+{% autoescape off %}
+    Dear {{ user.first_name }} {{ user.last_name }},
+
+    This is Touch of Library. We inform you that your account has been deleted.
+
+    Reason: {{ reason }}
+
+    If you believe that it is a mistake, please contact us.
+
+    Regards,
+    Touch of Library.
+{% endautoescape %}

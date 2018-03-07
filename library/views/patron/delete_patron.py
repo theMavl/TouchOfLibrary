@@ -1,11 +1,16 @@
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
+from django.core.mail import EmailMessage
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
 from library.forms import DeletePatron
-from library.models import PatronInfo, Reservation, GiveOut
-from django.core.mail import send_mail
+from library.models import PatronInfo
+from library.models import Reservation, GiveOut
+from library.tokens import account_activation_token
 
 
 @permission_required('auth.delete_user')
@@ -27,8 +32,20 @@ def delete_patron(request, pk):
                 r.document.quantity_synced = False
                 r.document_copy.save()
                 r.document.save()
-            current_user.delete()
-            current_patron.delete()
+
+            mail_subject = 'Touch of Library: Account deletion'
+            message = render_to_string('acc_delete_email.html', {
+                'user': current_user,
+                'reason': form.cleaned_data['reason'],
+            })
+            to_email = current_user.email
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+            email.send()
+
+            current_user.is_active = False
+            current_user.save()
 
             return HttpResponseRedirect('/library/patrons/')
     else:

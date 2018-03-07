@@ -118,7 +118,9 @@
                                 <a href="{% url 'patron-details' id=copy.holder.id %}">{{ copy.holder }}</a>.
                                 <a href="{{ copy.form_return_request_mail }}">Request to return</a>
                             {% elif copy.id == given_out.document_instance.id %} to you
+                                {% if copy.overdue_days > 0 %}
                                 <p>Overdue: {{ copy.overdue_days }}</p>
+                                    {% endif %}
                             {% endif %}
                         </th>
                     {% elif copy.status == 'r' %}

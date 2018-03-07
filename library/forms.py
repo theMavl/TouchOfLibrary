@@ -169,7 +169,7 @@ class EditPatron(forms.Form):
 
 
 class DeletePatron(forms.Form):
-
+    reason = forms.CharField(max_length=30, required=True)
     librarian_confirmation = forms.BooleanField()
 
 
