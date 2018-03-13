@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 import uuid
@@ -86,25 +87,25 @@ class DocumentInstance(models.Model):
     def form_return_request_mail(self):
         n_line = "%0A%0A"
         message = "mailto:%s?subject=Return document to Library&body=Dear %s %s,%sThis is Touch of Library. " \
-               "Please return %s to the library as soon as possible." \
-               "%sRegards,%sTouch of Library." % (
-                   self.holder.email, self.holder.first_name, self.holder.last_name, n_line, self.summary(), n_line,
-                   n_line[:3])
+                  "Please return %s to the library as soon as possible." \
+                  "%sRegards,%sTouch of Library." % (
+                      self.holder.email, self.holder.first_name, self.holder.last_name, n_line, self.summary(), n_line,
+                      n_line[:3])
         print(message)
         return message
 
     def overdue_days(self):
         if (self.status == 'g') & (datetime.date.today() > self.due_back):
-            return (datetime.date.today()-self.due_back).days
+            return (datetime.date.today() - self.due_back).days
         else:
             return 0
 
     def fine(self):
         overdue = self.overdue_days()
-        if overdue*100 > self.price:
+        if overdue * 100 > self.price:
             return self.price
         else:
-            return overdue*100
+            return overdue * 100
 
     def summary(self):
         fields = [self.additional_field1, self.additional_field2,
@@ -121,6 +122,10 @@ class DocumentInstance(models.Model):
             return True
         else:
             return False
+
+    def clean(self):
+        if self.price < 0:
+            raise ValidationError('Bad price')
 
     # instance attributes
     def __str__(self):
@@ -212,8 +217,8 @@ class PatronInfo(models.Model):
 
     def __str__(self):
         return '[%d] %s %s (%s), %s, %s, TG: %s' % (
-        self.user.id, self.user.first_name, self.user.last_name, self.patron_type, self.phone_number, self.address,
-        self.telegram)
+            self.user.id, self.user.first_name, self.user.last_name, self.patron_type, self.phone_number, self.address,
+            self.telegram)
 
 
 class PatronType(models.Model):
@@ -221,6 +226,11 @@ class PatronType(models.Model):
     # max_days = models.IntegerField(help_text='Maximum number of days allowed', null=True)
     max_documents = models.IntegerField(help_text='Maximum number of days allowed', null=True)
     privileges = models.BooleanField(default=False)
+    priority = models.IntegerField(help_text='Maximum number of days allowed', null=True)
+
+    def clean(self):
+        if self.priority < 0 or self.priority > 100:
+            raise ValidationError('Priority must be within range 0-100')
 
     def __str__(self):
         return self.title
@@ -237,7 +247,7 @@ class GiveOut(models.Model):
     timestamp = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ('document_instance__due_back', )
+        ordering = ('document_instance__due_back',)
 
     @property
     def is_overdue(self):
@@ -315,3 +325,18 @@ class GiveOutLogEntry(models.Model):
     def __str__(self):
         return "[" + str(self.timestamp_given_out.date()) + " - " + str(self.timestamp_returned.date()) + "] " + str(
             self.patron_information) + " | " + str(self.document_instance_summary)
+
+
+class DocumentRequest(models.Model):
+    timestamp = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True)
+    patron = models.ForeignKey('PatronInfo', on_delete=models.CASCADE, null=True)
+    document = models.ForeignKey('Document', on_delete=models.CASCADE, null=True)
+
+    def importance(self, the_oldest):
+        today_date = datetime.date.today()
+        how_long_waits = today_date - self.timestamp.date()
+        the_longest_awaiting = today_date - the_oldest
+        x = how_long_waits / the_longest_awaiting * 100
+        y = self.patron.patron_type.priority
+        return (x + y) / 20000
