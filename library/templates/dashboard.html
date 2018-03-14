@@ -31,7 +31,11 @@ about user-->
         <div><a href="{% url 'type-create' %}">Create new one</a></div>
         <hr>
         <p>Tags</p>
+<<<<<<< HEAD
         <div><a href="{% url 'tags' %}">All tags</a></div>
+=======
+        <div><a href="{% url 'tag-create' %}">Create new one</a></div>
+>>>>>>> 6b49c644373cb718f92527e3132753f75499e1d4
         <hr>
     {% else %}
         {% if not user.is_active %}
