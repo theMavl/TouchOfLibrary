@@ -31,7 +31,7 @@ about user-->
         <div><a href="{% url 'type-create' %}">Create new one</a></div>
         <hr>
         <p>Tags</p>
-        <div><a href="{% url 'tags-create' %}">Create new one</a></div>
+        <div><a href="{% url 'tags' %}">All tags</a></div>
         <hr>
     {% else %}
         {% if not user.is_active %}
