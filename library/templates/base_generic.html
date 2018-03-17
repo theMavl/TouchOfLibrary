@@ -8,20 +8,54 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
+
+<style>
+    .aligncen {
+        margin-top: 7px;
+    }
+
+    .base {
+        color: white;
+        font-family: Ubuntu, serif;
+    }
+
+    .navbar-brand {
+        padding: 0;
+    }
+
+    img {
+        margin-top: -15%;
+        height: 50px;
+    }
+
+    .navbar-light {
+        background-color: #795548;
+    }
+
+    .base:hover {
+        background-color: #795548 !important;
+        color: white;
+    }
+
+
+</style>
+{% load staticfiles %}
 <body>
 {% block sidebar %}
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-light">
         <div class="container-fluid">
             <ul class="nav navbar-nav">
-                <li><a class="navbar-brand" href="{% url 'index' %}">Touch Of Library</a></li>
-                <li><a href="{% url 'document' %}">All Documents</a></li>
-                <li><a href="{% url 'authors' %}">All Authors</a></li>
+                <li><a class="navbar-brand base" href="{% url 'index' %}"><img
+                        src="https://www.freelogoservices.com/api/main/images/1j+ojl1FOMkX9WypfBe43D6kiveApRROnhfJwXs1M3EMoAJtlSIshfJj...fQ+"></a>
+                </li>
+                <li><a class="base" href="{% url 'document' %}">All Documents</a></li>
+                <li><a class="base" href="{% url 'authors' %}">All Authors</a></li>
                 <li>
 
-                    <input type="text" class="form-control" placeholder="Search">
+                    <input type="text" class="form-control aligncen" placeholder="Search">
 
                 <li>
-                    <button class="btn btn-default" type="submit">
+                    <button class="btn btn-default aligncen" type="submit">
                         <i class="glyphicon glyphicon-search"></i>
                     </button>
                 </li>
@@ -30,14 +64,14 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
-                    <li><a title="Open user card" href="{% url 'dashboard' %}"><span
+                    <li><a class="base" title="Open user card" href="{% url 'dashboard' %}"><span
                             class="glyphicon glyphicon-user"></span>Dashboard</a></li>
-                    <li><a title="Log out" href="{% url 'logout' %}?next={{ request.path }}"><span
+                    <li><a class="base" title="Log out" href="{% url 'logout' %}?next={{ request.path }}"><span
                             class="glyphicon glyphicon-log-out"></span>Log out</a></li>
                 {% else %}
-                    <li><a href="{% url 'signup' %}?next={{ request.path }}"><span
+                    <li><a class="base" href="{% url 'signup' %}?next={{ request.path }}"><span
                             class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                    <li><a href="{% url 'login' %}?next={{ request.path }}"><span
+                    <li><a class="base" href="{% url 'login' %}?next={{ request.path }}"><span
                             class="glyphicon glyphicon-log-in"></span> Login</a></li>
 
                 {% endif %}
