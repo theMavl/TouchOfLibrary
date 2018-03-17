@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'library.apps.LibraryConfig',
-    'bootstrap4'
+    'bootstrap4',
+    'cloudinary'
 ]
 
 MIDDLEWARE = [
@@ -52,7 +53,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'TouchOfLibrary.urls'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
-#EMAIL_USE_SSL = True
+# EMAIL_USE_SSL = True
 EMAIL_HOST = 'smtp.mailtrap.io'
 EMAIL_HOST_USER = '***REMOVED***'
 EMAIL_HOST_PASSWORD = '***REMOVED***'
@@ -120,3 +121,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Cloudinary settings for Django. Add to your settings file.
+CLOUDINARY = {
+    'cloud_name': '***REMOVED***',
+    'api_key': '***REMOVED***',
+    'api_secret': '***REMOVED***',
+}

@@ -1,4 +1,5 @@
 {% extends "base_generic.html" %}
+{% load cloudinary %}
 
 <!--This is an html response page for ~/register/information/ url that shows content information
 (FirstName, LastName (from internal user model))
@@ -6,9 +7,9 @@
 about user-->
 
 {% block content %}
-
     <h1>Dashboard</h1>
-
+    {% cloudinary image width=320 height=240 %}
+    {% cloudinary_direct_upload_field request=request %}
     {% if perms.library.change_reservation and perms.auth.change_user and perms.library.change_giveout and perms.library.change_document %}
         <h3>Librarian activities</h3>
         {% if user.is_staff %}
@@ -41,4 +42,4 @@ about user-->
         {% endif %}
         {% include "library/user_infromation_template.html" %}
     {% endif %}
-    {% endblock %}
+{% endblock %}

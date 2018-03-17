@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 import datetime
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+import cloudinary.models
 from django.db.models import Q
 
 
@@ -26,6 +26,7 @@ class Document(models.Model):
     bestseller = models.BooleanField(default=False)
     quantity_synced = models.BooleanField(default=False)
     is_reference = models.BooleanField(default=False, help_text="Reference materials can not be borrowed.")
+    image = cloudinary.models.CloudinaryField('image', blank=True)
 
     def quantity(self) -> int:
         if not self.quantity_synced:
