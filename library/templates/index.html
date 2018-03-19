@@ -1,16 +1,77 @@
-{% extends "base_generic.html" %}
+
 
 {% block content %}
-    <h1>Library Home</h1>
 
-    <p>Welcome to <em>TouchOfLibrary</em></p>
-    <h1></h1>
-    <h4>Small statistics</h4>
-    <ul>
-        <li><strong>Patrons registered:</strong> {{ num_users }}</li>
-        <li><strong>Documents:</strong> {{ num_documents }}</li>
-        <li><strong>Copies of documents:</strong> {{ num_instances }}</li>
-        <li><strong>Authors:</strong> {{ num_authors }}</li>
-    </ul>
+    <!DOCTYPE html>
+    <html lang="en">
+    <!DOCTYPE html>
+    <html>
+    <title>Touch Of Library</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body, h1 {
+            font-family: Ubuntu, serif
+        }
+
+        h1 {
+            letter-spacing: 6px
+        }
+
+        .w3-row-padding img {
+            margin-bottom: 12px
+        }
+
+        body {
+            background-image: url("https://www.princeton.edu/sites/default/files/styles/1x_full_2x_half_crop/public/images/2017/12/20170509_Eng_Library_DJA_012_3.jpg?itok=-WaXTWX8");
+
+        }
+
+        .w3-panel {
+            color: white !important;
+            background-color: black;
+            border: 5px solid white;
+            margin: 15%;
+
+        }
+
+        .words {
+            color: white;
+
+        }
+    </style>
+    <body>
+
+    <!-- !PAGE CONTENT! -->
+    <div class="w3-content">
+
+        <!-- Header -->
+        <header class="w3-panel w3-center w3-opacity" style="padding:128px 16px">
+            <h1 class="w3-xlarge words">Library Management System</h1>
+            <h1 class="words">Touch Of Library</h1>
+
+            <div class="w3-padding-32">
+
+                <a href="{% url 'signup' %}?next={{ request.path }}"
+                   class="w3-bar-item w3-button w3-border w3-round-large">Register</a>
+                <a href="{% url 'login' %}?next={{ request.path }}"
+                   class="w3-bar-item w3-button w3-border w3-round-large">Login</a>
+                <a href="{% url 'document' %}" class="w3-bar-item w3-button w3-border w3-round-large">Take a Look</a>
+
+            </div>
+        </header>
+
+        <!-- End Page Content -->
+    </div>
+
+
+    </body>
+    </html>
+
+    </html>
+
 
 {% endblock %}
