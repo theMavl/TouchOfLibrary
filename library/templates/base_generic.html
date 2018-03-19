@@ -29,11 +29,11 @@
     }
 
     .navbar-light {
-        background-color: #795548;
+        background-color: #ba9077;
     }
 
     .base:hover {
-        background-color: #795548 !important;
+        background-color: #ba9077 !important;
         color: white;
     }
 
@@ -68,19 +68,13 @@
                             class="glyphicon glyphicon-user"></span>Dashboard</a></li>
                     <li><a class="base" title="Log out" href="{% url 'logout' %}?next={{ request.path }}"><span
                             class="glyphicon glyphicon-log-out"></span>Log out</a></li>
-                {% else %}
-                    <li><a class="base" href="{% url 'signup' %}?next={{ request.path }}"><span
-                            class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                    <li><a class="base" href="{% url 'login' %}?next={{ request.path }}"><span
-                            class="glyphicon glyphicon-log-in"></span> Login</a></li>
-
                 {% endif %}
             </ul>
         </div>
     </nav>
 
     <div class="col-sm-10 ">
-        {% block content %}{% endblock %}
+
         {% block pagination %}
             {% if is_paginated %}
                 <div class="pagination">
@@ -99,6 +93,7 @@
             {% endif %}
         {% endblock %}
     </div>
+    {% block content %}{% endblock %}
 {% endblock %}
 </body>
 </html>
