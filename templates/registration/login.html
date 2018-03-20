@@ -1,38 +1,107 @@
-{% extends "base_generic.html" %}
+
+
 
 {% block content %}
 
-    {% if form.errors %}
-        <p>Username and password don't match. Or maybe this account is disabled.</p>
-    {% endif %}
 
-    {% if next %}
-        {% if user.is_authenticated %}
-            <p>Your account doesn't have access to this page.</p>
-        {% else %}
-            <p>You need to login to see this page.</p>
-        {% endif %}
-    {% endif %}
 
-    <form method="post" action="{% url 'login' %}">
-        {% csrf_token %}
 
-        <div>
-            {{ form.username.label_tag }}
-            {{ form.username }}
-        </div>
-        <div>
-            {{ form.password.label_tag }}
-            {{ form.password }}
-        </div>
 
-        <div>
-            <input type="submit" value="login"/>
-            <input type="hidden" name="next" value="{{ next }}"/>
-        </div>
-    </form>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!------ Include the above in your HEAD tag ---------->
+    <style>
 
-    {# Assumes you setup the password_reset view in your URLconf #}
-    <p><a href="{% url 'password_reset' %}">Lost your password?</a></p>
+        .name {
+            letter-spacing: 6px;
+            font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif
+        }
+
+        .w3-row-padding img {
+            margin-bottom: 12px
+        }
+
+        body {
+            background-image: url("https://www.princeton.edu/sites/default/files/styles/1x_full_2x_half_crop/public/images/2017/12/20170509_Eng_Library_DJA_012_3.jpg?itok=-WaXTWX8");
+        }
+
+        .w3-panel {
+            color: white !important;
+            background-color: black;
+            border: 5px solid white;
+            margin: 15%;
+            font-size: large;
+
+        }
+
+        .w3-padding-32 {
+            letter-spacing: 2px !important;
+        }
+
+        input {
+            background-color: black;
+            color: white;
+        }
+
+        .password {
+            margin: 1%;
+        }
+
+        h3 {
+            font-size: x-large;
+        }
+
+
+    </style>
+    <title>Touch Of Library</title>
+    {% load bootstrap %}
+    <body>
+
+
+    </body>
+
+    <div class="w3-content">
+        <!-- Header -->
+        <header class="w3-panel w3-center w3-opacity name" style="padding:128px 16px">
+
+            <div class="w3-padding-32">
+
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <div class="container login col-md-5">
+                        <div class="row">
+
+                            <div class="loginform col-md-8">
+                                <h3>Memeber Login</h3>
+                                {{ form|bootstrap }}
+                                <div class="form-group">
+                                    <div class="col-sm-10 col-sm-offset-2">
+                                        <br>
+                                        <button type="submit" value="login">Submit</button>
+                                        <input type="hidden" name="next" value="{{ next }}"/>
+                                    </div>
+                                </div>
+                                {% if form.errors %}
+                                    <p>Username and password don't match. Or maybe this account is disabled.</p>
+                                {% endif %}
+
+                                {% if next %}
+                                    {% if user.is_authenticated %}
+                                        <p>Your account doesn't have access to this page.</p>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </
+                >
+                <p><a href="{% url 'password_reset' %}">Lost your password?</a></p>
+            </div>
+        </header>
+
+        <!-- End Page Content -->
+    </div>
 
 {% endblock %}
