@@ -13,7 +13,9 @@
                         <table class="table table-striped">
                             <tr>
                                 <td width="12%"><img style="margin: 10%; width: 100px; height: 100px"
-                                        {% if  document.type.name == "Book" %}
+                                        {% if document.image %}
+                                                     src="{{ document.image }}"
+                                        {% elif  document.type.name == "Book" %}
                                          src="http://www.posgradoderechoumsnh.com.mx/doctorado/doctorado/images/libro.png"
                                         {% else %}
                                          src="http://icons.iconarchive.com/icons/designbolts/free-multimedia/1024/Cassette-icon.png"
