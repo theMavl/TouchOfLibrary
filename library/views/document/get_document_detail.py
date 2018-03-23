@@ -4,6 +4,7 @@ from django.shortcuts import render
 
 from library.models import Document, DocumentInstance, PatronInfo, Reservation, GiveOut
 
+import cloudinary
 
 def get_document_detail(request, id):
     """
@@ -14,11 +15,12 @@ def get_document_detail(request, id):
     document = Document.objects.get(id=id)
     additional = document.type.fields.split(sep=";")
     copy_list = DocumentInstance.objects.filter(document_id=id)
+    image = document.image
     if user.is_authenticated:
         patron = PatronInfo.objects.filter(user_id=user.id)
         if not patron or patron.first().patron_type is None:
             return render(request, 'library/document_detail.html',
-                          context={"document": document, "additional": additional,
+                          context={"document": document, "image": image, "additional": additional,
                                    "copy_list": copy_list, "not_a_patron": True})
         patron = patron.first()
         if not document.is_reference:
@@ -48,6 +50,7 @@ def get_document_detail(request, id):
                       context={'given_out': given_out.first(),
                                'reserved': reserved,
                                "document": document,
+                               "image": image,
                                "additional": additional,
                                "copy_list": copy_list,
                                "max_days": max_days,
@@ -55,5 +58,5 @@ def get_document_detail(request, id):
                                "can_reserve": can_reserve})
     else:
         return render(request, 'library/document_detail.html',
-                      context={"document": document, "additional": additional,
+                      context={"document": document,  "image": image, "additional": additional,
                                "copy_list": copy_list, "not_a_patron": True})

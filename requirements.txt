@@ -1,0 +1,9 @@
+cloudinary==1.11.0
+dj-database-url==0.4.2
+Django==2.0.1
+django-bootstrap-form==3.4
+django-bootstrap4==0.0.6
+django-celery==3.2.2
+gunicorn==19.7.1
+psycopg2==2.7.3.2
+whitenoise==3.3.1
