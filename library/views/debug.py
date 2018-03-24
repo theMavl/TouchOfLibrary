@@ -47,8 +47,13 @@ def populate_db(request):
 
     libr.groups.add(group_libr)
 
-    type_student = PatronType.objects.create(title='Student', max_documents=5, privileges=False)
-    type_faculty = PatronType.objects.create(title='Faculty member', max_documents=10, privileges=True)
+    type_student = PatronType.objects.create(title='Student', max_documents=5, max_renew_times=1, priority=50,
+                                             privileges=False)
+    type_faculty = PatronType.objects.create(title='Faculty member', max_documents=10, max_renew_times=1, priority=10,
+                                             privileges=True)
+    type_vp = PatronType.objects.create(title='Visiting Professor', max_documents=99999, max_renew_times=99999,
+                                        priority=10,
+                                        privileges=False)
 
     PatronInfo.objects.create(user=patr1, phone_number='30001',
                               address='Via Margutta, 3', telegram='None',

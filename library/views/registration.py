@@ -27,7 +27,7 @@ def signup(request):
             created_patron.save()
             current_site = get_current_site(request)
             mail_subject = 'Touch of Library: Account activation'
-            message = render_to_string('acc_active_email.html', {
+            message = render_to_string('mails/acc_active_email.html', {
                 'user': user,
                 'domain': current_site.domain,
                 'uid': str(urlsafe_base64_encode(force_bytes(user.pk)))[2:-1],

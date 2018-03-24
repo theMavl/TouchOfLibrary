@@ -34,7 +34,7 @@ def delete_patron(request, pk):
                 r.document.save()
 
             mail_subject = 'Touch of Library: Account deletion'
-            message = render_to_string('acc_delete_email.html', {
+            message = render_to_string('mails/acc_delete_email.html', {
                 'user': current_user,
                 'reason': form.cleaned_data['reason'],
             })

@@ -17,9 +17,8 @@ def reserve_document(request, copy_id):
         if reserved:
             reserved.delete()
             copy.status = "a"
-        elif not checked_out and copy.status == "a" and not document.is_reference:
-            Reservation.objects.create(user=user, document=document, document_copy=copy, executed=False).save()
-            copy.status = "r"
+        elif not checked_out:
+            copy.reserve(user)
         document.quantity_synced = False
         copy.save()
         document.save()
