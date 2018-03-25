@@ -2,7 +2,7 @@ import datetime
 from django.contrib import auth
 from django.shortcuts import render
 
-from library.models import Document, DocumentInstance, PatronInfo, Reservation, GiveOut
+from library.models import Document, DocumentInstance, PatronInfo, Reservation, GiveOut, DocumentRequest
 
 import cloudinary
 
@@ -46,9 +46,11 @@ def get_document_detail(request, id):
 
         reserved = Reservation.objects.filter(user_id=user.id, document_id=document.id)
         given_out = GiveOut.objects.filter(user=user, document=document)
+        requested = DocumentRequest.objects.filter(user=user, document=document)
         return render(request, 'library/document_detail.html',
                       context={'given_out': given_out.first(),
                                'reserved': reserved,
+                               'requested': requested,
                                "document": document,
                                "image": image,
                                "additional": additional,

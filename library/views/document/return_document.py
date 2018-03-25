@@ -25,11 +25,7 @@ def return_document(request, id):
             GiveOutLogEntry.objects.create(timestamp_given_out=giveout.timestamp, timestamp_due_back=copy.due_back,
                                            user=copy.holder, patron_information=patron,
                                            document_instance_summary=copy.summary())
-            copy.status = 'a'
-            copy.holder = None
-            document.quantity_synced = False
-            copy.save()
-            document.save()
+            copy.clean_giveout()
             giveout.delete()
             return redirect('patron-details', id=patron_user.id)
     else:

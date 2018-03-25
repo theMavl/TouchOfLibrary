@@ -8,6 +8,10 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 import cloudinary.models
 from django.db.models import Q
+import pytz
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage, EmailMultiAlternatives
 
 
 class Document(models.Model):
@@ -47,7 +51,8 @@ class Document(models.Model):
 
     # document features
     def __str__(self):
-        return self.title
+        return '%s %s "%s"' % (str(self.type).lower(),
+                               self.str_authors(), self.title)
 
     def get_absolute_url(self):
         return reverse('document-detail', args=[str(self.id)])
@@ -87,7 +92,7 @@ class DocumentInstance(models.Model):
 
     def form_return_request_mail(self):
         n_line = "%0A%0A"
-        message = "mailto:%s?subject=Return document to Library&body=Dear %s %s,%sThis is Touch of Library. " \
+        message = "mailto:%s?subject=Touch of Library: Please return document&body=Dear %s %s,%sThis is Touch of Library. " \
                   "Please return %s to the library as soon as possible." \
                   "%sRegards,%sTouch of Library." % (
                       self.holder.email, self.holder.first_name, self.holder.last_name, n_line, self.summary(), n_line,
@@ -108,6 +113,50 @@ class DocumentInstance(models.Model):
         else:
             return overdue * 100
 
+    def clean_giveout(self):
+        self.status = 'a'
+        self.holder = None
+        self.due_back = None
+        self.document.quantity_synced = False
+        self.save()
+        self.document.save()
+        self.reserve_from_queue()
+
+    def reserve(self, user):
+        if self.status == "a" and not self.document.is_reference:
+            self.status = 'r'
+            self.save()
+            Reservation.objects.create(user=user, document=self.document, document_copy=self, executed=False).save()
+
+    def reserve_from_queue(self):
+        queue = DocumentRequest.objects.filter(document_id=self.document_id)
+        if queue:
+            top = queue.first()
+            for e in queue:
+                if e.importance() > top.importance():
+                    top = e
+            self.status = 'r'
+            self.save()
+            reservation = Reservation.objects.create(user=top.user, document=self.document, document_copy=self,
+                                                     executed=False)
+            mail_subject = 'Touch of Library: Copy Available'
+            message = render_to_string('mails/copy_available.html', {
+                'request': top,
+                'summary': self.summary(),
+                'reservation_due': reservation.due_date(),
+            })
+            to_email = top.user.email
+
+            # email = EmailMessage(
+            #    mail_subject, message, to=[to_email]
+            # )
+            email = EmailMultiAlternatives(mail_subject, message, to=[to_email])
+            email.attach_alternative(message, "text/html")
+            email.send()
+
+            reservation.save()
+            top.delete()
+
     def summary(self):
         fields = [self.additional_field1, self.additional_field2,
                   self.additional_field3, self.additional_field4, self.additional_field5]
@@ -124,9 +173,10 @@ class DocumentInstance(models.Model):
         else:
             return False
 
+    # Constraints
     def clean(self):
         if self.price < 0:
-            raise ValidationError('Bad price')
+            raise ValidationError('Price can not be less than zero')
 
     # instance attributes
     def __str__(self):
@@ -146,6 +196,12 @@ class Author(models.Model):
     last_name = models.CharField(max_length=100)
     date_born = models.DateField(null=True, blank=True)
     date_died = models.DateField('Died', null=True, blank=True)
+
+    # Constraints
+    def clean(self):
+        if self.date_died is not None and self.date_born is not None:
+            if self.date_born > self.date_died:
+                raise ValidationError('Date born can not be after the date died')
 
     # Author features
     def get_absolute_url(self):
@@ -177,6 +233,17 @@ class DocType(models.Model):
     class Meta:
         verbose_name = "Document Type"
         verbose_name_plural = "Documents' Types"
+
+    # Constraints
+    def clean(self):
+        if len(self.fields.split(";")) > 5:
+            raise ValidationError('Maximum number of additional fields - 5')
+        if self.max_days < 0:
+            raise ValidationError('Max days number should be natural')
+        if self.max_days_bestseller < 0:
+            raise ValidationError('Max days bestseller number should be natural')
+        if self.max_days_privileges < 0:
+            raise ValidationError('Max days privileges number should be natural')
 
     def __str__(self):
         return self.name
@@ -224,14 +291,19 @@ class PatronInfo(models.Model):
 
 class PatronType(models.Model):
     title = models.CharField(max_length=100, blank=True)
-    # max_days = models.IntegerField(help_text='Maximum number of days allowed', null=True)
-    max_documents = models.IntegerField(help_text='Maximum number of days allowed', null=True)
+    max_renew_times = models.IntegerField(help_text='Maximum number of renewals allowed', null=True)
+    max_documents = models.IntegerField(help_text='Maximum number of documents giveouts allowed', null=True)
     privileges = models.BooleanField(default=False)
-    priority = models.IntegerField(help_text='Maximum number of days allowed', null=True)
+    priority = models.IntegerField(help_text='Priority in queue', null=True)
 
+    # Constraints
     def clean(self):
         if self.priority < 0 or self.priority > 100:
             raise ValidationError('Priority must be within range 0-100')
+        if self.max_renew_times < 0:
+            raise ValidationError('Maximum renewal number should be natural')
+        if self.max_documents < 0:
+            raise ValidationError('Maximum number of documents giveouts should be natural')
 
     def __str__(self):
         return self.title
@@ -241,10 +313,10 @@ class GiveOut(models.Model):
     """
         Model of giving-out a document to an user
     """
-    user = models.ForeignKey('auth.User', on_delete=models.PROTECT, null=True)
-    patron = models.ForeignKey('PatronInfo', on_delete=models.PROTECT, null=True)
-    document = models.ForeignKey('Document', on_delete=models.PROTECT, null=True)
-    document_instance = models.ForeignKey('DocumentInstance', on_delete=models.PROTECT, null=True)
+    user = models.ForeignKey('auth.User', on_delete=models.PROTECT)
+    patron = models.ForeignKey('PatronInfo', on_delete=models.PROTECT)
+    document = models.ForeignKey('Document', on_delete=models.PROTECT)
+    document_instance = models.ForeignKey('DocumentInstance', on_delete=models.PROTECT)
     timestamp = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -262,9 +334,9 @@ class Reservation(models.Model):
     """
         Model of reservation on a book
     """
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True)
-    document = models.ForeignKey('Document', on_delete=models.CASCADE, null=True)
-    document_copy = models.ForeignKey('DocumentInstance', on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    document = models.ForeignKey('Document', on_delete=models.CASCADE)
+    document_copy = models.ForeignKey('DocumentInstance', on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now=True)
     executed = models.BooleanField(default=False)
 
@@ -330,14 +402,24 @@ class GiveOutLogEntry(models.Model):
 
 class DocumentRequest(models.Model):
     timestamp = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True)
-    patron = models.ForeignKey('PatronInfo', on_delete=models.CASCADE, null=True)
-    document = models.ForeignKey('Document', on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    patron = models.ForeignKey('PatronInfo', on_delete=models.CASCADE)
+    document = models.ForeignKey('Document', on_delete=models.CASCADE)
 
-    def importance(self, the_oldest):
-        today_date = datetime.date.today()
-        how_long_waits = today_date - self.timestamp.date()
+    def __str__(self):
+        return str(self.importance()) + " " + str(self.timestamp)
+        # return "1"
+
+    class Meta:
+        ordering = ["timestamp"]
+
+    def importance(self):
+        oldest_request = DocumentRequest.objects.filter(document_id=self.document_id).first()
+        print(oldest_request.timestamp)
+        the_oldest = oldest_request.timestamp
+        today_date = datetime.datetime.now(pytz.utc)
+        how_long_waits = today_date - self.timestamp
         the_longest_awaiting = today_date - the_oldest
         x = how_long_waits / the_longest_awaiting * 100
         y = self.patron.patron_type.priority
-        return (x + y) / 20000
+        return (x + y * y) / 10100

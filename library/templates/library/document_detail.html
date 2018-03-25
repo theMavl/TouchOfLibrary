@@ -44,9 +44,25 @@
             {% elif given_out %}
                 <p><strong>You must return copy till {{ given_out.document_instance.due_back }}</strong></p>
             {% elif not not_a_patron %}
-                <p><strong> You can order this {{ document.type }} for <b class="highlight">{{ max_days }} </b> days. If
-                    you check it out today, you will have to return it till <b
-                            class="highlight">{{ due_date }}</b></strong></p>
+                {% if document.quantity < 1 and not reserved and not given_out %}
+                    {% if requested %}
+                        <div><strong>You have requested this {{ document.type }}. When it will be your turn to get
+                            a copy, you will be notified via e-mail.</strong></div>
+                        <p><a
+                                href="{% url 'request-document' document_id=document.id %}">Click here to cancel your
+                            request.</a></p>
+                    {% else %}
+                        <div><strong>There are not available copies, but <a
+                                href="{% url 'request-document' document_id=document.id %}">you can request
+                            this {{ document.type }}</a></strong></div>
+                        <p>You will be notified via e-mail when any copy of this document will be available.</p>
+                    {% endif %}
+                {% else %}
+                    <p><strong> You can order this {{ document.type }} for <b class="highlight">{{ max_days }} </b>
+                        days. If
+                        you check it out today, you will have to return it till <b
+                                class="highlight">{{ due_date }}</b></strong></p>
+                {% endif %}
             {% endif %}
             {% if given_out %}
                 <p><b>Given out to you</b></p>
@@ -55,8 +71,6 @@
 
     {% if not user.is_authenticated and copy_list %}
         <p>To check out that {{ document.type }} you need to login</p>
-    {% elif not user.is_active %}
-        <p>You need to verify your email address!</p>
     {% elif not user.is_active %}
         <p>You need to verify your email address!</p>
     {% elif not copy_list %}
