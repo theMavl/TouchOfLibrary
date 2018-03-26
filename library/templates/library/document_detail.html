@@ -16,21 +16,89 @@
             }
         </style>
     </head>
-    <div><h1>{{ document.title }}</h1>
-        <h4>{{ document.type }}</h4>
-        {% if perms.library.change_reservation %}
-            <a href="{% url 'documentinstance-create' pk=document.pk %}">New copy</a> |
-            <a href="{% url 'document-update' pk=document.pk %}">Edit</a> |
-            <a href="{% url 'document-delete' pk=document.pk %}">Delete</a>
-        {% endif %}</div>
-    <br>
-    <p><strong>Authors:</strong> <a href=""></a>
 
-        {% for author in document.authors.all %}
-            <a href="{{ author.get_absolute_url }}">{{ author.first_name }} {{ author.last_name }}</a>
-            {% if not forloop.last %},{% else %}{% endif %}
-        {% endfor %}</p>
+    <p> </p>
+    <div style="position: absolute; right: 100px">
+    <ul class="list-group" style="width: 80%;">
+        <li class="list-group-item">
+            <div class="jumbotron">
+                <h1>{{ document.title }}
+                    <div class="btn-group">
+                        <a href="{% url 'documentinstance-create' pk=document.pk %}" class="btn btn-success"
+                           role="button">New copy</a>
+                        <a href="{% url 'document-update' pk=document.pk %}" class="btn btn-dark" role="button">Edit</a>
+                        <a href="{% url 'document-delete' pk=document.pk %}" class="btn btn-danger"
+                           role="button">Delete</a>
+
+                    </div>
+                </h1>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <p><span class="badge badge-primary"
+                     style="border: orange; background: tomato">{{ document.type }}</span>
+                {% for tag in document.tags.all %}
+                    <span class="badge badge-primary">{{ tag }}</span>
+                {% endfor %}</li>
+
+        <li class="list-group-item">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-1">
+                        <p>Authors:</p>
+                    </div>
+                    <div class="col-md-11">
+                        <p>{% for author in document.authors.all %}
+                            <a href="{{ author.get_absolute_url }}">{{ author.first_name }} {{ author.last_name }}</a>
+                            {% if not forloop.last %},{% else %}{% endif %}{% endfor %}</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-1">
+                        <p>Description: </p>
+                    </div>
+                    <div class="col-md-11">
+                        <p>{{ document.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-1">
+                        <p>Quantity</p>
+                    </div>
+                    <div class="col-md-11">
+                        <p>{{ document.quantity }}</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+
+    </ul>
+
+
     {% cloudinary image %}
+<<<<<<< HEAD
+
+    {% if user.is_authenticated %}
+        {% if document.is_reference %}
+            <div class="alert alert-danger">
+                Reference documents cannot be checked out!
+            </div>
+</div>
+        {% elif given_out %}
+            <p><strong>You must return copy till {{ given_out.document_instance.due_back }}</strong></p>
+        {% elif not not_a_patron %}
+            <p><strong> You can order this {{ document.type }} for <b class="highlight">{{ max_days }} </b> days. If
+                you check it out today, you will have to return it till <b
+                        class="highlight">{{ due_date }}</b></strong></p>
+=======
     <p><strong>Description:</strong> {{ document.description }}
     <p><strong>Tags:</strong>
         {% for tag in document.tags.all %}
@@ -67,7 +135,12 @@
             {% if given_out %}
                 <p><b>Given out to you</b></p>
             {% endif %}
+>>>>>>> 621d5450d3191b5fcf1f0139930a1fd80db62840
         {% endif %}
+        {% if given_out %}
+            <p><b>Given out to you</b></p>
+        {% endif %}
+    {% endif %}
 
     {% if not user.is_authenticated and copy_list %}
         <p>To check out that {{ document.type }} you need to login</p>
