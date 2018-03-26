@@ -338,7 +338,7 @@ class Reservation(models.Model):
     document = models.ForeignKey('Document', on_delete=models.CASCADE)
     document_copy = models.ForeignKey('DocumentInstance', on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now=True)
-    executed = models.BooleanField(default=False)
+    confirmed = models.BooleanField(default=False)
 
     @staticmethod
     def clean_old_reservations():
@@ -355,7 +355,7 @@ class Reservation(models.Model):
 
     @property
     def is_old(self):
-        if datetime.date.today() > self.timestamp.date() + datetime.timedelta(days=5):
+        if datetime.date.today() > self.timestamp.date() + datetime.timedelta(days=2):
             return True
         return False
 
@@ -405,15 +405,17 @@ class DocumentRequest(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     patron = models.ForeignKey('PatronInfo', on_delete=models.CASCADE)
     document = models.ForeignKey('Document', on_delete=models.CASCADE)
+    outstanding = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.importance()) + " " + str(self.timestamp)
-        # return "1"
 
     class Meta:
         ordering = ["timestamp"]
 
     def importance(self):
+        if self.outstanding:
+            return 1.0
         oldest_request = DocumentRequest.objects.filter(document_id=self.document_id).first()
         print(oldest_request.timestamp)
         the_oldest = oldest_request.timestamp
