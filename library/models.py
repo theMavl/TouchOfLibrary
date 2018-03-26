@@ -318,6 +318,7 @@ class GiveOut(models.Model):
     document = models.ForeignKey('Document', on_delete=models.PROTECT)
     document_instance = models.ForeignKey('DocumentInstance', on_delete=models.PROTECT)
     timestamp = models.DateTimeField(auto_now=True)
+    renewed_times = models.IntegerField(help_text='Number of renewals made by the user', null=True)
 
     class Meta:
         ordering = ('document_instance__due_back',)
