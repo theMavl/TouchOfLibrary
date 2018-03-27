@@ -15,61 +15,49 @@
     .aligncen {
         margin-top: 7px;
     }
-
     .base {
         color: white;
         font-family: Ubuntu, serif;
     }
-
-    .navbar-brand {
-        padding: 0;
-    }
-
     img {
         margin-top: -15%;
         height: 50px;
     }
-
-    .navbar-light {
-        background-color: teal;
-    }
-
     .base:hover {
         background-color: orange !important;
         color: white;
     }
-
-
+    .navbar-expand-md{
+        background-color: teal;
+    }
 </style>
 {% load staticfiles %}
 <body>
 {% block sidebar %}
-    <nav class="navbar navbar-light navbar-expand-sm navbar-dark">
+    <nav class="navbar fixed-top navbar-expand-md">
         <div class="container-fluid">
             <ul class="navbar-nav">
-                <li class="nav-item"><a class="navbar-brand base" href="{% url 'index' %}"><img
+                <li class="nav-item"><a class=" nav-link base" href="{% url 'index' %}"><img
                         src="https://www.freelogoservices.com/api/main/images/1j+ojl1FOMkX9WypfBe43D6kiveApRROnhfJwXs1M3EMoAJtlSIshfJj...fQ+"></a>
                 </li>
-                <li class="nav-item"><a class="base nav-link active" href="{% url 'document' %}">All Documents</a></li>
-                <li class="nav-item"><a class="base nav-link active" href="{% url 'authors' %}">All Authors</a></li>
+                <li class="nav-item" ><a class="base nav-link" href="{% url 'document' %}">All Documents</a></li>
+                <li class="nav-item"><a class="base nav-link" href="{% url 'authors' %}">All Authors</a></li>
                 <li class="nav-item">
 
-                   <input class="form-control mr-sm-2" type="text" placeholder="Search">
+                    <input type="text" class="form-control aligncen" placeholder="Search">
 
                 <li class="nav-item">
-
-                   <button type="button" class="btn btn-default">
-                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                        Search
+                    <button class="btn btn-default aligncen " type="submit"> Search
+                        <i class="glyphicon glyphicon-search"></i>
                     </button>
                 </li>
 
             </ul>
-            <ul class="navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
-                    <li class="nav-item"><a class="base nav-link active" title="Open user card" href="{% url 'dashboard' %}"><span
+                    <li class="nav-item"><a class="base nav-link" title="Open user card" href="{% url 'dashboard' %}"><span
                             class="glyphicon glyphicon-user"></span> Dashboard</a></li>
-                    <li class="nav-item"><a class="base nav-link active" title="Log out" href="{% url 'logout' %}?next={{ request.path }}"><span
+                    <li class="nav-item"><a class="base nav-link" title="Log out" href="{% url 'logout' %}?next={{ request.path }}"><span
                             class="glyphicon glyphicon-log-out"></span> Log out</a></li>
                 {% endif %}
             </ul>
