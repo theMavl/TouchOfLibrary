@@ -1,12 +1,11 @@
 {% extends "base_generic.html" %}
 {% block content %}
     <body style="background: lightseagreen">
-    <p>  </p>
-    <h1 style="color: white; position: absolute; right: 45%", align="center">Documents</h1>
+    <h1 style="color: white;", align="center">Documents</h1>
     <h1></h1>
     <div class="conteiner">
         {% if document_list %}
-            <ul class="list-group" style="width: 100%; width: 80%; margin: 10%">
+            <ul class="list-group" style="width: 100%; padding-left: 10%; padding-right: 10%">
 
                 {% for document in document_list %}
                     <li class="list-group-item" >
