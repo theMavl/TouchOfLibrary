@@ -30,15 +30,22 @@
             <li class="list-group-item">
                 <div class="jumbotron">
                     <h1 align="center">{{ document.title }} <br>
+                        {% if user.is_authenticated %}
                         <div class="btn-group" align="center">
+                        {% if perms.library.add_documentinstance %}
                             <a href="{% url 'documentinstance-create' pk=document.pk %}" class="btn btn-success"
                                role="button">New copy</a>
+                            {% endif %}
+                        {% if perms.library.edit_document %}
                             <a href="{% url 'document-update' pk=document.pk %}" class="btn btn-dark"
                                role="button">Edit</a>
+                            {% endif %}
+                            {% if perms.library.delete_document %}
                             <a href="{% url 'document-delete' pk=document.pk %}" class="btn btn-danger"
                                role="button">Delete</a>
-
+                                {% endif %}
                         </div>
+                        {% endif %}
                     </h1>
                 </div>
             </li>
