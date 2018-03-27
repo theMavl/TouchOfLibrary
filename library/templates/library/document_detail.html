@@ -1,10 +1,17 @@
 {% extends "base_generic.html" %}
-{% load cloudinary %}
+{#{% load cloudinary %}#}
 {% block content %}
     <head>
         <style>
             .redtext {
                 color: tomato;
+            }
+
+            .message {
+                padding-left: 10%;
+                padding-right: 10%;
+                width: 80%%;
+                margin: 1%;
             }
 
             .greentext {
@@ -16,247 +23,250 @@
             }
         </style>
     </head>
+    <body style="background: lightseagreen">
 
-    <p> </p>
-    <div style="position: absolute; right: 100px">
-    <ul class="list-group" style="width: 80%;">
-        <li class="list-group-item">
-            <div class="jumbotron">
-                <h1>{{ document.title }}
-                    <div class="btn-group">
-                        <a href="{% url 'documentinstance-create' pk=document.pk %}" class="btn btn-success"
-                           role="button">New copy</a>
-                        <a href="{% url 'document-update' pk=document.pk %}" class="btn btn-dark" role="button">Edit</a>
-                        <a href="{% url 'document-delete' pk=document.pk %}" class="btn btn-danger"
-                           role="button">Delete</a>
+    <div>
+        <ul class="list-group" style="width: 100%; padding-left: 10%; padding-right: 10%">
+            <li class="list-group-item">
+                <div class="jumbotron">
+                    <h1 align="center">{{ document.title }} <br>
+                        <div class="btn-group" align="center">
+                            <a href="{% url 'documentinstance-create' pk=document.pk %}" class="btn btn-success"
+                               role="button">New copy</a>
+                            <a href="{% url 'document-update' pk=document.pk %}" class="btn btn-dark"
+                               role="button">Edit</a>
+                            <a href="{% url 'document-delete' pk=document.pk %}" class="btn btn-danger"
+                               role="button">Delete</a>
 
-                    </div>
-                </h1>
-            </div>
-        </li>
-        <li class="list-group-item">
-            <p><span class="badge badge-primary"
-                     style="border: orange; background: tomato">{{ document.type }}</span>
-                {% for tag in document.tags.all %}
-                    <span class="badge badge-primary">{{ tag }}</span>
-                {% endfor %}</li>
+                        </div>
+                    </h1>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <p><span class="badge badge-primary"
+                         style="border: orange; background: tomato">{{ document.type }}</span>
+                    {% for tag in document.tags.all %}
+                        <span class="badge badge-primary">{{ tag }}</span>
+                    {% endfor %}</li>
 
-        <li class="list-group-item">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-1">
-                        <p>Authors:</p>
-                    </div>
-                    <div class="col-md-11">
-                        <p>{% for author in document.authors.all %}
-                            <a href="{{ author.get_absolute_url }}">{{ author.first_name }} {{ author.last_name }}</a>
-                            {% if not forloop.last %},{% else %}{% endif %}{% endfor %}</p>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-1">
+                            <p>Authors:</p>
+                        </div>
+                        <div class="col-md-11">
+                            <p>{% for author in document.authors.all %}
+                                <a href="{{ author.get_absolute_url }}">{{ author.first_name }} {{ author.last_name }}</a>
+                                {% if not forloop.last %},{% else %}{% endif %}{% endfor %}</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </li>
-        <li class="list-group-item">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-1">
-                        <p>Description: </p>
-                    </div>
-                    <div class="col-md-11">
-                        <p>{{ document.description }}</p>
-                    </div>
-                </div>
-            </div>
-        </li>
-        <li class="list-group-item">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-1">
-                        <p>Quantity</p>
-                    </div>
-                    <div class="col-md-11">
-                        <p>{{ document.quantity }}</p>
+            </li>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-1">
+                            <p>Description: </p>
+                        </div>
+                        <div class="col-md-11">
+                            <p>{{ document.description }}</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </li>
+            </li>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-1">
+                            <p>Quantity</p>
+                        </div>
+                        <div class="col-md-11">
+                            <p>{{ document.quantity }}</p>
+                        </div>
+                    </div>
+                </div>
+            </li>
 
-    </ul>
+        </ul>
 
 
-    {% cloudinary image %}
-<<<<<<< HEAD
+        {#    {% cloudinary image %}#}
 
-    {% if user.is_authenticated %}
-        {% if document.is_reference %}
-            <div class="alert alert-danger">
-                Reference documents cannot be checked out!
-            </div>
-</div>
-        {% elif given_out %}
-            <p><strong>You must return copy till {{ given_out.document_instance.due_back }}</strong></p>
-        {% elif not not_a_patron %}
-            <p><strong> You can order this {{ document.type }} for <b class="highlight">{{ max_days }} </b> days. If
-                you check it out today, you will have to return it till <b
-                        class="highlight">{{ due_date }}</b></strong></p>
-=======
-    <p><strong>Description:</strong> {{ document.description }}
-    <p><strong>Tags:</strong>
-        {% for tag in document.tags.all %}
-            {{ tag }}
-            {% if not forloop.last %},{% else %}{% endif %}
-        {% endfor %}
-    <p><strong>Quantity: {{ document.quantity }}</strong>
         {% if user.is_authenticated %}
             {% if document.is_reference %}
-                <p><b class="redtext">Reference documents cannot be checked out.</b></p>
+                <div class="alert alert-danger message" align="center">
+                    Reference documents cannot be checked out!
+                </div>
+
             {% elif given_out %}
-                <p><strong>You must return copy till {{ given_out.document_instance.due_back }}</strong></p>
+                <div class="alert alert-success message" align="center">
+                    <p><b>Given out to you</b></p>
+                    <p><strong>You must return copy till {{ given_out.document_instance.due_back }}</strong></p>
+                </div>
             {% elif not not_a_patron %}
                 {% if document.quantity < 1 and not reserved and not given_out %}
                     {% if requested %}
-                        <div><strong>You have requested this {{ document.type }}. When it will be your turn to get
-                            a copy, you will be notified via e-mail.</strong></div>
-                        <p><a
-                                href="{% url 'request-document' document_id=document.id %}">Click here to cancel your
-                            request.</a></p>
+                        <div class="alert alert-warningmessage" align="center"><p><strong>You have requested
+                            this {{ document.type }}. When it will be your turn to get
+                            a copy, you will be notified via e-mail.</strong></p>
+                            <p><a
+                                    href="{% url 'request-document' document_id=document.id %}">Click here to cancel
+                                your
+                                request.</a></p>
+                        </div>
                     {% else %}
-                        <div><strong>There are not available copies, but <a
-                                href="{% url 'request-document' document_id=document.id %}">you can request
-                            this {{ document.type }}</a></strong></div>
-                        <p>You will be notified via e-mail when any copy of this document will be available.</p>
+                        <div class="alert alert-danger message" align="center">
+                            <p><strong>There are not available copies, but <a
+                                    href="{% url 'request-document' document_id=document.id %}">you can request
+                                this {{ document.type }}</a></strong></p>
+                            <p>You will be notified via e-mail when any copy of this document will be available.</p>
+                        </div>
                     {% endif %}
                 {% else %}
-                    <p><strong> You can order this {{ document.type }} for <b class="highlight">{{ max_days }} </b>
-                        days. If
-                        you check it out today, you will have to return it till <b
-                                class="highlight">{{ due_date }}</b></strong></p>
+                    <div class="alert alert-success message" align="center">
+                        <p><strong> You can order this {{ document.type }} for <b class="highlight">{{ max_days }} </b>
+                            days. If
+                            you check it out today, you will have to return it till <b
+                                    class="highlight">{{ due_date }}</b></strong></p>
+                    </div>
                 {% endif %}
             {% endif %}
-            {% if given_out %}
-                <p><b>Given out to you</b></p>
-            {% endif %}
->>>>>>> 621d5450d3191b5fcf1f0139930a1fd80db62840
-        {% endif %}
-        {% if given_out %}
-            <p><b>Given out to you</b></p>
-        {% endif %}
-    {% endif %}
 
-    {% if not user.is_authenticated and copy_list %}
-        <p>To check out that {{ document.type }} you need to login</p>
-    {% elif not user.is_active %}
-        <p>You need to verify your email address!</p>
-    {% elif not copy_list %}
-        <p class="redtext">There are no copies in the library yet</p>
-    {% endif %}
 
+        {% elif not user.is_authenticated and copy_list %}
+            <div class="alert alert-danger message" align="center">To check out that {{ document.type }} you need to
+                login
+            </div>
+        {% elif not user.is_active %}
+            <div class="alert alert-danger message" align="center">You need to verify your email address!</div>
+        {% elif not copy_list %}
+            <div class="alert alert-danger message" align="center">There are no copies in the library yet</div>
+        {% endif %}
+    </div>
     {#Table starts:#}
 
     {% if copy_list and not document.is_reference %}
-        <table border="1" align="left" width="80%">
-            <caption>Copies of this {{ document.type }}</caption>
-            <tr>
-                <th> Title</th>
-                <th> Location</th>
-                <th> Status</th>
-                <th> Additional</th>
-                {% if perms.library.change_documentinstance %}
-                    {% if copy.status != 'g' %}
-                        <th>Actions</th>
-                    {% endif %}
-                {% endif %}
-            </tr>
+        <div style="padding-left:10%; padding-right: 10%;margin-bottom: 200px;">
+            <h2 align="center" style=" color: white; size: 100px;">Copies of this {{ document.type }}</h2>
+            <table class="table" align="left" style="background: white">
 
-            {% for copy in copy_list %}
                 <tr>
-                    <th>{{ copy.document.title }}</th>
-                    <th><strong>Level </strong> {{ copy.location.level }},
-                        <strong>room </strong> {{ copy.location.room }}
-                    </th>
-
-                    {% if copy.status == 'a' %}
-                        {% if user.is_authenticated %}
-                            {% if not_a_patron %}
-                                <th bgcolor="#90ee90"
-                                    title="Your account is limited. Please visit Touch of Library for further information.">
-                                    In library
-                                </th>
-                            {% elif not can_reserve %}
-                                <th bgcolor="#90ee90" title="You are over reservation limit">
-                                    In library
-                                </th>
-                            {% elif reserved or given_out %}
-                                <th bgcolor="#90ee90" title="You cannot book more than one copy">
-                                    In library
-                                </th>
-                            {% elif not not_a_patron %}
-                                <th bgcolor="#90ee90" title="Book this document now!">
-                                    <a href="{% url 'reserve-document' copy_id=copy.id %}"> Available for booking</a>
-                                </th>
-                            {% endif %}
-                        {% else %}
-                            <th bgcolor="#90ee90">
-                                In library
-                            </th>
-                        {% endif %}
-                    {% elif copy.status == 'g' %}
-                        <th bgcolor="#ff6347" title="Will be available on {{ copy.due_back }}">
-                            Given out
-
-                            {% if perms.library.change_reservation %} to
-                                <a href="{% url 'patron-details' id=copy.holder.id %}">{{ copy.holder }}</a>.
-                                <a href="{{ copy.form_return_request_mail }}">Request to return</a>
-                            {% elif copy.id == given_out.document_instance.id %} to you
-                                {% if copy.overdue_days > 0 %}
-                                    <p>Overdue: {{ copy.overdue_days }}</p>
-                                {% endif %}
-                            {% endif %}
-                        </th>
-                    {% elif copy.status == 'r' %}
-                        {% if user.is_authenticated and reserved and reserved.first.document_copy == copy %}
-                            <th bgcolor="#ffa07a" title="Cancel booking">
-                                <a href="{% url 'reserve-document' copy_id=copy.id %}"> Reserved on you
-                                    till {{ reserved.first.due_date }}</a>
-                            </th>
-                        {% else %}
-                            <th bgcolor="#ffa07a">
-                                Reserved
-                            </th>
-                        {% endif %}
-                    {% else %}
-                        <th bgcolor="#fffff0">
-                            Maintenance
-                        </th>
-                    {% endif %}
-                    <th>
-                        {% for a in additional %}
-                            {% if forloop.counter == 1 %}
-                                <div><strong>{{ a }}: </strong> {{ copy.additional_field1 }} </div>
-                            {% elif forloop.counter == 2 %}
-                                <div><strong>{{ a }}: </strong> {{ copy.additional_field2 }} </div>
-                            {% elif forloop.counter == 3 %}
-                                <div><strong>{{ a }}: </strong> {{ copy.additional_field3 }} </div>
-                            {% elif forloop.counter == 4 %}
-                                <div><strong>{{ a }}: </strong> {{ copy.additional_field4 }} </div>
-                            {% elif forloop.counter == 5 %}
-                                <div><strong>{{ a }}: </strong> {{ copy.additional_field5 }} </div>
-                            {% endif %}
-                        {% endfor %}
-                    </th>
+                    <th> Title</th>
+                    <th> Location</th>
+                    <th> Status</th>
+                    <th> Additional</th>
                     {% if perms.library.change_documentinstance %}
                         {% if copy.status != 'g' %}
-                            <th>
-                                <div><a href="{% url 'documentinstance-update' id=copy.id %}">Edit copy</a>
-                                    <div><a href="{% url 'documentinstance-deleteconfirm' id=copy.id %}">Delete copy</a>
-                                        {% else %}
-                            <th>Given out documents can not be updated or deleted</th>
+                            <th>Actions</th>
                         {% endif %}
                     {% endif %}
                 </tr>
-            {% endfor %}
-        </table>
 
+                {% for copy in copy_list %}
+                    <tr>
+                        <td>{{ copy.document.title }}</td>
+                        <td><strong>Level </strong> {{ copy.location.level }},
+                            <strong>Room </strong> {{ copy.location.room }}
+                        </td>
+
+                        {% if copy.status == 'a' %}
+                            {% if user.is_authenticated %}
+                                {% if not_a_patron %}
+                                    <td title="Your account is limited. Please visit Touch of Library for further information.">
+                                        <span class="badge badge-success">In library</span>
+                                    </td>
+                                {% elif not can_reserve %}
+                                    <td title="You are over reservation limit">
+                                        <span class="badge badge-success">In library</span>
+                                        <span class="badge badge-danger">You are over reservation limit</span>
+                                    </td>
+                                {% elif reserved or given_out %}
+                                    <td title="You cannot book more than one copy">
+                                        <span class="badge badge-success">In library</span>
+                                    </td>
+                                {% elif not not_a_patron %}
+                                    <td title="Book this document now!">
+                                        <a href="{% url 'reserve-document' copy_id=copy.id %}" class="btn btn-success"
+                                           role="button"> Available for
+                                            booking</a>
+                                    </td>
+                                {% endif %}
+                            {% else %}
+                                <td>
+                                    <span class="badge badge-success">In library</span>
+                                </td>
+                            {% endif %}
+                        {% elif copy.status == 'g' %}
+                            <td title="Must be available on {{ copy.due_back }}">
+                                {% if perms.library.change_reservation %}
+                                    <span class="badge badge-danger">Given out</span>
+                                    <p>Holder:
+                                        <a href="{% url 'patron-details' id=copy.holder.id %}">{{ copy.holder }}</a>.
+                                        <a href="{{ copy.form_return_request_mail }}">Request to return</a></p>
+                                {% elif copy.id == given_out.document_instance.id %}
+                                    <span class="badge badge-danger">Given out to you</span>
+                                    {% if copy.overdue_days > 0 %}
+                                        <p>Overdue: {{ copy.overdue_days }}</p>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge badge-danger">Given out</span>
+                                {% endif %}
+                            </td>
+                        {% elif copy.status == 'r' %}
+                            {% if user.is_authenticated and reserved and reserved.first.document_copy == copy %}
+                                <td title="Cancel booking">
+                                    <a href="{% url 'reserve-document' copy_id=copy.id %}" class="btn btn-warning"
+                                       role="button"> Reserved on you
+                                        till {{ reserved.first.due_date }}</a>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <span class="badge badge-warning">Reserved</span>
+                                </td>
+                            {% endif %}
+                        {% else %}
+                            <td>
+                                <span class="badge badge-secondary"> Maintenance</span>
+                            </td>
+                        {% endif %}
+                        <td>
+                            {% for a in additional %}
+                                {% if forloop.counter == 1 %}
+                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field1 }} </div>
+                                {% elif forloop.counter == 2 %}
+                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field2 }} </div>
+                                {% elif forloop.counter == 3 %}
+                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field3 }} </div>
+                                {% elif forloop.counter == 4 %}
+                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field4 }} </div>
+                                {% elif forloop.counter == 5 %}
+                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field5 }} </div>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        {% if perms.library.change_documentinstance %}
+                            {% if copy.status != 'g' %}
+                                <td>
+                                    <div class="btn-group-vertical">
+                                        <div><a href="{% url 'documentinstance-update' id=copy.id %}"
+                                                class="btn btn-warning"
+                                                role="button">Edit copy</a></div>
+                                        <div><a href="{% url 'documentinstance-deleteconfirm' id=copy.id %}"
+                                                class="btn btn-danger"
+                                                role="button">Delete
+                                            copy</a></div>
+                                    </div>
+                                </td>
+                            {% else %}
+                                <td class="text-danger">Given out documents can not be updated or deleted</td>
+                            {% endif %}
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
     {% endif %}
-
+    </body>
 
 {% endblock %}

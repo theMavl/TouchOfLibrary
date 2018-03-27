@@ -121,8 +121,3 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Cloudinary settings for Django. Add to your settings file.
-CLOUDINARY = {
-    'cloud_name': '***REMOVED***',
-    'api_key': '***REMOVED***',
-    'api_secret': '***REMOVED***',
-}
