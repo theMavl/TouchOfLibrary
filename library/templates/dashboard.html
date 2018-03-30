@@ -14,7 +14,7 @@ about user-->
     {#    {% cloudinary_direct_upload_field request=request %}#}
     {% if perms.library.change_reservation and perms.auth.change_user and perms.library.change_giveout and perms.library.change_document %}
         <h3 align="center" style="color: white;">Librarian activities</h3>
-        {% if user.is_staff %}
+
             <div class="container-fluid">
                 <div class="row" style="padding-top: 50px">
                     <div class="col-sm-3">
@@ -81,7 +81,6 @@ about user-->
                 </div>
 
             </div>
-        {% endif %}
 
     {% else %}
         {% if not user.is_active %}
