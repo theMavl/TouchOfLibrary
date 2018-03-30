@@ -16,60 +16,60 @@ about user-->
         <h3 align="center" style="color: white;">Librarian activities</h3>
         {% if user.is_staff %}
             <div class="container-fluid">
-            <div class="row" style="padding-top: 50px">
-                <div class="col-sm-3">
-                    <div class="card" style="width: 100%; display: inline-block">
+                <div class="row" style="padding-top: 50px">
+                    <div class="col-sm-3">
+                        <div class="card" style="width: 100%; display: inline-block">
 
-                        <div class="card-body">
-                            <h4 class="card-title">DEBUG FEATURE</h4>
-                            <p class="card-text">Instrument for populating database</p>
-                            <a href="{% url 'debug-populate-database' %}" class="btn btn-success">Populate
-                                database</a>
+                            <div class="card-body">
+                                <h4 class="card-title">DEBUG FEATURE</h4>
+                                <p class="card-text">Instrument for populating database</p>
+                                <a href="{% url 'debug-populate-database' %}" class="btn btn-success">Populate
+                                    database</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="card" style="width: 100%; display: inline-block">
-                        <div class="card-body">
-                            <h4 class="card-title">Patron management</h4>
-                            <p><a href="{% url 'patrons-list' %}" class="btn btn-success">Patrons</a>
-                            <a href="{% url 'reservation-list' %}" class="btn btn-success">Reservations</a>
-                            <a href="{% url 'giveout-list' %}" class="btn btn-success">Check-outs</a></p>
+                    <div class="col-sm-3">
+                        <div class="card" style="width: 100%; display: inline-block">
+                            <div class="card-body">
+                                <h4 class="card-title">Patron management</h4>
+                                <p><a href="{% url 'patrons-list' %}" class="btn btn-success">Patrons</a>
+                                    <a href="{% url 'reservation-list' %}" class="btn btn-success">Reservations</a>
+                                    <a href="{% url 'giveout-list' %}" class="btn btn-success">Check-outs</a></p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="card" style="width:100%; display: inline-block">
-                        <div class="card-body">
-                            <h4 class="card-title">Documents</h4>
-                            <p><a href="{% url 'document-create' %}" class="btn btn-success">New document</a>
-                            <a href="{% url 'tags' %}" class="btn btn-success">All existing tags</a></p>
+                    <div class="col-sm-3">
+                        <div class="card" style="width:100%; display: inline-block">
+                            <div class="card-body">
+                                <h4 class="card-title">Documents</h4>
+                                <p><a href="{% url 'document-create' %}" class="btn btn-success">New document</a>
+                                    <a href="{% url 'tags' %}" class="btn btn-success">All existing tags</a></p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="card" style="width:100%; display: inline-block">
-                        <div class="card-body">
-                            <h4 class="card-title">Authors</h4>
-                            <p><a href="{% url 'author-create' %}" class="btn btn-success">New author</a></p>
+                    <div class="col-sm-3">
+                        <div class="card" style="width:100%; display: inline-block">
+                            <div class="card-body">
+                                <h4 class="card-title">Authors</h4>
+                                <p><a href="{% url 'author-create' %}" class="btn btn-success">New author</a></p>
+                            </div>
                         </div>
                     </div>
+
                 </div>
 
-            </div>
 
-
-            <div class="row" style="padding-top: 50px">
-                <div class="col-sm-6">
-                    <div class="card" style="width: 100%; display: inline-block">
-                        <div class="card-body">
-                            <h4 class="card-title">Types</h4>
-                            <p><a href="{% url 'types' %}" class="btn btn-success">All Document Types</a>
-                            <a href="{% url 'type-create' %}" class="btn btn-success">Create new one</a></p>
-                            </p>
+                <div class="row" style="padding-top: 50px">
+                    <div class="col-sm-6">
+                        <div class="card" style="width: 100%; display: inline-block">
+                            <div class="card-body">
+                                <h4 class="card-title">Types</h4>
+                                <p><a href="{% url 'types' %}" class="btn btn-success">All Document Types</a>
+                                    <a href="{% url 'type-create' %}" class="btn btn-success">Create new one</a></p>
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
                     <div class="col-sm-6">
                         <div class="card" style="width: 100%; display: inline-block">
                             <div class="card-body">
@@ -85,9 +85,14 @@ about user-->
 
     {% else %}
         {% if not user.is_active %}
-            <h3>Your account is not active</h3>
+            <div class="alert alert-danger">
+                <strong>Attention!</strong> Your account is not active.
+            </div>
         {% elif patron.patron_type == None %}
-            <h3>Your account is limited. Please visit Touch of Library for further information.</h3>
+            <div class="alert alert-warning">
+                <strong>Attention!</strong> Your account is limited. Please visit Touch of Library for further information.
+            </div>
+
         {% endif %}
         {% include "library/user_infromation_template.html" %}
     {% endif %}

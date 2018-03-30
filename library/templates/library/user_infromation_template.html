@@ -1,146 +1,211 @@
 <!DOCTYPE html>
+{% load bootstrap %}
 <html lang="en">
 <head>
 </head>
 <body>
-
-<div>
-    <p>Personal data</p>
-    <table>
-        <tr>
-            <td><b>Patron ID: </b></td>
-            <td>{{ patron_user.id }}</td>
-        </tr>
-        <tr>
-            <td><b>Full name: </b></td>
-            <td>{{ patron_user.first_name }} {{ patron_user.last_name }}</td>
-        </tr>
-        <tr>
-            <td><b>Email:</b></td>
-            <td>{{ patron_user.email }}</td>
-        </tr>
-        <tr>
-            <td><b>Patron type: </b></td>
-            <td>{{ patron_info.patron_type }}</td>
-        </tr>
-        <tr>
-            <td><b>Address:</b></td>
-            <td>{{ patron_info.address }}</td>
-        </tr>
-        <tr>
-            <td><b>Telegram</b></td>
-            <td>{{ patron_info.telegram }}</td>
-        </tr>
-        <tr>
-            <td><b>Phone Number: </b></td>
-            <td>{{ patron_info.phone_number }}</td>
-        </tr>
-    </table>
-</div>
-<hr>
-{% if reservation_table %}
-    <div>
-        <table border="1" align="left" width="80%">
-            <caption> Reserved documents:</caption>
-            <tr>
-                <th> Document</th>
-                {% if perms.library.change_reservation and perms.library.change_giveout %}
-                    <th> Actions</th> {% endif %}
-            </tr>
-
-            {% for reservation in reservation_table %}
-                <tr>
-                    <th>
-                        <a href="{{ reservation.document.get_absolute_url }}">{{ reservation.document_copy.summary }}</a>
-                    </th>
-                    {% if perms.library.change_reservation and perms.library.change_giveout %}
-                        {% if reservation.document_copy.status == 'r' %}
-                            <th bgcolor="#98fb98" title="Give out the copy">
-                                <a href="{% url 'giveout-confirmation' id=reservation.id %}"> Give out </a>
-                            </th>
-                        {% else %}
-                            <th bgcolor="#f08080">
-                                Out of stock
-                            </th>
-                        {% endif %}
-                    {% endif %}
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
-{% else %}
-    <div>No reserved documents</div>
-{% endif %}
-<hr>
-{% if giveout_table %}
-    <div>
-        <table border="1" align="left" width="80%">
-            <caption> Given out documents:</caption>
-            <tr>
-                <th> Timestamp</th>
-                <th> Document</th>
-                <th> Return date</th>
-                <th> Overdue days</th>
-                {% if perms.library.change_reservation %}
-                    <th> Actions</th> {% endif %}
-            </tr>
-
-            {% for issuance in giveout_table %}
-                <tr>
-                    <th> {{ issuance.timestamp }}</th>
-                    <th>
-                        <a href="{{ issuance.document.get_absolute_url }}">{{ issuance.document_instance.summary }}</a>
-                    </th>
-                    {% if issuance.document_instance.is_overdue %}
-                        <th bgcolor="#ff6347">{{ issuance.document_instance.due_back }}</th>
-                        <th bgcolor="#ff6347">{{ issuance.document_instance.overdue_days }}</th>
-                    {% else %}
-                        <th>
-                            {{ issuance.document_instance.due_back }}</th>
-                    {% endif %}
-                    {% if perms.library.change_reservation and perms.library.delete_giveout %}
-                        <th>
-                            <div><a href="{{ issuance.document_instance.form_return_request_mail }}">Request return</a>
-                            </div>
-                            <div><a href="{{ issuance.get_absolute_url }}">Accept return</a></div>
-                        </th>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
-{% else %}
-    <div>No issued documents</div>
-{% endif %}
-<hr>
-{% if giveout_log_table %}
-    <div>
-        <table border="1" align="left" width="80%">
-            <caption> History of give out</caption>
-            <tr>
-                <th> Date issued</th>
-                <th> Due date</th>
-                <th> Date returned</th>
-                <th> Document</th>
-            </tr>
-
-            {% for issuance in giveout_log_table %}
-                {% if issuance.is_overdue %}
-                    <tr bgcolor="#ff6347">
-                        {% else %}
-                    <tr>
+<ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;" xmlns="http://www.w3.org/1999/html">
+    <li class="list-group-item">
+        <div class="jumbotron">
+            <h1>{{ patron_user.username }}  {% if not patron_user.is_active %}
+               <small><span class="badge badge-danger">Inactive</span></small>
+            {% else %}
+                <small><span class="badge badge-success">Active</span></small>
+            {% endif %}</h1>
+            <h4>Patron page
+                {% if perms.auth.change_user %}
+                    <div class="btn-group">
+                    <a href="{% url 'patron_edit' pk=patron_user.id %}" class="btn btn-warning">Edit</a>
                 {% endif %}
-            <th>{{ issuance.timestamp_given_out.date }}</th>
-            <th>{{ issuance.timestamp_due_back.date }}</th>
-            <th>{{ issuance.timestamp_returned.date }}</th>
-            <th>{{ issuance.document_instance_summary }}</th>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
+                {% if perms.auth.delete_user %}
+                    {% if not patron_user.is_active %}
+                        <button class="btn btn-danger" title="Impossible to delete inactive patron"> Delete
+                        </button>
+                    {% elif giveout_table %}
+                        <button class="btn btn-danger" title="Impossible to delete patron with give outs"> Delete
+                        </button>
+                    {% else %}
+                        <a href="{% url 'patron-delete' pk=patron_user.id %}" class="btn btn-danger"> Delete</a>
+                    {% endif %}
+                {% endif %}
+                </div>
+            </h4>
+        </div>
+    </li>
+    <li class="list-group-item">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4">
+                    <img style="height: 300px; width: 300px; margin: 10% 10% 10% 0"
+                         src="https://www.shareicon.net/download/2016/09/01/822712_user_512x512.png">
+                </div>
+                <div class="col-md-8">
 
-{% else %}
-    <div>No booking history</div>
-{% endif %}
+                    <table>
+                        <tr>
+                            <td><b>Patron ID: </b></td>
+                            <td>{{ patron_user.id }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Full name: </b></td>
+                            <td>{{ patron_user.first_name }} {{ patron_user.last_name }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Email:</b></td>
+                            <td>{{ patron_user.email }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Patron type: </b></td>
+                            <td>{{ patron_info.patron_type }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Address:</b></td>
+                            <td>{{ patron_info.address }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Telegram</b></td>
+                            <td>{{ patron_info.telegram }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Phone Number: </b></td>
+                            <td>{{ patron_info.phone_number }}</td>
+                        </tr>
+                    </table>
+                    <hr>
+                    <button class="btn btn-warning" data-toggle="collapse" data-target="#reservations">Reserved
+                        documents:
+                        <span class="badge badge-light">{{ reservation_table.count }}</span>
+                    </button>
+                    <div id="reservations" class="collapse">
+                        {% if reservation_table %}
+
+                            <table class="table">
+
+                                {% for reservation in reservation_table %}
+                                    <tr>
+                                        <th>
+                                            <a href="{{ reservation.document.get_absolute_url }}">{{ reservation.document_copy.summary }}</a>
+                                        </th>
+                                        <th>
+                                            {% if perms.library.change_reservation and perms.library.change_giveout %}
+                                                {% if reservation.document_copy.status == 'r' %}
+                                                    <a href="{% url 'giveout-confirmation' id=reservation.id %}">
+                                                        Give out </a>
+                                                {% else %}
+                                                    Out of stock
+                                                {% endif %}
+                                            {% else %}
+
+                                                <a title="Close reservation"
+                                                   href="{% url 'reserve-document' copy_id=reservation.document_copy.id %}"
+                                                   class="btn btn-warning"
+                                                   role="button"> Reserved
+                                                    till {{ reservation.due_date }}</a>
+                                            {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        {% else %}
+                            <div>No reserved documents</div>
+                        {% endif %}
+                    </div>
+
+                    <hr>
+
+                    <button class="btn btn-success" data-toggle="collapse" data-target="#giveouts">Given out documents:
+                        <span class="badge badge-light">{{ giveout_table.count }}</span>
+                    </button>
+                    <div id="giveouts" class="collapse">
+                        {% if giveout_table %}
+                            <div>
+                                <table class="table">
+                                    <tr>
+                                        <th> Timestamp</th>
+                                        <th> Document</th>
+                                        <th> Return date</th>
+                                        <th> Overdue days</th>
+                                        <th> Fine</th>
+                                        {% if perms.library.change_reservation %}
+                                            <th> Actions</th> {% endif %}
+                                    </tr>
+
+                                    {% for issuance in giveout_table %}
+                                        <tr>
+                                            <th> {{ issuance.timestamp }}</th>
+                                            <th>
+                                                <a href="{{ issuance.document.get_absolute_url }}">{{ issuance.document_instance.summary }}</a>
+                                            </th>
+                                            {% if issuance.document_instance.is_overdue %}
+                                                <td class="text-danger">{{ issuance.document_instance.due_back }}</td>
+                                                <td><h2><span
+                                                        class="badge badge-danger">{{ issuance.document_instance.overdue_days }}</span>
+                                                </h2></td>
+                                                <td><h2><span
+                                                        class="badge badge-danger">{{ issuance.document_instance.fine }}</span>
+                                                </h2></td>
+                                            {% else %}
+                                                <td>
+                                                    {{ issuance.document_instance.due_back }}</td>
+                                                <td><h2><span class="badge badge-success">0</span></h2></td>
+                                                <td><h2><span class="badge badge-success">0</span></h2></td>
+                                            {% endif %}
+                                            {% if perms.library.change_reservation and perms.library.delete_giveout %}
+                                                <td>
+                                                    <div class="btn-group-vertical">
+
+                                                        <a title="Send mail with request" href="{{ issuance.document_instance.form_return_request_mail }}" class="btn btn-warning">Request
+                                                            return</a>
+                                                    <a href="{{ issuance.get_absolute_url }} " class="btn btn-success">Accept return</a>
+                                                    </div>
+                                                </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        {% else %}
+                            <div>No issued documents</div>
+                        {% endif %}
+                    </div>
+                    <hr>
+                    <button class="btn btn-info" data-toggle="collapse" data-target="#history">History of give outs:
+                        <span class="badge badge-light">{{ giveout_log_table.count }}</span>
+                    </button>
+                    <div id="history" class="collapse">
+                        {% if giveout_log_table %}
+                            <div>
+                                <table border="1" align="left" width="80%">
+                                    <caption> History of give out</caption>
+                                    <tr>
+                                        <th> Date issued</th>
+                                        <th> Due date</th>
+                                        <th> Date returned</th>
+                                        <th> Document</th>
+                                    </tr>
+
+                                    {% for issuance in giveout_log_table %}
+                                        {% if issuance.is_overdue %}
+                                            <tr bgcolor="#ff6347">
+                                                {% else %}
+                                            <tr>
+                                        {% endif %}
+                                    <th>{{ issuance.timestamp_given_out.date }}</th>
+                                    <th>{{ issuance.timestamp_due_back.date }}</th>
+                                    <th>{{ issuance.timestamp_returned.date }}</th>
+                                    <th>{{ issuance.document_instance_summary }}</th>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+
+                        {% else %}
+                            <div>No booking history</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+    </li>
+</ul>
+
 </body>
 </html>

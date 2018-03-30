@@ -1,53 +1,9 @@
 {% extends "base_generic.html" %}
 
-<!--This is an html response page for ~/library/patrons/ url that shows content information
-(FirstName, LastName (from internal user model))
-(address, telegram, phone number (from patronInfo model))
-about user-->
 
 {% block content %}
-    <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;" xmlns="http://www.w3.org/1999/html">
-        <li class="list-group-item">
-            <div class="jumbotron">
-                <h1>{{ patron_user.username }}  {% if not patron_user.is_active %}
-                    <span class="badge badge-danger">Inactive</span>
-                {% else %}
-                    <span class="badge badge-success">Active</span>
-                {% endif %}</h1>
-                <h4>Patron page
-                    {% if perms.auth.change_user %}
-                        <div class="btn-group">
-                        <a href="{% url 'patron_edit' pk=patron_user.id %}" class="btn btn-warning">Edit</a>
-                    {% endif %}
-                    {% if perms.auth.delete_user %}
-                        {% if not patron_user.is_active %}
-                            <button class="btn btn-danger" title="Impossible to delete inactive patron"> Delete
-                            </button>
-                        {% elif giveout_table  %}
-                            <button class="btn btn-danger" title="Impossible to delete patron with give outs"> Delete
-                            </button>
-                        {% else %}
-                            <a href="{% url 'patron-delete' pk=patron_user.id %}" class="btn btn-danger"> Delete</a>
-                        {% endif %}
-                    {% endif %}
-                    </div>
-                </h4>
-            </div>
-        </li>
-        <li class="list-group-item">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-4">
-                        <img style="height: 300px; width: 300px; margin: 10% 10% 10% 0" src="https://www.shareicon.net/download/2016/09/01/822712_user_512x512.png">
-                    </div>
-                    <div class="col-md-8">
-                        {% include "library/user_infromation_template.html" %}
-                    </div>
-                </div>
-            </div>
-        </li>
-    </ul>
-
-
+    <body style="background: lightseagreen">
+    {% include 'library/user_infromation_template.html' %}
+    </body>
 
 {% endblock %}
