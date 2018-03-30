@@ -126,7 +126,7 @@ class DocumentInstance(models.Model):
         if self.status == "a" and not self.document.is_reference:
             self.status = 'r'
             self.save()
-            Reservation.objects.create(user=user, document=self.document, document_copy=self, executed=False).save()
+            Reservation.objects.create(user=user, document=self.document, document_copy=self, confirmed=False).save()
 
     def reserve_from_queue(self):
         queue = DocumentRequest.objects.filter(document_id=self.document_id)
@@ -138,7 +138,7 @@ class DocumentInstance(models.Model):
             self.status = 'r'
             self.save()
             reservation = Reservation.objects.create(user=top.user, document=self.document, document_copy=self,
-                                                     executed=False)
+                                                     confirmed=False)
             mail_subject = 'Touch of Library: Copy Available'
             message = render_to_string('mails/copy_available.html', {
                 'request': top,
