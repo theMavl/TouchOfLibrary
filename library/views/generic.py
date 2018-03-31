@@ -29,6 +29,7 @@ class AuthorDetailView(generic.DetailView):
     model = Author
 
 
+@permission_required("library.add_document")
 class DocumentCreate(CreateView):
     model = Document
     fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference'
@@ -47,15 +48,18 @@ class DocumentCreate(CreateView):
         }
 
 
+@permission_required("library.delete_document")
 class DocumentDelete(DeleteView):
     model = Document
     success_url = reverse_lazy('document')
 
 
+@permission_required("library.change_document")
 class DocumentUpdate(UpdateView):
     model = Document
     fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference'
     template_name_suffix = '_update_form'
+
 
 class TypeListView(generic.ListView):
     """
@@ -63,6 +67,7 @@ class TypeListView(generic.ListView):
     """
     model = DocType
     paginate_by = 10
+
 
 class TypeDetailView(generic.DetailView):
     """
@@ -77,4 +82,3 @@ class TagListView(generic.ListView):
     """
     model = Tag
     paginate_by = 10
-

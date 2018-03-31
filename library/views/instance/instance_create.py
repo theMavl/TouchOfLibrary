@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from library.forms import DocumentInstanceCreate
 from library.models import Document, DocumentInstance
+from django.contrib.auth.decorators import permission_required
 
 
+@permission_required("library.add_documentinstance")
 def instance_create(request, pk):
     instance = DocumentInstance.objects.create()
     docs = Document.objects.all()

@@ -1,8 +1,9 @@
 from django.shortcuts import render
-
 from library.models import DocumentRequest, Document
+from django.contrib.auth.decorators import permission_required
 
 
+@permission_required("library.change_documentrequest")
 def get_priority_queue(request, id):
     document = Document.objects.filter(id=id).first()
     requests = DocumentRequest.objects.filter(document_id=id)

@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-
 from library.forms import DocumentInstanceUpdate
 from library.models import DocumentInstance, Reservation
+from django.contrib.auth.decorators import permission_required
 
 
+@permission_required("library.change_documentinstance")
 def instance_update(request, id):
     instance = get_object_or_404(DocumentInstance, id=id)
     instance.document.quantity_synced = False
