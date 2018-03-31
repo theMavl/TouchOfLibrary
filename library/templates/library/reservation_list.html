@@ -1,37 +1,47 @@
 {% extends 'base_generic.html' %}
 {% block content %}
-    {% if perms.library.change_reservation %}
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <title>Reservations</title>
-        </head>
-        <body>
-        <table border="1" align="left" width="80%">
-            <h1>All reservations</h1>
-            <tr>
-                <th> Document</th>
-                <th> Patron</th>
-                <th> Actions</th>
-            </tr>
-            {% for reservation in reservations %}
+<body style="background: lightseagreen">
+{% if perms.library.change_reservation %}
+    <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
+        <li class="list-group-item">
+            <div class="jumbotron">
+                <h1 align="center">Reservations</h1>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <table class="table table-hover" style="background: white;width: 90%; margin: 0 5% 0 5%">
+                <thead>
                 <tr>
-                    <th> {{ reservation.document_copy.summary }}</th>
-                    <th> <a href="{% url 'patron-details' id=reservation.user.id %}">{{ reservation.user.first_name }} {{ reservation.user.last_name }}</a></th>
-                    {% if reservation.document.quantity_real > 0 %}
-                        <th bgcolor="#98fb98" title="Give out one copy of this {{ reservation.document.type }}">
-                            <a href="{% url 'giveout-confirmation' id=reservation.id %}"> Give out </a>
-                        </th>
-                    {% else %}
-                        <th bgcolor="#f08080">
-                            Out of stock
-                        </th>
-                    {% endif %}
+                    <th> Document</th>
+                    <th> Patron</th>
+                    <th> Actions</th>
                 </tr>
-            {% endfor %}
-        </table>
-        </body>
-        </html>
-    {% else %} You are not allowed to be here
-    {% endif %}
+                </thead>
+                <tbody>
+                {% for reservation in reservations %}
+                    <tr>
+                        <th> {{ reservation.document_copy.summary }}</th>
+                        <th>
+                            <a href="{% url 'patron-details' id=reservation.user.id %}">{{ reservation.user.first_name }} {{ reservation.user.last_name }}</a>
+                        </th>
+                        {% if reservation.document.quantity_real > 0 %}
+                            <th  title="Give out one copy of this {{ reservation.document.type }}">
+                                <a href="{% url 'giveout-confirmation' id=reservation.id %}"  class="btn btn-success"> Give out </a>
+                            </th>
+                        {% else %}
+                            <th >
+                                <span class="badge badge-danger">Out of stock</span>Out of stock
+                            </th>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </li>
+    </ul>
+
+
+{% else %} You are not allowed to be here
+{% endif %}
+</body>
 {% endblock %}
