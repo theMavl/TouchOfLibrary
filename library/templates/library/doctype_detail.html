@@ -1,25 +1,70 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    {% if perms.library.change_giveout %}
-    <h1>{{doctype.name }}</h1>
-    <h2>Properties:</h2>
-  </br>
-    Additional fields: {{doctype.fields}}
-  </br>
-    Entries of that type can be checked out for maximum <strong>{{doctype.max_days}}</strong> days
-      </br>
-    If bestseller - for <strong>{{doctype.max_days_bestseller}}</strong> days maximum
-      </br>
-    Privileged users can check out for  <strong>{{doctype.max_days_privileges}}</strong> days
+    <body style="background: lightseagreen">
+    {% if perms.library.change_doctype %}
+        <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
+            <li class="list-group-item">
+                <div class="jumbotron">
+                    <h1 align="center">Properties of type "{{ doctype.name }}"</h1>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <p>Additional fields:</p>
+                        </div>
+                        <div class="col-md-10">
+                            <p> {{ doctype.fields }} </p>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <p>Time limits:</p>
+                        </div>
+                        <div class="col-md-10">
+                            <div> Entries of that type can be checked out for maximum
+                                <span class="badge badge-success">{{ doctype.max_days }}</span> days
+                            </div>
+                            <div>
+                                If bestseller - for
+                                <span class="badge badge-success">{{ doctype.max_days_bestseller }}</span> days maximum
+                            </div>
+                            <div>
+                                Privileged users can check out for
+                                <span class="badge badge-success">{{ doctype.max_days_privileges }}</span> days
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    </br>
-      Librarian features:
-      <a href="{% url 'type-update' id=doctype.id %}">Update</a>
-      <a href="{% url 'type-deleteconfirm' id=doctype.id %}">Delete</a>
-    </br>
-  {% else %} You are not allowed to be here
-{% endif %}
+            </li>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <p>Librarian features:</p>
+                        </div>
+                        <div class="col-md-10">
+                            <div class="btn-group">
+                                <a class="btn btn-warning" role="button" href="{% url 'type-update' id=doctype.id %}">Update</a>
+                                <a class="btn btn-danger" role="button" href="{% url 'type-deleteconfirm' id=doctype.id %}">Delete</a>
+                            </div>
 
+                        </div>
+                    </div>
+                </div>
+            </li>
 
+        </ul>
+
+    {% else %} You are not allowed to be here
+    {% endif %}
+
+    </body>
 {% endblock %}

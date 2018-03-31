@@ -3,9 +3,7 @@
 {% block content %}
     <head>
         <style>
-            .redtext {
-                color: tomato;
-            }
+
 
             .message {
                 padding-left: 10%;
@@ -14,9 +12,6 @@
                 margin: 1%;
             }
 
-            .greentext {
-                color: palegreen;
-            }
 
             .highlight {
                 color: lightseagreen;
@@ -42,10 +37,10 @@
                                 {% endif %}
                                 {% if perms.library.delete_document %}
                                     {% if all_given_out.count > 0 %}
-                                        <a href="{% url 'document-delete' pk=document.pk %}" class="btn btn-danger"
-                                           role="button">Delete</a>
+                                        <button title="Given out documents can not be deleted" class="btn btn-danger"> Delete</button>
                                     {% else %}
-                                        <button title="Given out documents can not be updated or deleted" class="btn btn-danger"> Delete</button>
+                                         <a href="{% url 'document-delete' pk=document.pk %}" class="btn btn-danger"
+                                           role="button">Delete</a>
                                     {% endif %}
                                 {% endif %}
                             </div>
@@ -258,7 +253,7 @@
                         </td>
                         {% if perms.library.change_documentinstance %}
                             {% if copy.status != 'g' %}
-                                <td>
+                                <td >
                                     <div class="btn-group-vertical">
                                         <div><a href="{% url 'documentinstance-update' id=copy.id %}"
                                                 class="btn btn-warning"

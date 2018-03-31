@@ -1,14 +1,39 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    {% if perms.library.change_documentinstance %}
-    You are deleting a copy of {{instance.document.title}} document
-    </br>
-    Are you sure want to remove that copy from the library?
-  </br>
-    Reservations (if exists) will be canceled
-  </br>
-    <div><a href="{% url 'documentinstance-delete' id=id %}">Delete copy</a>
 
+    <body style="background: lightseagreen">
+    {% if perms.library.change_document %}
+        <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
+            <li class="list-group-item">
+                <div class="jumbotron">
+                    <h1 align="center">Delete a copy</h1>
+                </div>
+                {% if perms.library.delete_documentinstance %}
+                    {% if instance.status == 'g' %}
+                        You are trying to delete a copy of <strong>{{ instance.document.title }}</strong>
+                        </br>
+                        <div class="text-danger"> Given out copies cannot be deleted</div>
+                    {% endif %}
+                    <div align="center">
+                        You are deleting a copy of <strong>{{ instance.document.title }}</strong>
+                        </br>
+                        Are you sure you want to remove that copy from the library?
+                        </br>
+                        <div class="text-danger"> Existing reservations will be canceled</div>
+                        </br>
+                        <div><a class="btn btn-danger" href="{% url 'documentinstance-delete' id=id %}">Delete copy</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </li>
+
+        </ul>
+
+    {% else %} You are not allowed to be here
     {% endif %}
+
+
+    </body>
+
 {% endblock %}

@@ -23,7 +23,9 @@ def get_document_detail(request, id):
         if not patron or patron.first().patron_type is None:
             return render(request, 'library/document_detail.html',
                           context={"document": document, "image": image, "additional": additional,
-                                   "copy_list": copy_list, "not_a_patron": True})
+                                   "copy_list": copy_list,
+                                   'all_given_out': all_given_out,
+                                   "not_a_patron": True})
         patron = patron.first()
         if not document.is_reference:
             if patron.patron_type.privileges:
@@ -63,5 +65,8 @@ def get_document_detail(request, id):
                                "can_reserve": can_reserve})
     else:
         return render(request, 'library/document_detail.html',
-                      context={"document": document,  "image": image, "additional": additional,
-                               "copy_list": copy_list, "not_a_patron": True})
+                      context={"document": document,
+                               "image": image, "additional": additional,
+                               "copy_list": copy_list,
+                               'all_given_out': all_given_out,
+                               "not_a_patron": True})

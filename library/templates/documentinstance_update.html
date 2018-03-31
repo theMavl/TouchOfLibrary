@@ -1,45 +1,154 @@
 {% extends "base_generic.html" %}
-
+{% load bootstrap %}
 {% block content %}
-    {% if perms.library.change_documentinstance %}
-        {% if form.instance.status == 'r' %}
-            <h1>You are trying to update reserved copy!</h1>
-            <h1>Remember that if you change its status, reservation will be canceled</h1>
-        {% endif %}
-        <h1>Document: {{form.instance.document.title}}</h1>
-        <form action="" method="post">
-          <table>
-          {% for field in form %}
 
-          {% if field.label == 'Status' %}
-          {{field.label}} {{field}}
-</br>
-          {% elif field.label == 'Location' %}
-          {{field.label}} {{field}}
-</br>
-          {% elif field.label == 'Price' %}
-          {{field.label}} {{field}}
-</br>
-          {% elif field.label == 'Additional field1' and addfield.0 != None %}
-          {{addfield.0}} {{field}}
-</br>
-          {% elif field.label == 'Additional field2' and addfield.1 != None %}
-          {{addfield.1}} {{field}}
-</br>
-          {% elif field.label == 'Additional field3' and addfield.2 != None %}
-          {{addfield.2}} {{field}}
-</br>
-          {% elif field.label == 'Additional field4' and addfield.3 != None %}
-          {{addfield.3}} {{field}}
-</br>
-          {% elif field.label == 'Additional field5' and addfield.4 != None %}
-          {{addfield.4}} {{field}}
-          {% endif %}
-          {% endfor %}
-        </table>
-            <input class="button" type="submit" name="submit" value="Submit">
-            {% csrf_token %}
+    <body style="background: lightseagreen">
+    {% if perms.library.add_documentinstance %}
+        <form action="" method="post">
+            <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
+                <li class="list-group-item">
+                    <div class="jumbotron">
+                        <h1 align="center">Edit copy</h1>
+                    </div>
+                </li>
+                {% if form.instance.status == 'r' %}
+                    <li class="list-group-item">
+                        <div class="alert alert-danger" align="center">
+                            <h4>You are trying to update reserved copy!</h4>
+                            <p>Remember that if you change its status, reservation will be canceled</p>
+                        </div>
+                    </li>
+                {% endif %}
+                <li class="list-group-item">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <h5>Document:</h5>
+                            </div>
+                            <div class="col-md-10">
+                                <p> {{ form.instance.document.title }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% csrf_token %}
+                {% for field in form %}
+                    {% if field.label == 'Status' %}
+                        <li class="list-group-item">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <h5>{{ field.label }}</h5>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <p>{{ field|bootstrap_inline }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    {% elif field.label == 'Location' %}
+                        <li class="list-group-item">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <h5>{{ field.label }}</h5>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <p>{{ field|bootstrap_inline }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    {% elif field.label == 'Price' %}
+                        <li class="list-group-item">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <h5>{{ field.label }}</h5>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <p>{{ field|bootstrap_inline }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    {% elif field.label == 'Additional field1' and addfield.0 != None %}
+                        <li class="list-group-item">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <h5> {{ addfield.0 }}</h5>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <p>{{ field|bootstrap_inline }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    {% elif field.label == 'Additional field2' and addfield.1 != None %}
+                        <li class="list-group-item">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <h5> {{ addfield.1 }}</h5>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <p>{{ field|bootstrap_inline }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    {% elif field.label == 'Additional field3' and addfield.2 != None %}
+                        <li class="list-group-item">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <h5> {{ addfield.2 }}</h5>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <p>{{ field|bootstrap_inline }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    {% elif field.label == 'Additional field4' and addfield.3 != None %}
+                        <li class="list-group-item">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <h5> {{ addfield.3 }}</h5>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <p>{{ field|bootstrap_inline }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    {% elif field.label == 'Additional field5' and addfield.4 != None %}
+                        <li class="list-group-item">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <h5> {{ addfield.4 }}</h5>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <p>{{ field|bootstrap_inline }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    {% endif %}
+
+                {% endfor %}
+
+                <li class="list-group-item">
+                    <div align="center"><input class="btn btn-success" type="submit" value="Submit"/></div>
+                </li>
+
+            </ul>
         </form>
 
+    {% else %} You are not allowed to be here
     {% endif %}
+    </body>
 {% endblock %}
