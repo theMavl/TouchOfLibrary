@@ -82,7 +82,8 @@
                 <th> Return date</th>
                 <th> Overdue days</th>
                 {% if perms.library.change_reservation %}
-                    <th> Actions</th> {% endif %}
+                    <th> Actions</th>
+                {% endif %}
             </tr>
 
             {% for issuance in giveout_table %}
@@ -105,6 +106,12 @@
                             <div><a href="{{ issuance.get_absolute_url }}">Accept return</a></div>
                         </th>
                     {% endif %}
+
+                    <!-- RENEWALS -->
+                    {% if perms.library.change_reservation %}
+                        <th> <div><a href="{{ issuance.get_absolute_renew_url }}">Renew</a></div> </th>
+                    {% endif %}
+
                 </tr>
             {% endfor %}
         </table>

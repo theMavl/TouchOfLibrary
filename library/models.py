@@ -318,7 +318,7 @@ class GiveOut(models.Model):
     document = models.ForeignKey('Document', on_delete=models.PROTECT)
     document_instance = models.ForeignKey('DocumentInstance', on_delete=models.PROTECT)
     timestamp = models.DateTimeField(auto_now=True)
-    renewed_times = models.IntegerField(help_text='Number of renewals made by the user', null=True)
+    renewed_times = models.IntegerField(help_text='Number of renewals made by the user', null=True, default=0)
 
     class Meta:
         ordering = ('document_instance__due_back',)
@@ -329,6 +329,9 @@ class GiveOut(models.Model):
 
     def get_absolute_url(self):
         return reverse('return-document', args=[str(self.id)])
+
+    def get_absolute_renew_url(self):
+        return reverse('renew-document', args=[str(self.id)])
 
 
 class Reservation(models.Model):
