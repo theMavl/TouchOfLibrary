@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
-from library.models import PatronInfo, Reservation, GiveOut, GiveOutLogEntry
+from library.models import PatronInfo, Reservation, GiveOut, GiveOutLogEntry, DocumentRequest
 
 
 @login_required
@@ -18,6 +18,7 @@ def patron_details(request, id):
     reservation_list = Reservation.objects.filter(user_id=patron_user.id)
     giveout_list = GiveOut.objects.filter(user_id=patron_user.id)
     giveout_log_list = GiveOutLogEntry.objects.filter(user_id=patron_user.id)
+    request_list = DocumentRequest.objects.filter(user_id=patron_user.id)
 
     return render(
         request,
@@ -26,6 +27,7 @@ def patron_details(request, id):
                  'patron_info': patron,
                  'reservation_table': reservation_list,
                  'giveout_table': giveout_list,
-                 'giveout_log_table': giveout_log_list},
+                 'giveout_log_table': giveout_log_list,
+                 'request_table': request_list},
     )
 
