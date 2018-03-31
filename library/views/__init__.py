@@ -1,5 +1,6 @@
 from library.views.index import *
 from library.views.dashboard import *
+from library.views.edit_document_request import *
 
 from library.views.patron import *
 from library.views.document import *
