@@ -1,5 +1,24 @@
 {% extends "base_generic.html" %}
-<form action="" method="post">{% csrf_token %}
-    <p>Are you sure you want to delete "{{ object }}"?</p>
-    <input type="submit" value="Confirm" />
-</form>
+{% block content %}
+    <body style="background: lightseagreen">
+    {% if perms.library.delete_document %}
+        <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
+            <li class="list-group-item">
+                <div class="jumbotron">
+                    <h1 align="center">You are deleting {{ object }}</h1>
+                </div>
+                <div align="center">
+                    <form action="" method="post">{% csrf_token %}
+                        <h3>Are you sure?</h3>
+                        <input class="btn btn-danger" type="submit" value="Confirm"/>
+                    </form>
+                </div>
+            </li>
+        </ul>
+
+    {% else %} You are not allowed to be here
+    {% endif %}
+
+
+    </body>
+{% endblock %}

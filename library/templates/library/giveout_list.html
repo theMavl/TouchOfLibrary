@@ -1,47 +1,64 @@
 {% extends 'base_generic.html' %}
 {% block content %}
+    <body style="background: lightseagreen">
     {% if perms.library.change_giveout %}
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <title>Given out documents</title>
-        </head>
-        <body>
-        <table border="1" align="left" width="80%">
-            <h1>All given out documents</h1>
-            <tr>
-                <th> Document</th>
-                <th> Patron</th>
-                <th> Due date</th>
-                <th> Overdue days </th>
-                <th> Actions</th>
-            </tr>
+        <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
+            <li class="list-group-item">
+                <div class="jumbotron">
+                    <h1 align="center">Given out documents</h1>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <table class="table table-hover" style="background: white;width: 90%; margin: 0 5% 0 5%">
+                    <thead>
+                    <tr>
+                        <th> Document</th>
+                        <th> Patron</th>
+                        <th> Due date</th>
+                        <th> Overdue days</th>
+                        <th> Fine</th>
+                        <th> Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for giveout in giveouts %}
+                        <tr>
+                            <th>
+                                <a href="{{ giveout.document.get_absolute_url }}">{{ giveout.document_instance.summary }}</a>
+                            </th>
+                            <th>
+                                <a href="{% url 'patron-details' id=giveout.user.id %}">{{ giveout.user.first_name }} {{ giveout.user.last_name }}
+                                    ({{ giveout.patron.patron_type }})</a></th>
+                            {% if giveout.document_instance.is_overdue %}
+                                <td class="text-danger">{{ giveout.document_instance.due_back }}</td>
+                                <td><h2><span
+                                        class="badge badge-danger">{{ giveout.document_instance.overdue_days }}</span>
+                                </h2></td>
+                                <td><h2><span
+                                        class="badge badge-danger">{{ giveout.document_instance.fine }} rubles</span>
+                                </h2></td>
+                            {% else %}
+                                <td>
+                                    {{ giveout.document_instance.due_back }}</td>
+                                <td><h2><span class="badge badge-success">0</span></h2></td>
+                                <td><h2><span class="badge badge-success">0</span></h2></td>
+                            {% endif %}
 
-            {% for giveout in giveouts %}
-                <tr>
-                    <th><a href="{{ giveout.document.get_absolute_url }}">{{ giveout.document_instance.summary }}</a>
-                    </th>
-                    <th>
-                        <a href="{% url 'patron-details' id=giveout.user.id %}">{{ giveout.user.first_name }} {{ giveout.user.last_name }}
-                            ({{ giveout.patron.patron_type }})</a></th>
-                    {% if giveout.document_instance.is_overdue %}
-                        <th bgcolor="#ff6347">{{ giveout.document_instance.due_back }}</th>
-                        <th bgcolor="#ff6347">{{ giveout.document_instance.overdue_days }}</th>
-                    {% else %}
-                        <th>
-                            {{ giveout.document_instance.due_back }}</th>
-                    {% endif %}
-                    <th><a href="{{ giveout.document_instance.form_return_request_mail }}">Request to return</a></th>
 
-                    <!-- RENEWALS -->
-                    {% if perms.library.change_reservation %}
-                        <th><div><a href="{{ giveout.get_absolute_renew_url }}">Renew</a></div></th>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-        </table>
-        </body>
-        </html>
+                            <th><a href="{{ giveout.document_instance.form_return_request_mail }}" class="btn btn-warning">Request to return</a>
+                            </th>
+                          
+                            <!-- RENEWALS -->
+                            {% if perms.library.change_reservation %}
+                                <th><div><a href="{{ giveout.get_absolute_renew_url }}">Renew</a></div></th>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </li>
+        </ul>
     {% else %} You are not allowed to be here
     {% endif %}
+    </body>
 {% endblock %}

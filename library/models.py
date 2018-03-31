@@ -161,7 +161,7 @@ class DocumentInstance(models.Model):
         fields = [self.additional_field1, self.additional_field2,
                   self.additional_field3, self.additional_field4, self.additional_field5]
         fields_str = ', '.join([x for x in fields if x != ""])
-        return '%s %s "%s" (%s)' % (str(self.document.type).lower(),
+        return '%s %s "%s" (%s)' % (str(self.document.type),
                                     self.document.str_authors(), self.document.title, fields_str)
 
     @property

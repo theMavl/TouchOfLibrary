@@ -1,25 +1,9 @@
 {% extends "base_generic.html" %}
 
-<!--This is an html response page for ~/library/patrons/ url that shows content information
-(FirstName, LastName (from internal user model))
-(address, telegram, phone number (from patronInfo model))
-about user-->
 
 {% block content %}
-    <h1>Patron detail {% if not patron_user.is_active %}
-        - This account is inactive
-    {% endif %}</h1>
+    <body style="background: lightseagreen">
+    {% include 'library/user_infromation_template.html' %}
+    </body>
 
-    <p>{% if perms.auth.change_user %}
-        <a href="{% url 'patron_edit' pk=patron_user.id %}">Edit</a>
-    {% endif %}|
-        {% if perms.auth.delete_user %}
-            {% if giveout_table or not patron_user.is_active  %}
-                Delete
-            {% else %}
-                <a href="{% url 'patron-delete' pk=patron_user.id %}"> Delete</a>
-            {% endif %}
-        {% endif %}</p>
-
-    {% include "library/user_infromation_template.html" %}
 {% endblock %}

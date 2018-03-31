@@ -15,13 +15,17 @@ def get_document_detail(request, id):
     document = Document.objects.get(id=id)
     additional = document.type.fields.split(sep=";")
     copy_list = DocumentInstance.objects.filter(document_id=id)
+    all_given_out = copy_list.filter(status='g')
+    print(all_given_out.count())
     image = document.image
     if user.is_authenticated:
         patron = PatronInfo.objects.filter(user_id=user.id)
         if not patron or patron.first().patron_type is None:
             return render(request, 'library/document_detail.html',
                           context={"document": document, "image": image, "additional": additional,
-                                   "copy_list": copy_list, "not_a_patron": True})
+                                   "copy_list": copy_list,
+                                   'all_given_out': all_given_out,
+                                   "not_a_patron": True})
         patron = patron.first()
         if not document.is_reference:
             if patron.patron_type.privileges:
@@ -48,7 +52,8 @@ def get_document_detail(request, id):
         given_out = GiveOut.objects.filter(user=user, document=document)
         requested = DocumentRequest.objects.filter(user=user, document=document)
         return render(request, 'library/document_detail.html',
-                      context={'given_out': given_out.first(),
+                      context={'all_given_out': all_given_out,
+                               'given_out': given_out.first(),
                                'reserved': reserved,
                                'requested': requested,
                                "document": document,
@@ -60,5 +65,8 @@ def get_document_detail(request, id):
                                "can_reserve": can_reserve})
     else:
         return render(request, 'library/document_detail.html',
-                      context={"document": document,  "image": image, "additional": additional,
-                               "copy_list": copy_list, "not_a_patron": True})
+                      context={"document": document,
+                               "image": image, "additional": additional,
+                               "copy_list": copy_list,
+                               'all_given_out': all_given_out,
+                               "not_a_patron": True})

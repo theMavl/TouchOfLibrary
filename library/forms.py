@@ -12,7 +12,7 @@ from library.models import DocumentInstance, Author, DocType, Tag
 
 
 class DueDateForm(forms.Form):
-    due_date = forms.DateField(help_text="Enter a date when the document must be returned.")
+    due_date = forms.DateField()
     max_days = 1
 
     def clean_due_date(self):

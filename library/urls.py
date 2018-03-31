@@ -16,7 +16,7 @@ from library.views.type.type_create import type_create
 from library.views.type.type_update import type_update
 from library.views.type.type_delete import type_delete
 from library.views.type.type_delete import type_deleteconfirm
-
+from library.views.document.priority_queue import get_priority_queue
 try:
     Reservation.clean_old_reservations()
 except:
@@ -82,4 +82,5 @@ urlpatterns = [
     url(r'^tags/delete/(?P<id>\d+)$', tag_delete, name='tag-delete'),
 
     url(r'^populate_database/$', populate_db, name='debug-populate-database'),
+    url(r'^document/(?P<id>\d+)/queue$', get_priority_queue, name='priority_queue'),
 ]

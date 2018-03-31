@@ -1,23 +1,64 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    {% if perms.library.change_documentinstance %}
-        <h1>You are deleting type "{{ instance.name }}"" </h1>
-        {% if count == 0 %}
-        <div><a href="{% url 'type-delete' id=id %}">Delete</a>
-          {% else %} This type is associated with some documents, delete them before deleting type.
-          <table border="1" align="left" width="80%">
-              <tr>
-                  <th> Title </th>
-              </tr>
-              {% for docs in wrong_docs %}
-                  <tr>
-                      <td><a href="{{ docs.get_absolute_url }}">{{ docs.title }} </a></td>
-                  </tr>
-              {% endfor %}
-          </table>
-          {% endif %}
-        </br>
+     <body style="background: lightseagreen">
+    {% if perms.library.delete_tag %}
+        <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
+            <li class="list-group-item">
+                <div class="jumbotron">
+                    <h1 align="center">You are deleting type "{{ instance.name }}"</h1>
+                </div>
+                {% if not wrong_docs  and not given_out %}
+                    <div align="center">
+                        <a class="btn btn-danger" role="button" href="{% url 'tag-delete' id=id %}">Delete</a>
+                    </div>
+                {% else %}
+                    <div class="alert alert-danger" align="center">
+                        This type is associated with some documents, delete them before deleting type.
+                    </div>
 
+                    <table class="table">
+                        {% for doc in given_out %}
+                            <tr>
+                                <td><a href="{{ doc.get_absolute_url }}">
+                                    {{ doc.title }}
+                                </a></td>
+                                <td>
+                                    {{ doc.type }}
+                                </td>
+                                {% if perms.library.delete_document %}
+                                    <td>
+                                        <h6 title="Imposible to delete" class="text-danger">Given out</h6>
+                                    </td>
+                                {% endif %}
+
+                            </tr>
+                        {% endfor %}
+                        {% for docs in wrong_docs %}
+                            <tr>
+                                <td><a href="{{ docs.get_absolute_url }}">
+                                    {{ docs.title }}
+                                </a></td>
+                                <td>
+                                    {{ docs.type }}
+                                </td>
+                                {% if perms.library.delete_document %}
+                                    <td>
+                                        <a href="{% url 'document-delete' pk=docs.id %}" class="btn btn-danger"
+                                           role="button">Delete</a>
+                                    </td>
+                                {% endif %}
+
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+            </li>
+        </ul>
+
+    {% else %} You are not allowed to be here
     {% endif %}
+
+
+    </body>
 {% endblock %}
