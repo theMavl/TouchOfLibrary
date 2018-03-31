@@ -15,6 +15,8 @@ def get_document_detail(request, id):
     document = Document.objects.get(id=id)
     additional = document.type.fields.split(sep=";")
     copy_list = DocumentInstance.objects.filter(document_id=id)
+    all_given_out = copy_list.filter(status='g')
+    print(all_given_out.count())
     image = document.image
     if user.is_authenticated:
         patron = PatronInfo.objects.filter(user_id=user.id)
@@ -48,7 +50,8 @@ def get_document_detail(request, id):
         given_out = GiveOut.objects.filter(user=user, document=document)
         requested = DocumentRequest.objects.filter(user=user, document=document)
         return render(request, 'library/document_detail.html',
-                      context={'given_out': given_out.first(),
+                      context={'all_given_out': all_given_out,
+                               'given_out': given_out.first(),
                                'reserved': reserved,
                                'requested': requested,
                                "document": document,
