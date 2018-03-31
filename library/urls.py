@@ -36,7 +36,7 @@ urlpatterns = [
     url(r'^reserve_document/(?P<copy_id>[0-9a-z-]+)$', reserve_document, name='reserve-document'),
 
     url(r'^request_document/(?P<document_id>\d+)$', request_document, name='request-document'),
-    url(r'^edit_document_request/(?P<id>\d+)/(?P<action>\d+)$', edit_document_request, name='edit-document-request'),
+    url(r'^edit_document_request/(?P<id>\d+)/(?P<action>[\w-]+)/$', edit_document_request, name='edit-document-request'),
 
     url(r'^issued/$', giveout_list, name='giveout-list'),
     url(r'^issued/(?P<id>\d+)$', giveout_confirmation, name='giveout-confirmation'),

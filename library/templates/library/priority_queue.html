@@ -17,7 +17,7 @@
                             <p>Document: </p>
                         </div>
                         <div class="col-md-10">
-                            <p> {{ document.summary }} </p>
+                            <p> {{ document }} </p>
                         </div>
                     </div>
                 </div>
@@ -28,14 +28,14 @@
                         <tr>
                             <th> Name</th>
                             <th> Patron type</th>
-                            <th> Date stamp</th>
+                            <th> Timestamp</th>
                             <th> Priority</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for request,importance in queue %}
                             <tr>
-                                <td> {{ request.user.first_name }} {{ request.user.last_name }}</td>
+                                <td> <a href="{% url 'patron-details' id=request.user_id %}">{{ request.user.first_name }} {{ request.user.last_name }}</a></td>
                                 <td> {{ request.patron.patron_type }}</td>
                                 <td> {{ request.timestamp }}</td>
                                 <td> {{ importance }}</td>

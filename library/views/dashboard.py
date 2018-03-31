@@ -7,7 +7,7 @@ import cloudinary
 
 @login_required
 def dashboard(request):
-    image = cloudinary.CloudinaryImage("sample2.jpg")
+    image = cloudinary.CloudinaryImage("UI/user.png")
     user = auth.get_user(request)
     try:
         patron = PatronInfo.objects.get(user_id=user.id)

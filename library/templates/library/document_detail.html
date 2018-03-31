@@ -32,7 +32,7 @@
                                        role="button">New copy</a>
                                 {% endif %}
                                 {% if perms.library.edit_document %}
-                                    <a href="{% url 'document-update' pk=document.pk %}" class="btn btn-dark"
+                                    <a href="{% url 'document-update' pk=document.pk %}" class="btn btn-warning"
                                        role="button">Edit</a>
                                 {% endif %}
                                 {% if perms.library.delete_document %}
@@ -142,7 +142,7 @@
             {% elif document.quantity < 1 and copy_list %}
                 <div class="alert alert-warning message" align="center">
                     <p><strong>Out of stock</strong></p>
-                    <p><a href="{% url 'priority_queue' id=document.id %}" class="btn btn-warning">Request queue</a></p>
+                    <p><a href="{% url 'priority_queue' id=document.id %}" class="btn btn-warning">Queue</a></p>
                 </div>
             {% endif %}
 
@@ -261,14 +261,13 @@
                         {% if perms.library.change_documentinstance %}
                             {% if copy.status != 'g' %}
                                 <td>
-                                    <div class="btn-group-vertical">
+                                    <div class="btn-group-horizontal">
                                         <div><a href="{% url 'documentinstance-update' id=copy.id %}"
                                                 class="btn btn-warning"
-                                                role="button">Edit copy</a></div>
-                                        <div><a href="{% url 'documentinstance-deleteconfirm' id=copy.id %}"
+                                                role="button">Edit</a> <a
+                                                href="{% url 'documentinstance-deleteconfirm' id=copy.id %}"
                                                 class="btn btn-danger"
-                                                role="button">Delete
-                                            copy</a></div>
+                                                role="button">Delete</a></div>
                                     </div>
                                 </td>
                             {% else %}

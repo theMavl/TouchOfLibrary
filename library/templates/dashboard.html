@@ -70,7 +70,6 @@ about user-->
                             <h4 class="card-title">Types</h4>
                             <p><a href="{% url 'types' %}" class="btn btn-success">All Document Types</a>
                                 <a href="{% url 'type-create' %}" class="btn btn-success">New type</a></p>
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -93,12 +92,11 @@ about user-->
             <div class="alert alert-danger">
                 <strong>Attention!</strong> Your account is not active.
             </div>
-        {% elif patron.patron_type == None %}
+        {% elif patron_info.patron_type == None %}
             <div class="alert alert-warning">
-                <strong>Attention!</strong> Your account is limited. Please visit Touch of Library for further
+                <strong>Attention!</strong>Your account is limited. Please visit Touch of Library for further
                 information.
             </div>
-
         {% endif %}
         {% include "library/user_infromation_template.html" %}
     {% endif %}

@@ -7,74 +7,82 @@
 <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;" xmlns="http://www.w3.org/1999/html">
     <li class="list-group-item">
         <div class="jumbotron">
-            <h1>{{ patron_user.username }}  {% if not patron_user.is_active %}
-               <small><span class="badge badge-danger">Inactive</span></small>
+            <h1>Patron page</h1>
+            <h4>{{ patron_user.username }}  {% if not patron_user.is_active %}
+                <small><span class="badge badge-danger">Inactive</span></small>
             {% else %}
                 <small><span class="badge badge-success">Active</span></small>
-            {% endif %}</h1>
-            <h4>Patron page
-                {% if perms.auth.change_user %}
-                    <div class="btn-group">
-                    <a href="{% url 'patron_edit' pk=patron_user.id %}" class="btn btn-warning">Edit</a>
-                {% endif %}
-                {% if perms.auth.delete_user %}
-                    {% if not patron_user.is_active %}
-                        <button class="btn btn-danger" title="Impossible to delete inactive patron"> Delete
-                        </button>
-                    {% elif giveout_table %}
-                        <button class="btn btn-danger" title="Impossible to delete patron with give outs"> Delete
-                        </button>
-                    {% else %}
-                        <a href="{% url 'patron-delete' pk=patron_user.id %}" class="btn btn-danger"> Delete</a>
-                    {% endif %}
-                {% endif %}
-                </div>
-            </h4>
+            {% endif %}</h4>
+
         </div>
     </li>
     <li class="list-group-item">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-4">
-                    <img style="height: 300px; width: 300px; margin: 10% 10% 10% 0"
-                         src="https://www.shareicon.net/download/2016/09/01/822712_user_512x512.png">
+                    <img style="height: 256px; width: 256px; margin: 0 10% 10% 5%"
+                         src="http://res.cloudinary.com/***REMOVED***/image/upload/v1522528900/UI/user.png">
                 </div>
-                <div class="col-md-8">
+                <table>
+                    <tr>
+                        <td><b>Patron ID: </b></td>
+                        <td>{{ patron_user.id }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Full name: </b></td>
+                        <td>{{ patron_user.first_name }} {{ patron_user.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Email:</b></td>
+                        <td>{{ patron_user.email }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Patron type: </b></td>
+                        <td>{{ patron_info.patron_type }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Address:</b></td>
+                        <td>{{ patron_info.address }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Telegram</b></td>
+                        <td>{{ patron_info.telegram }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Phone Number: </b></td>
+                        <td>{{ patron_info.phone_number }}</td>
+                    </tr>
+                    <tr>
+                        <td>{% if perms.auth.change_user %}
+                            <div class="btn-group">
+                                <a href="{% url 'patron_edit' pk=patron_user.id %}" class="btn btn-warning">Edit</a>
+                            </div>
+                        {% endif %}
+                            {% if perms.auth.delete_user %}
+                                <div class="btn-group">
+                                    {% if not patron_user.is_active %}
+                                        <button class="btn btn-danger" title="Impossible to delete inactive patron">
+                                            Delete
+                                        </button>
+                                    {% elif giveout_table %}
+                                        <button class="btn btn-danger"
+                                                title="Impossible to delete patron with give outs"> Delete
+                                        </button>
+                                    {% else %}
+                                        <a href="{% url 'patron-delete' pk=patron_user.id %}" class="btn btn-danger">
+                                            Delete</a>
+                                    {% endif %}
+                                </div>
+                            {% endif %}</td>
+                    </tr>
 
-                    <table>
-                        <tr>
-                            <td><b>Patron ID: </b></td>
-                            <td>{{ patron_user.id }}</td>
-                        </tr>
-                        <tr>
-                            <td><b>Full name: </b></td>
-                            <td>{{ patron_user.first_name }} {{ patron_user.last_name }}</td>
-                        </tr>
-                        <tr>
-                            <td><b>Email:</b></td>
-                            <td>{{ patron_user.email }}</td>
-                        </tr>
-                        <tr>
-                            <td><b>Patron type: </b></td>
-                            <td>{{ patron_info.patron_type }}</td>
-                        </tr>
-                        <tr>
-                            <td><b>Address:</b></td>
-                            <td>{{ patron_info.address }}</td>
-                        </tr>
-                        <tr>
-                            <td><b>Telegram</b></td>
-                            <td>{{ patron_info.telegram }}</td>
-                        </tr>
-                        <tr>
-                            <td><b>Phone Number: </b></td>
-                            <td>{{ patron_info.phone_number }}</td>
-                        </tr>
-                    </table>
+                </table>
+
+                <div class="col-md-11">
                     <hr>
                     {% if request_table %}
                         <div>
-                            <table border="1" align="left" width="80%">
+                            <table class="table">
                                 <p> Requested documents:</p>
                                 <tr>
                                     <th> Document</th>
@@ -88,7 +96,22 @@
                                             <a href="{{ request.document.get_absolute_url }}">{{ request.document }}</a>
                                         </th>
                                         {% if perms.library.change_documentrequest and perms.library.change_documentrequest %}
-                                            <th>Outstanding request</th>
+
+                                            <th>{% if request.outstanding %}<p>
+                                                <a href="{% url 'edit-document-request' id=request.id action='outstanding' %}">Remove
+                                                    outstanding
+                                                    request</a>
+                                            {% else %}
+                                                <a href="{% url 'edit-document-request' id=request.id action='outstanding' %}">Outstanding
+                                                    request</a>
+                                            {% endif %}</p>
+                                                <p>
+                                                    <a href="{% url 'edit-document-request' id=request.id action='delete' %}">Delete
+                                                        request</a></p>
+
+                                            </th>
+
+
                                         {% endif %}
                                     </tr>
                                 {% endfor %}
@@ -134,7 +157,7 @@
                         {% endif %}
                     </div>
 
-                  <hr>
+                    <hr>
 
                     <button class="btn btn-success" data-toggle="collapse" data-target="#giveouts">Given out documents:
                         <span class="badge badge-light">{{ giveout_table.count }}</span>
@@ -177,16 +200,21 @@
                                                 <td>
                                                     <div class="btn-group-vertical">
 
-                                                        <a title="Send mail with request" href="{{ issuance.document_instance.form_return_request_mail }}" class="btn btn-warning">Request
+                                                        <a title="Send mail with request"
+                                                           href="{{ issuance.document_instance.form_return_request_mail }}"
+                                                           class="btn btn-warning">Request
                                                             return</a>
-                                                    <a href="{{ issuance.get_absolute_url }} " class="btn btn-success">Accept return</a>
+                                                        <a href="{{ issuance.get_absolute_url }} "
+                                                           class="btn btn-success">Accept return</a>
                                                     </div>
                                                 </td>
                                             {% endif %}
-                                          <!-- RENEWALS -->
-                                          {% if perms.library.change_reservation %}
-                                              <th> <div><a href="{{ issuance.get_absolute_renew_url }}">Renew</a></div> </th>
-                                          {% endif %}
+                                            <!-- RENEWALS -->
+                                            {% if perms.library.change_reservation %}
+                                                <th>
+                                                    <div><a href="{{ issuance.get_absolute_renew_url }}">Renew</a></div>
+                                                </th>
+                                            {% endif %}
                                         </tr>
                                     {% endfor %}
                                 </table>
