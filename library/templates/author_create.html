@@ -1,15 +1,45 @@
 {% extends "base_generic.html" %}
-
+{% load bootstrap %}
 {% block content %}
-    {% if perms.library.change_documentinstance %}
-        <h1>Add new author to library</h1>
+
+    <body style="background: lightseagreen">
+    {% if perms.library.add_author %}
         <form action="" method="post">
-            <table>
-                {{ form.as_table }}
-            </table>
-            <input class="button" type="submit" name="submit" value="Submit">
+        <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
+            <li class="list-group-item">
+                <div class="jumbotron">
+                    <h1 align="center">Add new author</h1>
+                </div>
+            </li>
+
             {% csrf_token %}
+                {% for field in form %}
+                    <li class="list-group-item">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <h5>{{ field.label }}</h5>
+                                </div>
+                                <div class="col-md-10">
+                                    <p>{{ field|bootstrap_inline }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </li>
+                {% endfor %}
+
+            <li class="list-group-item" >
+                <div align="center"> <input class="btn btn-success" type="submit" value="Submit"/></div>
+            </li>
+
+        </ul>
         </form>
 
+    {% else %} You are not allowed to be here
     {% endif %}
+
+
+    </body>
+
 {% endblock %}

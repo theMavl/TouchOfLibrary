@@ -31,7 +31,20 @@ class AuthorDetailView(generic.DetailView):
 
 class DocumentCreate(CreateView):
     model = Document
-    fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference',
+    fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference'
+
+    class Meta:
+        model = Document
+        fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference'
+        labels = {
+            'title': 'Title',
+            'authors': 'Authors',
+            'description': 'Description',
+            'type': 'Type',
+            'tags': 'Tags',
+            'bestseller': 'Bestseller',
+            'is_reference': 'Is reference',
+        }
 
 
 class DocumentDelete(DeleteView):
