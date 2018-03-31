@@ -30,4 +30,3 @@ def patron_details(request, id):
                  'giveout_log_table': giveout_log_list,
                  'request_table': request_list},
     )
-

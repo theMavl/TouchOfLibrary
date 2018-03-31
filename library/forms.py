@@ -5,6 +5,8 @@ from django.core.validators import validate_email
 from .models import PatronType
 from django.forms import ModelForm
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+
 
 from library.models import DocumentInstance, Author, DocType, Tag
 
@@ -34,6 +36,31 @@ class ReturnDocumentForm(forms.Form):
 
         if not librarian_confirm:
             raise ValidationError('You must confirm the return')
+
+
+class RenewDocumentForm(forms.Form):
+    due_date = forms.DateField(help_text="Enter the date for renewal")
+    max_days = 1
+    error_outstanding_request = False
+    error_limit_of_renewals = False
+
+    def clean_due_date(self):
+        data = self.cleaned_data['due_date']
+        # If date from the past
+        if data < datetime.date.today():
+            raise ValidationError('Wrong date - date from the past')
+
+        # If the interval is bigger than 2 weeks
+        if data > datetime.date.today() + datetime.timedelta(self.max_days):
+            raise ValidationError('Wrong date - out of limit borders')
+
+        if self.error_outstanding_request:
+            raise ValidationError('Can not renew, there is an outstanding request for this book')
+
+        if self.error_limit_of_renewals:
+            raise ValidationError('Can not renew, you have reached the limit of renewals')
+
+        return data
 
 
 class DocumentInstanceUpdate(forms.ModelForm):
@@ -173,7 +200,6 @@ class DeletePatron(forms.Form):
     librarian_confirmation = forms.BooleanField()
 
 
-
 class AuthorUpdate(forms.ModelForm):
     class Meta:
         model = Author
@@ -208,12 +234,6 @@ class TypeDelete(forms.ModelForm):
     class Meta:
         model = DocType
         fields = '__all__'
-
-
-
-from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 
 
 class SignupForm(UserCreationForm):

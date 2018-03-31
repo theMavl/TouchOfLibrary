@@ -5,7 +5,6 @@ from library.views.tag.tag_update import tag_update
 from library.views.tag.tag_delete import tag_delete
 from library.views.tag.tag_delete import tag_deleteconfirm
 
-from library.forms import AuthorDelete
 from library.views import *
 
 # Maintenance routines
@@ -43,6 +42,7 @@ urlpatterns = [
     url(r'^issued/(?P<id>\d+)$', giveout_confirmation, name='giveout-confirmation'),
 
     url(r'^return_document/(?P<id>\d+)$', return_document, name='return-document'),
+    url(r'^renew_document/(?P<id>\d+)$', renew_document, name='renew-document'),
 
     url(r'^patrons/$', patrons_list, name='patrons-list'),
     url(r'^patrons/(?P<id>\d+)$', patron_details, name='patron-details'),

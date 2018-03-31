@@ -32,6 +32,11 @@
                             {{ giveout.document_instance.due_back }}</th>
                     {% endif %}
                     <th><a href="{{ giveout.document_instance.form_return_request_mail }}">Request to return</a></th>
+
+                    <!-- RENEWALS -->
+                    {% if perms.library.change_reservation %}
+                        <th><div><a href="{{ giveout.get_absolute_renew_url }}">Renew</a></div></th>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </table>
