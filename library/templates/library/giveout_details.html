@@ -1,17 +1,88 @@
 {% extends "base_generic.html" %}
+{% load bootstrap %}
 {% block content %}
+    <body style="background: lightseagreen">
     {% if perms.library.change_giveout %}
-        <h2>Give out confirmation</h2>
+        <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
+            <li class="list-group-item">
+                <div class="jumbotron">
+                    <h1 align="center">Give out confirmation</h1>
+                </div>
+            </li>
+            <li class="list-group-item">
 
-        <h4>Order: {{ reservation.document_copy.summary }}</h4>
-        <p>Location: {{ reservation.document_copy.location }}</p>
-        <p>Borrower: {{ reservation.user.first_name }} {{ reservation.user.last_name }} ({{ patron_type }})</p>
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ form }}
-            <p><input type="submit" name="accept_order" value="Accept"/></p>
-        </form>
-    {% else %}
-        You are not allowed to be here
+
+            </li>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h5>Order:</h5>
+                        </div>
+                        <div class="col-md-10">
+                            <p>{{ reservation.document_copy.summary }}</p>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h5>Location: </h5>
+                        </div>
+                        <div class="col-md-10">
+                            <p>{{ reservation.document_copy.location }}</p>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h5>Borrower: </h5>
+                        </div>
+                        <div class="col-md-10">
+                            <p>{{ reservation.user.first_name }} {{ reservation.user.last_name }}
+                                <span class="badge badge-success">{{ patron_type }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+
+                        <div class="col-md-2">
+                            <h5>Due date: </h5>
+                        </div>
+                        <div class="col-md-10">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <div class="control-group {% if form.due_date.errors %}error{% endif %}">
+
+                                    {{ form.due_date|bootstrap_inline }}
+                                    {% if not form.errors %}
+                                        <p>Enter the date when the document must be returned.</p>
+                                    {% else %}
+                                        <div class="alert alert-danger " align="center">
+                                            Wrong input
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <p><input class="btn btn-success" type="submit" name="accept_order" value="Accept"/></p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+
+    {% else %} You are not allowed to be here
     {% endif %}
+
+
+    </body>
 {% endblock %}

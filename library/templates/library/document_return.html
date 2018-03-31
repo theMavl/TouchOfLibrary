@@ -1,27 +1,94 @@
 {% extends "base_generic.html" %}
+{% load bootstrap %}
 {% block content %}
+    <body style="background: lightseagreen">
     {% if perms.library.change_giveout %}
-        <h2>Document return confirmation</h2>
+        <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
+            <li class="list-group-item">
+                <div class="jumbotron">
+                    <h1 align="center">Give out confirmation</h1>
+                </div>
+            </li>
 
-        <div><h4>Giveout details</h4>
-            Copy of {{ giveout.document_instance.summary }}
-            <div>Given out to {{ giveout.user.first_name }} {{ giveout.user.last_name }} ({{ patron_type }}) at {{ giveout.timestamp }}</div>
-        </div>
-        <br>
-        <div>Overdue: {{ overdue_days }} day(s)</div>
-        <div>Fine: {{ fine }}</div>
-        <h3>As a Librarian, I confirm that</h3>
-        <div>A document is being returned in appropriate condition</div>
-        {% if fine > 0 %}
-            <p>Patron has paid the fine</p>
-        {% endif %}
-        <p></p>
-        <form action="" method="post">
-            {% csrf_token %}
-            <div>{{ form }}</div>
-            <div><input type="submit" name="accept_return" value="Accept"/></div>
-        </form>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h5>Copy:</h5>
+                        </div>
+                        <div class="col-md-10">
+                            <p>{{ giveout.document_instance.summary }}</p>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h5>Borrower: </h5>
+                        </div>
+                        <div class="col-md-10">
+                            <p>{{ giveout.user.first_name }} {{ giveout.user.last_name }}
+                                <span class="badge badge-success">{{ patron_type }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h5>Overdue: </h5>
+                        </div>
+                        <div class="col-md-10">
+                            <h2>
+                                {% if overdue_days > 0 %}
+                                    <span class="badge badge-danger">{{ overdue_days }}</span>
+                                {% else %}
+                                    <span class="badge badge-success">{{ overdue_days }}</span>
+                                {% endif %}
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+
+                        <div class="col-md-2">
+                            <h5>Fine: </h5>
+                        </div>
+                        <div class="col-md-10">
+                            <h2>
+                                {% if fine > 0 %}
+                                    <span class="badge badge-danger">{{ fine }}</span>
+                                {% else %}
+                                    <span class="badge badge-success">{{ fine }}</span>
+                                {% endif %}
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="alert alert-warning " align="center">
+                        <h3>{{ form.librarian_confirmation|bootstrap_inline }} </h3>
+                        <div>As a Librarian, I confirm that</div>
+                        <div>A document is being returned in appropriate condition</div>
+                        <div> Patron has paid the fine</div>
+                    </div>
+                    <div align="center"><input class="btn btn-success" type="submit" name="accept_return" value="Accept"/></div>
+                </form>
+
+            </li>
+        </ul>
+
     {% else %}
         You are not allowed to be here
     {% endif %}
+    </body>
 {% endblock %}

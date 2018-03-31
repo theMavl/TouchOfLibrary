@@ -69,7 +69,7 @@ about user-->
                         <div class="card-body">
                             <h4 class="card-title">Types</h4>
                             <p><a href="{% url 'types' %}" class="btn btn-success">All Document Types</a>
-                                <a href="{% url 'type-create' %}" class="btn btn-success">Create new one</a></p>
+                                <a href="{% url 'type-create' %}" class="btn btn-success">New type</a></p>
                             </p>
                         </div>
                     </div>
@@ -78,7 +78,8 @@ about user-->
                     <div class="card" style="width: 100%; display: inline-block">
                         <div class="card-body">
                             <h4 class="card-title">Tags</h4>
-                            <p><a href="{% url 'tags' %}" class="btn btn-success">All tags</a></p>
+                            <p><a href="{% url 'tags' %}" class="btn btn-success">All tags</a>
+                            <a href="{% url 'tag-create' %}" class="btn btn-success">New tag</a></p>
                         </div>
                     </div>
                 </div>
