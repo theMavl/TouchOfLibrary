@@ -12,7 +12,6 @@
                 margin: 1%;
             }
 
-
             .highlight {
                 color: lightseagreen;
             }
@@ -37,9 +36,11 @@
                                 {% endif %}
                                 {% if perms.library.delete_document %}
                                     {% if all_given_out.count > 0 %}
-                                        <button title="Given out documents can not be deleted" class="btn btn-danger"> Delete</button>
+                                        <button title="Given out documents can not be deleted" class="btn btn-danger">
+                                            Delete
+                                        </button>
                                     {% else %}
-                                         <a href="{% url 'document-delete' pk=document.pk %}" class="btn btn-danger"
+                                        <a href="{% url 'document-delete' pk=document.pk %}" class="btn btn-danger"
                                            role="button">Delete</a>
                                     {% endif %}
                                 {% endif %}
@@ -113,7 +114,7 @@
             {% elif not not_a_patron %}
                 {% if document.quantity < 1 and not reserved and not given_out %}
                     {% if requested %}
-                        <div class="alert alert-warningmessage" align="center"><p><strong>You have requested
+                        <div class="alert alert-warning message" align="center"><p><strong>You have requested
                             this {{ document.type }}. When it will be your turn to get
                             a copy, you will be notified via e-mail.</strong></p>
                             <p><a
@@ -137,6 +138,11 @@
                                     class="highlight">{{ due_date }}</b></strong></p>
                     </div>
                 {% endif %}
+            {% elif document.quantity < 1 and copy_list %}
+                <div class="alert alert-warning message" align="center">
+                    <p><strong>Out of stock</strong></p>
+                    <p><a href="{% url 'priority_queue' id=document.id %}" class="btn btn-warning">Request queue</a></p>
+                </div>
             {% endif %}
 
 
@@ -253,7 +259,7 @@
                         </td>
                         {% if perms.library.change_documentinstance %}
                             {% if copy.status != 'g' %}
-                                <td >
+                                <td>
                                     <div class="btn-group-vertical">
                                         <div><a href="{% url 'documentinstance-update' id=copy.id %}"
                                                 class="btn btn-warning"

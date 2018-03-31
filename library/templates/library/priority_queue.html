@@ -1,0 +1,58 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <body style="background: lightseagreen">
+    {% if perms.library.change_document %}
+        <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
+            <li class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
+            <li class="list-group-item">
+                <div class="jumbotron">
+                    <h1 align="center">Request queue</h1>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <p>Document: </p>
+                        </div>
+                        <div class="col-md-10">
+                            <p> {{ document.summary }} </p>
+                        </div>
+                    </div>
+                </div>
+
+                {% if queue %}
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th> Name</th>
+                            <th> Patron type</th>
+                            <th> Date stamp</th>
+                            <th> Priority</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for request,importance in queue %}
+                            <tr>
+                                <td> {{ request.user.first_name }} {{ request.user.last_name }}</td>
+                                <td> {{ request.patron.patron_type }}</td>
+                                <td> {{ request.timestamp }}</td>
+                                <td> {{ importance }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <P> There is no requests on this document</P>
+                {% endif %}
+
+            </li>
+
+        </ul>
+
+    {% else %} You are not allowed to be here
+    {% endif %}
+
+    </body>
+{% endblock %}
