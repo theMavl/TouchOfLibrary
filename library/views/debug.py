@@ -24,9 +24,11 @@ def populate_db(request):
         content_type=ContentType.objects.get(app_label="library", model="doctype"))
     perms_patroninfo = Permission.objects.filter(
         content_type=ContentType.objects.get(app_label="library", model="patroninfo"))
+    perms_document_request = Permission.objects.filter(
+        content_type=ContentType.objects.get(app_label="library", model="documentrequest"))
 
     libr_perms = [perms_user, perms_document, perms_document_instance, perms_reservation, perms_giveout, perms_tag,
-                  perms_doctype, perms_patroninfo]
+                  perms_doctype, perms_patroninfo, perms_document_request]
 
     group_libr = Group.objects.create(name='Librarian')
 

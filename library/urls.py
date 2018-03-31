@@ -17,6 +17,7 @@ from library.views.type.type_update import type_update
 from library.views.type.type_delete import type_delete
 from library.views.type.type_delete import type_deleteconfirm
 from library.views.document.priority_queue import get_priority_queue
+
 try:
     Reservation.clean_old_reservations()
 except:
@@ -34,9 +35,12 @@ urlpatterns = [
 
     url(r'^reserved/$', reservation_list, name='reservation-list'),
     url(r'^reserve_document/(?P<copy_id>[0-9a-z-]+)$', reserve_document, name='reserve-document'),
+    url(r'^notification_response/(?P<id>[0-9a-z-]+)$',
+        notification_response, name='notification-response'),
 
     url(r'^request_document/(?P<document_id>\d+)$', request_document, name='request-document'),
-    url(r'^edit_document_request/(?P<id>\d+)/(?P<action>[\w-]+)/$', edit_document_request, name='edit-document-request'),
+    url(r'^edit_document_request/(?P<id>\d+)/(?P<action>[\w-]+)/$', edit_document_request,
+        name='edit-document-request'),
 
     url(r'^issued/$', giveout_list, name='giveout-list'),
     url(r'^issued/(?P<id>\d+)$', giveout_confirmation, name='giveout-confirmation'),

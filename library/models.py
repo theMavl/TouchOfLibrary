@@ -113,48 +113,49 @@ class DocumentInstance(models.Model):
         else:
             return overdue * 100
 
-    def clean_giveout(self):
+    def clean_giveout(self, request):
         self.status = 'a'
         self.holder = None
         self.due_back = None
         self.document.quantity_synced = False
         self.save()
         self.document.save()
-        self.reserve_from_queue()
+        self.reserve_from_queue(request)
 
-    def reserve(self, user):
+    def reserve(self, request, user, notify_user):
         if self.status == "a" and not self.document.is_reference:
             self.status = 'r'
             self.save()
-            Reservation.objects.create(user=user, document=self.document, document_copy=self, confirmed=False).save()
+            if notify_user:
+                reservation = Reservation.objects.create(user=user, document=self.document, document_copy=self,
+                                                         confirmed=False)
+                mail_subject = 'Touch of Library: Copy Available'
+                current_site = get_current_site(request)
+                message = render_to_string('mails/copy_available.html', {
+                    'user': user,
+                    'document': self.document,
+                    'domain': current_site.domain,
+                    'summary': self.summary(),
+                    'reservation_due': reservation.due_date(),
+                    'reservation_id': reservation.id
+                })
+                to_email = user.email
+                email = EmailMultiAlternatives(mail_subject, message, to=[to_email])
+                email.attach_alternative(message, "text/html")
+                email.send()
+                reservation.save()
+            else:
+                Reservation.objects.create(user=user, document=self.document, document_copy=self,
+                                           confirmed=True).save()
 
-    def reserve_from_queue(self):
+    def reserve_from_queue(self, request):
         queue = DocumentRequest.objects.filter(document_id=self.document_id)
         if queue:
             top = queue.first()
             for e in queue:
                 if e.importance() > top.importance():
                     top = e
-            self.status = 'r'
-            self.save()
-            reservation = Reservation.objects.create(user=top.user, document=self.document, document_copy=self,
-                                                     confirmed=False)
-            mail_subject = 'Touch of Library: Copy Available'
-            message = render_to_string('mails/copy_available.html', {
-                'request': top,
-                'summary': self.summary(),
-                'reservation_due': reservation.due_date(),
-            })
-            to_email = top.user.email
-
-            # email = EmailMessage(
-            #    mail_subject, message, to=[to_email]
-            # )
-            email = EmailMultiAlternatives(mail_subject, message, to=[to_email])
-            email.attach_alternative(message, "text/html")
-            email.send()
-
-            reservation.save()
+            self.reserve(request, top.user, True)
             top.delete()
 
     def summary(self):
@@ -338,6 +339,7 @@ class Reservation(models.Model):
     """
         Model of reservation on a book
     """
+    _default_lifetime = 2
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     document = models.ForeignKey('Document', on_delete=models.CASCADE)
     document_copy = models.ForeignKey('DocumentInstance', on_delete=models.CASCADE)
@@ -346,25 +348,39 @@ class Reservation(models.Model):
 
     @staticmethod
     def clean_old_reservations():
-        orders = [x for x in Reservation.objects.all() if x.is_old]
+        orders = [x for x in Reservation.objects.all() if x.days_remaining < 2]
         n = len(orders)
         for x in orders:
-            x.document.quantity_synced = False
-            x.document.save()
-            if x.document_copy is not None:
-                x.document_copy.status = 'a'
-                x.document_copy.save()
-            x.delete()
+            if x.days_remaining >= 0 and not x.confirmed:
+                mail_subject = 'Touch of Library: Copy Available'
+                message = render_to_string('mails/copy_available.html', {
+                    'user': x.user,
+                    'document': x.document,
+                    #TODO: DOMAIN
+                    'domain': "touch-of-library.herokuapp.com",
+                    'summary': x.document_copy.summary(),
+                    'reservation_due': x.due_date(),
+                    'reservation_id': x.id,
+                })
+                to_email = x.user.email
+                email = EmailMultiAlternatives(mail_subject, message, to=[to_email])
+                email.attach_alternative(message, "text/html")
+                email.send()
+            else:
+                x.document.quantity_synced = False
+                x.document.save()
+                if x.document_copy is not None:
+                    x.document_copy.status = 'a'
+                    x.document_copy.save()
+                x.delete()
         return n
 
     @property
-    def is_old(self):
-        if datetime.date.today() > self.timestamp.date() + datetime.timedelta(days=2):
-            return True
-        return False
+    def days_remaining(self):
+        return datetime.date.today() - self.timestamp.date() + datetime.timedelta(days=self._default_lifetime)
 
     def due_date(self):
-        return str(self.timestamp.date() + datetime.timedelta(days=5))
+        return str(self.timestamp.date() + datetime.timedelta(days=self._default_lifetime))
 
 
 class Tag(models.Model):

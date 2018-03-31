@@ -1,11 +1,13 @@
 {% autoescape off %}
-    <p>Dear {{ request.user.first_name }} {{ request.user.last_name }},</p>
+    <p>Dear {{ user.first_name }} {{ user.last_name }},</p>
 
-    This is Touch of Library. You made a request for a <a href="{{ domain }}{% url 'document-detail' id=request.document.id %}">{{ request.document }}</a> at {{ request.timestamp.date }}.
-    The following copy is available and had been reserved on you:
-    {{ summary }}
+    This is Touch of Library. You made a request for a <a href="http://{{ domain }}{% url 'document-detail' id=document.id %}">{{ document }}</a>.
 
-    <p>Please note, that it will be reserved only till {{ reservation_due }}. Afterwards it will be considered that you refused from taking this copy.</p>
+    <p>One of the copies available and has been reserved for you.</p>
+
+    <p>Please let us know that you received this message by clicking <a href="http://{{ domain }}{% url 'notification-response' id=reservation_id %}">here</a>.</p>
+    <p>We will wait for your confirmation till {{ reservation_due }}, afterwards it will be considered that you refused from taking this copy.
+        After your confirmation, you will have <b>two days</b> to take document from the Library.</p>
 
     <p>You can cancel the reservation, if you do not need this document.</p>
 

@@ -129,27 +129,30 @@
                         {% if reservation_table %}
                             <table class="table">
                                 {% for reservation in reservation_table %}
-                                    <tr>
-                                        <th>
-                                            <a href="{{ reservation.document.get_absolute_url }}">{{ reservation.document_copy.summary }}</a>
-                                        </th>
-                                        <th>
-                                            {% if perms.library.change_reservation and perms.library.change_giveout %}
-                                                {% if reservation.document_copy.status == 'r' %}
-                                                    <a href="{% url 'giveout-confirmation' id=reservation.id %}">
-                                                        Give out </a>
-                                                {% else %}
-                                                    Out of stock
-                                                {% endif %}
-                                            {% else %}
+                                    {% if reservation.confirmed %}
+                                        <tr>{% else %}
+                                        <tr bgcolor="#A9A9A9">
+                                    {% endif %}
+                                <th>
+                                    <a href="{{ reservation.document.get_absolute_url }}">{{ reservation.document_copy.summary }}</a>
+                                </th>
+                                <th>
+                                    {% if perms.library.change_reservation and perms.library.change_giveout %}
+                                        {% if reservation.document_copy.status == 'r' %}
+                                            <a href="{% url 'giveout-confirmation' id=reservation.id %}">
+                                                Give out </a>
+                                        {% else %}
+                                            Out of stock
+                                        {% endif %}
+                                    {% else %}
 
-                                                <a title="Close reservation"
-                                                   href="{% url 'reserve-document' copy_id=reservation.document_copy.id %}"
-                                                   class="btn btn-warning"
-                                                   role="button"> Reserved
-                                                    till {{ reservation.due_date }}</a>
-                                            {% endif %}
-                                    </tr>
+                                        <a title="Close reservation"
+                                           href="{% url 'reserve-document' copy_id=reservation.document_copy.id %}"
+                                           class="btn btn-warning"
+                                           role="button"> Reserved
+                                            till {{ reservation.due_date }}</a>
+                                    {% endif %}
+                                </tr>
                                 {% endfor %}
                             </table>
                         {% else %}

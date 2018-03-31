@@ -17,8 +17,9 @@ def reserve_document(request, copy_id):
         if reserved:
             reserved.delete()
             copy.status = "a"
+            copy.reserve_from_queue(request)
         elif not checked_out:
-            copy.reserve(user)
+            copy.reserve(request, user, False)
         document.quantity_synced = False
         copy.save()
         document.save()
