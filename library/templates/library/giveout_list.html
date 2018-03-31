@@ -47,14 +47,17 @@
 
                             <th><a href="{{ giveout.document_instance.form_return_request_mail }}" class="btn btn-warning">Request to return</a>
                             </th>
+                          
+                            <!-- RENEWALS -->
+                            {% if perms.library.change_reservation %}
+                                <th><div><a href="{{ giveout.get_absolute_renew_url }}">Renew</a></div></th>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
             </li>
         </ul>
-
-
     {% else %} You are not allowed to be here
     {% endif %}
     </body>

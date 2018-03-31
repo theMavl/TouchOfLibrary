@@ -72,15 +72,39 @@
                         </tr>
                     </table>
                     <hr>
+                    {% if request_table %}
+                        <div>
+                            <table border="1" align="left" width="80%">
+                                <p> Requested documents:</p>
+                                <tr>
+                                    <th> Document</th>
+                                    {% if perms.library.change_documentrequest and perms.library.change_documentrequest %}
+                                        <th> Actions</th> {% endif %}
+                                </tr>
+
+                                {% for request in request_table %}
+                                    <tr>
+                                        <th>
+                                            <a href="{{ request.document.get_absolute_url }}">{{ request.document }}</a>
+                                        </th>
+                                        {% if perms.library.change_documentrequest and perms.library.change_documentrequest %}
+                                            <th>Outstanding request</th>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    {% else %}
+                        <div>No requested documents</div>
+                    {% endif %}
+                    <hr>
                     <button class="btn btn-warning" data-toggle="collapse" data-target="#reservations">Reserved
                         documents:
                         <span class="badge badge-light">{{ reservation_table.count }}</span>
                     </button>
                     <div id="reservations" class="collapse">
                         {% if reservation_table %}
-
                             <table class="table">
-
                                 {% for reservation in reservation_table %}
                                     <tr>
                                         <th>
@@ -110,7 +134,7 @@
                         {% endif %}
                     </div>
 
-                    <hr>
+                  <hr>
 
                     <button class="btn btn-success" data-toggle="collapse" data-target="#giveouts">Given out documents:
                         <span class="badge badge-light">{{ giveout_table.count }}</span>
@@ -159,6 +183,10 @@
                                                     </div>
                                                 </td>
                                             {% endif %}
+                                          <!-- RENEWALS -->
+                                          {% if perms.library.change_reservation %}
+                                              <th> <div><a href="{{ issuance.get_absolute_renew_url }}">Renew</a></div> </th>
+                                          {% endif %}
                                         </tr>
                                     {% endfor %}
                                 </table>
@@ -196,7 +224,6 @@
                                     {% endfor %}
                                 </table>
                             </div>
-
                         {% else %}
                             <div>No booking history</div>
                         {% endif %}

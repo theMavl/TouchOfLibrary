@@ -126,7 +126,7 @@ class DocumentInstance(models.Model):
         if self.status == "a" and not self.document.is_reference:
             self.status = 'r'
             self.save()
-            Reservation.objects.create(user=user, document=self.document, document_copy=self, executed=False).save()
+            Reservation.objects.create(user=user, document=self.document, document_copy=self, confirmed=False).save()
 
     def reserve_from_queue(self):
         queue = DocumentRequest.objects.filter(document_id=self.document_id)
@@ -138,7 +138,7 @@ class DocumentInstance(models.Model):
             self.status = 'r'
             self.save()
             reservation = Reservation.objects.create(user=top.user, document=self.document, document_copy=self,
-                                                     executed=False)
+                                                     confirmed=False)
             mail_subject = 'Touch of Library: Copy Available'
             message = render_to_string('mails/copy_available.html', {
                 'request': top,
@@ -318,6 +318,7 @@ class GiveOut(models.Model):
     document = models.ForeignKey('Document', on_delete=models.PROTECT)
     document_instance = models.ForeignKey('DocumentInstance', on_delete=models.PROTECT)
     timestamp = models.DateTimeField(auto_now=True)
+    renewed_times = models.IntegerField(help_text='Number of renewals made by the user', null=True, default=0)
 
     class Meta:
         ordering = ('document_instance__due_back',)
@@ -329,6 +330,9 @@ class GiveOut(models.Model):
     def get_absolute_url(self):
         return reverse('return-document', args=[str(self.id)])
 
+    def get_absolute_renew_url(self):
+        return reverse('renew-document', args=[str(self.id)])
+
 
 class Reservation(models.Model):
     """
@@ -338,7 +342,7 @@ class Reservation(models.Model):
     document = models.ForeignKey('Document', on_delete=models.CASCADE)
     document_copy = models.ForeignKey('DocumentInstance', on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now=True)
-    executed = models.BooleanField(default=False)
+    confirmed = models.BooleanField(default=False)
 
     @staticmethod
     def clean_old_reservations():
@@ -355,7 +359,7 @@ class Reservation(models.Model):
 
     @property
     def is_old(self):
-        if datetime.date.today() > self.timestamp.date() + datetime.timedelta(days=5):
+        if datetime.date.today() > self.timestamp.date() + datetime.timedelta(days=2):
             return True
         return False
 
@@ -405,15 +409,17 @@ class DocumentRequest(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     patron = models.ForeignKey('PatronInfo', on_delete=models.CASCADE)
     document = models.ForeignKey('Document', on_delete=models.CASCADE)
+    outstanding = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.importance()) + " " + str(self.timestamp)
-        # return "1"
 
     class Meta:
         ordering = ["timestamp"]
 
     def importance(self):
+        if self.outstanding:
+            return 1.0
         oldest_request = DocumentRequest.objects.filter(document_id=self.document_id).first()
         print(oldest_request.timestamp)
         the_oldest = oldest_request.timestamp
