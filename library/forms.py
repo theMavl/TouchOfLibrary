@@ -55,10 +55,10 @@ class RenewDocumentForm(forms.Form):
             raise ValidationError('Wrong date - out of limit borders')
 
         if self.error_outstanding_request:
-            raise ValidationError('Can not renew, there is an outstanding request for this book')
+            raise ValidationError('Can not renew - there is an outstanding request for this book')
 
         if self.error_limit_of_renewals:
-            raise ValidationError('Can not renew, you have reached the limit of renewals')
+            raise ValidationError('Can not renew - reached the limit of renewals')
 
         return data
 

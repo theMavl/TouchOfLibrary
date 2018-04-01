@@ -16,7 +16,7 @@ def renew_document(request, id):
     patron_user = giveout.user
     patron = PatronInfo.objects.get(user=patron_user)
     max_renew_times = patron.patron_type.max_renew_times
-    outstanding_requests = DocumentRequest.objects.filter(document=document)
+    outstanding_requests = DocumentRequest.objects.filter(document=document, outstanding=True)
 
     error_limit_of_renewals = False
     error_outstanding_request = False
@@ -56,4 +56,5 @@ def renew_document(request, id):
 
     return render(request, 'library/renew_details.html', context={'giveout': giveout,
                                                                   'patron_type': patron.patron_type,
-                                                                  'form': form})
+                                                                  'form': form,
+                                                                  'outstanding_requests': error_outstanding_request})

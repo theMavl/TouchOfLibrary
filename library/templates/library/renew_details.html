@@ -34,7 +34,42 @@
                         </div>
                     </div>
                 </div>
-
+            </li>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h5>Due:</h5>
+                        </div>
+                        <div class="col-md-10">
+                            <p>{{ giveout.document_instance.due_back }}</p>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h5>Renewals:</h5>
+                        </div>
+                        <div class="col-md-10">
+                            <p>{{ giveout.renewed_times }}/{{ patron_type.max_renew_times }}</p>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h5>Outstanding requests:</h5>
+                        </div>
+                        <div class="col-md-10">
+                            <p>{{ outstanding_requests }}</p>
+                        </div>
+                    </div>
+                </div>
             </li>
             <li class="list-group-item">
                 <form action="" method="post">
