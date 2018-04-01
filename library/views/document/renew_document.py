@@ -21,13 +21,7 @@ def renew_document(request, id):
     error_limit_of_renewals = False
     error_outstanding_request = False
 
-    if patron.patron_type.privileges:
-        max_days = document.type.max_days_privileges
-    else:
-        if document.bestseller:
-            max_days = document.type.max_days_bestseller
-        else:
-            max_days = document.type.max_days
+    max_days = document.days_available(patron)
 
     if outstanding_requests:
         error_outstanding_request = True

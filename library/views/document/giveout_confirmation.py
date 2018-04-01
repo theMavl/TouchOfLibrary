@@ -15,14 +15,8 @@ def giveout_confirmation(request, id):
     copy = reservation.document_copy
     patron = PatronInfo.objects.get(user_id=reservation.user.id)
 
-    if patron.patron_type.privileges:
-        max_days = copy.document.type.max_days_privileges
-    else:
-        if copy.document.bestseller:
-            max_days = copy.document.type.max_days_bestseller
+    max_days = copy.document.days_available(patron)
 
-        else:
-            max_days = copy.document.type.max_days
     if request.method == 'POST':
 
         form = DueDateForm(request.POST)

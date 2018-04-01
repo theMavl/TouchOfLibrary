@@ -50,12 +50,12 @@ def populate_db(request):
     libr.groups.add(group_libr)
 
     type_student = PatronType.objects.create(title='Student', max_documents=5, max_renew_times=1, priority=50,
-                                             privileges=False)
+                                             position='n')
     type_faculty = PatronType.objects.create(title='Faculty member', max_documents=10, max_renew_times=1, priority=10,
-                                             privileges=True)
+                                             position='p')
     type_vp = PatronType.objects.create(title='Visiting Professor', max_documents=99999, max_renew_times=99999,
                                         priority=10,
-                                        privileges=False)
+                                        position='v')
 
     PatronInfo.objects.create(user=patr1, phone_number='30001',
                               address='Via Margutta, 3', telegram='None',
@@ -90,7 +90,8 @@ def populate_db(request):
 
     type_book = DocType.objects.create(name='Book', fields='Publisher;Year;Edition', max_days=21,
                                        max_days_bestseller=14,
-                                       max_days_privileges=28)
+                                       max_days_privileges=28,
+                                       max_days_visiting=7)
 
     # type_journal_article = DocType.objects.create(name='Journal article', fields='Issue;Publisher;Publication date',
     #                                             max_days=21, max_days_bestseller=14,
@@ -98,7 +99,8 @@ def populate_db(request):
 
     type_av = DocType.objects.create(name='Audio/video material', fields='Director;Country;Year;Quality',
                                      max_days=14, max_days_bestseller=14,
-                                     max_days_privileges=14)
+                                     max_days_privileges=14,
+                                     max_days_visiting=7)
 
     location1 = LibraryLocation.objects.create(room=401, level=2)
     location2 = LibraryLocation.objects.create(room=541, level=2)

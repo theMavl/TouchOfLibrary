@@ -28,14 +28,7 @@ def get_document_detail(request, id):
                                    "not_a_patron": True})
         patron = patron.first()
         if not document.is_reference:
-            if patron.patron_type.privileges:
-                max_days = document.type.max_days_privileges
-            else:
-                if document.bestseller:
-                    max_days = document.type.max_days_bestseller
-
-                else:
-                    max_days = document.type.max_days
+            max_days = document.days_available(patron)
             due_date = (datetime.date.today() + datetime.timedelta(max_days)).strftime("%d %b %Y")
         else:
             max_days = 0

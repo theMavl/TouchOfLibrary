@@ -49,6 +49,17 @@ class Document(models.Model):
         authors_list = [str(x) for x in list(self.authors.all())]
         return ', '.join(authors_list)
 
+    def days_available(self, patron):
+        if patron.patron_type.position == 'p':
+            return self.type.max_days_privileges
+        elif patron.patron_type.position == 'v':
+            return self.type.max_days_visiting
+        else:
+            if self.bestseller:
+                return self.type.max_days_bestseller
+            else:
+                return self.type.max_days
+
     # document features
     def __str__(self):
         return '%s %s "%s"' % (str(self.type).lower(),
@@ -230,6 +241,7 @@ class DocType(models.Model):
     max_days = models.IntegerField(help_text='Maximum days for loan in regular case', null=True)
     max_days_bestseller = models.IntegerField(help_text='Maximum days for loan if document is bestseller', null=True)
     max_days_privileges = models.IntegerField(help_text='Maximum days for loan for privileged patrons', null=True)
+    max_days_visiting = models.IntegerField(help_text='Maximum days for loan for visiting patrons', null=True)
 
     class Meta:
         verbose_name = "Document Type"
@@ -245,6 +257,8 @@ class DocType(models.Model):
             raise ValidationError('Max days bestseller number should be natural')
         if self.max_days_privileges < 0:
             raise ValidationError('Max days privileges number should be natural')
+        if self.max_days_visiting < 0:
+            raise ValidationError('Max days visiting number should be natural')
 
     def __str__(self):
         return self.name
@@ -294,8 +308,14 @@ class PatronType(models.Model):
     title = models.CharField(max_length=100, blank=True)
     max_renew_times = models.IntegerField(help_text='Maximum number of renewals allowed', null=True)
     max_documents = models.IntegerField(help_text='Maximum number of documents giveouts allowed', null=True)
-    privileges = models.BooleanField(default=False)
     priority = models.IntegerField(help_text='Priority in queue', null=True)
+    # privileges = models.BooleanField(default=False)
+    PATRON_POSITIONS = (
+        ('n', 'None'),
+        ('p', 'Privileged'),
+        ('v', 'Visiting'),
+    )
+    position = models.CharField(max_length=1, choices=PATRON_POSITIONS, blank=True, default='n')
 
     # Constraints
     def clean(self):
@@ -356,7 +376,7 @@ class Reservation(models.Model):
                 message = render_to_string('mails/copy_available.html', {
                     'user': x.user,
                     'document': x.document,
-                    #TODO: DOMAIN
+                    # TODO: DOMAIN
                     'domain': "touch-of-library.herokuapp.com",
                     'summary': x.document_copy.summary(),
                     'reservation_due': x.due_date(),

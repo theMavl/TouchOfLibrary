@@ -208,13 +208,13 @@
                                                         class="badge badge-danger">{{ issuance.document_instance.overdue_days }}</span>
                                                 </h2></td>
                                                 <td><h2><span
-                                                        class="badge badge-danger">{{ issuance.document_instance.fine }}</span>
+                                                        class="badge badge-danger">{{ issuance.document_instance.fine }}&#x20bd;</span>
                                                 </h2></td>
                                             {% else %}
                                                 <td>
                                                     {{ issuance.document_instance.due_back }}</td>
                                                 <td><h2><span class="badge badge-success">0</span></h2></td>
-                                                <td><h2><span class="badge badge-success">0</span></h2></td>
+                                                <td><h2><span class="badge badge-success">0&#x20bd;</span></h2></td>
                                             {% endif %}
                                             {% if perms.library.change_reservation and perms.library.delete_giveout %}
                                                 <td>
