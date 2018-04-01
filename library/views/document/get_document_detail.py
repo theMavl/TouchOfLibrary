@@ -4,7 +4,6 @@ from django.shortcuts import render
 
 from library.models import Document, DocumentInstance, PatronInfo, Reservation, GiveOut, DocumentRequest
 
-import cloudinary
 
 def get_document_detail(request, id):
     """

@@ -4,13 +4,10 @@ from django.core.mail import EmailMessage
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
 
 from library.forms import DeletePatron
 from library.models import PatronInfo
 from library.models import Reservation, GiveOut
-from library.tokens import account_activation_token
 
 
 @permission_required('auth.delete_user')

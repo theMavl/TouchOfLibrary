@@ -1,7 +1,6 @@
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import redirect
 from library.models import DocumentRequest
-from django.http import HttpResponseRedirect
 
 
 @permission_required("library.change_documentrequest")

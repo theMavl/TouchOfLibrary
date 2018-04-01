@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from library.forms import EditPatron, AddPatron
+from library.forms import EditPatron
 from library.models import PatronInfo
 
 

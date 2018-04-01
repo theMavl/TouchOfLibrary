@@ -1,7 +1,6 @@
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.contrib.auth.decorators import permission_required
 
 from library.models import Document, Author, DocType, Tag
 

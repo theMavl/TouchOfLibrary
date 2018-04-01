@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from library.forms import AddPatron

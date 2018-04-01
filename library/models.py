@@ -1,17 +1,16 @@
-from django.core.exceptions import ValidationError
-from django.db import models
-from django.urls import reverse
-import uuid
-from django.contrib.auth.models import User
 import datetime
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+import uuid
+
 import cloudinary.models
-from django.db.models import Q
 import pytz
+from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ValidationError
+from django.core.mail import EmailMultiAlternatives
+from django.db import models
+from django.db.models import Q
 from django.template.loader import render_to_string
-from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.urls import reverse
 
 
 class Document(models.Model):

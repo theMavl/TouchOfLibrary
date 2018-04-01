@@ -1,14 +1,13 @@
 import datetime
+
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from .models import PatronType
-from django.forms import ModelForm
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-
 
 from library.models import DocumentInstance, Author, DocType, Tag
+from .models import PatronType
 
 
 class DueDateForm(forms.Form):
