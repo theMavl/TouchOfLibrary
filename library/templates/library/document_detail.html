@@ -31,13 +31,13 @@
                                     <a href="{% url 'documentinstance-create' pk=document.pk %}" class="btn btn-success"
                                        role="button">New copy</a>
                                 {% endif %}
-                                {% if perms.library.edit_document %}
+                                {% if perms.library.change_document %}
                                     <a href="{% url 'document-update' pk=document.pk %}" class="btn btn-warning"
                                        role="button">Edit</a>
                                 {% endif %}
                                 {% if perms.library.delete_document %}
                                     {% if all_given_out.count > 0 %}
-                                        <button title="Given out documents can not be deleted" class="btn btn-danger">
+                                        <button title="Given out documents can not be deleted" class="btn btn-dark">
                                             Delete
                                         </button>
                                     {% else %}

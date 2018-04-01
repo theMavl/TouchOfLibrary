@@ -61,11 +61,11 @@
                             {% if perms.auth.delete_user %}
                                 <div class="btn-group">
                                     {% if not patron_user.is_active %}
-                                        <button class="btn btn-danger" title="Impossible to delete inactive patron">
+                                        <button class="btn btn-dark" title="Impossible to delete inactive patron">
                                             Delete
                                         </button>
                                     {% elif giveout_table %}
-                                        <button class="btn btn-danger"
+                                        <button class="btn btn-dark"
                                                 title="Impossible to delete patron with give outs"> Delete
                                         </button>
                                     {% else %}
