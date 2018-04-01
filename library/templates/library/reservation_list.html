@@ -19,25 +19,31 @@
                     </thead>
                     <tbody>
                     {% for reservation in reservations %}
-                        {% if reservation.confirmed %}
-                            <tr>{% else %}
-                            <tr bgcolor="#A9A9A9">
-                        {% endif %}
-                    <th> {{ reservation.document_copy.summary }}</th>
-                    <th>
-                        <a href="{% url 'patron-details' id=reservation.user.id %}">{{ reservation.user.first_name }} {{ reservation.user.last_name }}</a>
-                    </th>
-                    {% if reservation.document.quantity_real > 0 %}
-                        <th title="Give out one copy of this {{ reservation.document.type }}">
-                            <a href="{% url 'giveout-confirmation' id=reservation.id %}" class="btn btn-success"> Give
-                                out </a>
-                        </th>
-                    {% else %}
-                        <th>
-                            <span class="badge badge-danger">Out of stock</span>Out of stock
-                        </th>
-                    {% endif %}
-                    </tr>
+                        <tr>
+                            <td>
+                                {% if not reservation.confirmed %}
+                                    <div title="Not confirmed by e-mail" class="alert alert-danger">
+                                        <a href="{{ reservation.document.get_absolute_url }}">{{ reservation.document_copy.summary }}</a>
+                                    </div>
+                                {% else %}
+                                    <a href="{{ reservation.document.get_absolute_url }}">{{ reservation.document_copy.summary }}</a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'patron-details' id=reservation.user.id %}">{{ reservation.user.first_name }} {{ reservation.user.last_name }}</a>
+                            </td>
+                            {% if reservation.document.quantity_real > 0 %}
+                                <td title="Give out one copy of this {{ reservation.document.type }}">
+                                    <a href="{% url 'giveout-confirmation' id=reservation.id %}"
+                                       class="btn btn-success"> Give
+                                        out </a>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <span class="badge badge-danger">Out of stock</span>Out of stock
+                                </td>
+                            {% endif %}
+                        </tr>
                     {% endfor %}
                     </tbody>
                 </table>

@@ -1,23 +1,62 @@
 {% extends "base_generic.html" %}
+{% load bootstrap %}
 {% block content %}
+    <body style="background: lightseagreen">
+    {% if perms.library.change_reservations %}
+        <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
+            <li class="list-group-item">
+                <div class="jumbotron">
+                    <h1 align="center">Renewal confirmation</h1>
+                </div>
+            </li>
+            <li class="list-group-item">
 
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h5>Renewal:</h5>
+                        </div>
+                        <div class="col-md-10">
+                            <p>{{ giveout.document_instance.summary }}</p>
+                        </div>
+                    </div>
+                </div>
 
-    {% if perms.library.change_reservation %}
-        <h2>Renewal confirmation</h2>
+            </li>
+            <li class="list-group-item">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h5>Holder:</h5>
+                        </div>
+                        <div class="col-md-10">
+                            <p>{{ giveout.user.first_name }} {{ giveout.user.last_name }} ({{ patron_type }})</p>
+                        </div>
+                    </div>
+                </div>
 
-        <h4>Renewal: {{ giveout.document_instance.summary }}</h4>
-        <p>Holder: {{ giveout.user.first_name }} {{ giveout.user.last_name }} ({{ patron_type }})</p>
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ form }}
-            <p><input type="submit" name="accept_renew" value="Accept"/></p>
-        </form>
-    {% else %}
-        You are not allowed to be here
+            </li>
+            <li class="list-group-item">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="container-fluid">
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                {{ form|bootstrap_inline }}
+                            </div>
+                            <div class="col-md-3">
+                                <input class="btn btn-success" type="submit" name="accept_renew" value="Accept">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </li>
+        </ul>
+
+
+    {% else %} You are not allowed to be here
     {% endif %}
+    </body>
+
 {% endblock %}

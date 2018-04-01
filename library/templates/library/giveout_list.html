@@ -50,7 +50,7 @@
                           
                             <!-- RENEWALS -->
                             {% if perms.library.change_reservation %}
-                                <th><div><a href="{{ giveout.get_absolute_renew_url }}">Renew</a></div></th>
+                                <th><div><a href="{{ giveout.get_absolute_renew_url }}" class="btn btn-success">Renew</a></div></th>
                             {% endif %}
                         </tr>
                     {% endfor %}
