@@ -232,13 +232,16 @@
                                             <!-- RENEWALS -->
                                             {% if perms.library.change_reservation %}
                                                 <th>
-                                                    <div>
-                                                        {% if issuance.renewed_times < patron_info.patron_type.max_renew_times %}
-                                                            <a href="{{ issuance.get_absolute_renew_url }}">Renew</a>
-                                                        {% else %}
-                                                            Unable to renew ({{ issuance.renewed_times }}/{{ patron_info.patron_type.max_renew_times }})
-                                                        {% endif %}
-                                                    </div>
+
+                                                    {% if issuance.renewed_times < patron_info.patron_type.max_renew_times %}
+                                                        <div><a href="{{ issuance.get_absolute_renew_url }}" class="btn btn-success">Renew</a>
+                                                        </div>
+                                                    {% else %}
+                                                        <div class="text-danger"> Unable to renew
+                                                            ({{ issuance.renewed_times }}/{{ patron_info.patron_type.max_renew_times }})
+                                                        </div>
+                                                    {% endif %}
+
                                                 </th>
                                             {% endif %}
                                         </tr>
