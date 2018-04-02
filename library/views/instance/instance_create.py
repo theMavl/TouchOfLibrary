@@ -20,6 +20,8 @@ def instance_create(request, pk):
         doc_id = form.instance.document.id
         current_doc.quantity_synced = False
         current_doc.save()
+        if instance.status == 'a':
+            instance.reserve_from_queue(request)
         return redirect('document-detail', id=doc_id)
     instance.delete()
     return render(request, 'documentinstance_create.html',
