@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import redirect
-from library.models import DocumentRequest
+from library.models import DocumentRequest, GiveOut
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
 
 
 @permission_required("library.change_documentrequest")
@@ -20,6 +22,17 @@ def edit_document_request(request, id, action):
                 if not outstanding_requests:
                     request.outstanding = True
                     request.save()
+                    giveouts = GiveOut.objects.filter(document=request.document)
+                    for x in giveouts:
+                        mail_subject = 'Touch of Library: Please return document'
+                        message = render_to_string('mails/return_request.html', {
+                            'document': x.document_instance.summary(),
+                            'user': x.user,
+                        })
+                        to_email = x.user.email
+                        email = EmailMultiAlternatives(mail_subject, message, to=[to_email])
+                        email.attach_alternative(message, "text/html")
+                        email.send()
     elif action == 'delete':
         request = DocumentRequest.objects.filter(id=id)
         if request:
