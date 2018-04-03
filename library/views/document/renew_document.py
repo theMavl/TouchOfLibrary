@@ -8,7 +8,7 @@ from library.models import GiveOut, PatronInfo, DocumentRequest
 import datetime
 
 
-@permission_required("library.change_reservation")
+@permission_required("library.change_giveout")
 def renew_document(request, id):
     giveout = GiveOut.objects.get(id=id)
     document = giveout.document
@@ -34,6 +34,7 @@ def renew_document(request, id):
         form.max_days = max_days
         form.error_limit_of_renewals = error_limit_of_renewals
         form.error_outstanding_request = error_outstanding_request
+        form.return_date = doc_instance.due_back
 
         if form.is_valid():
             doc_instance.due_back = form.clean_due_date()
@@ -43,7 +44,7 @@ def renew_document(request, id):
             return HttpResponseRedirect('/library/patrons/' + str(patron_user.id))
 
     else:
-        proposed_renewal_date = datetime.date.today() + datetime.timedelta(max_days)
+        proposed_renewal_date = doc_instance.due_back + datetime.timedelta(max_days)
         form = RenewDocumentForm(initial={
             "due_date": proposed_renewal_date,
         })
