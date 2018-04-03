@@ -4,8 +4,8 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import permission_required
 
 from library.models import Document, Author, DocumentInstance, PatronInfo, PatronType, Tag, \
-    LibraryLocation, DocType
-
+    LibraryLocation, DocType, GiveOut
+import datetime
 
 @permission_required('library.add_document', 'library.add_user', 'library.add_patroninfo')
 def populate_db(request):
@@ -36,16 +36,20 @@ def populate_db(request):
         for perm in p:
             group_libr.permissions.add(perm)
 
-    patr1 = User.objects.create_user(username='patron1', email='first_patron@patronspace.com', password='cakeisalie',
+    patr1 = User.objects.create_user(username='p1', email='first_patron@patronspace.com', password='cakeisalie',
                                      first_name='Sergey', last_name='Afonso')
-    patr2 = User.objects.create_user(username='patron2', email='second_patron@patronspace.com', password='cakeisalie',
+    patr2 = User.objects.create_user(username='p2', email='second_patron@patronspace.com', password='cakeisalie',
                                      first_name='Nadia', last_name='Teixeira')
-    patr3 = User.objects.create_user(username='patron3', email='third_patron@patronspace.com', password='cakeisalie',
+    patr3 = User.objects.create_user(username='p3', email='third_patron@patronspace.com', password='cakeisalie',
                                      first_name='Elvira', last_name='Espindola')
     prof = User.objects.create_user(username='prof', email='the_professor@patronspace.com', password='cakeisalie',
                                     first_name='Nickolay', last_name='Pink')
     libr = User.objects.create_user(username='libr', email='libr@touch.com', password='cakeisalie', first_name='John',
                                     last_name='Smith')
+    s = User.objects.create_user(username='s', email='student@touch.com', password='cakeisalie', first_name='Andrey',
+                                    last_name='Velo')
+    v = User.objects.create_user(username='v', email='vp@touch.com', password='cakeisalie', first_name='Veronika',
+                                 last_name='Rama')
 
     libr.groups.add(group_libr)
 
@@ -57,18 +61,24 @@ def populate_db(request):
                                         priority=10,
                                         position='v')
 
-    PatronInfo.objects.create(user=patr1, phone_number='30001',
+    patr_info1 = PatronInfo.objects.create(user=patr1, phone_number='30001',
                               address='Via Margutta, 3', telegram='None',
                               patron_type=type_faculty)
     PatronInfo.objects.create(user=patr2, phone_number='30002',
                               address='Via Sacra, 13', telegram='None',
-                              patron_type=type_student)
+                              patron_type=type_faculty)
     PatronInfo.objects.create(user=patr3, phone_number='30003',
                               address='Via del Corso, 22', telegram='None',
-                              patron_type=type_student)
+                              patron_type=type_faculty)
     PatronInfo.objects.create(user=prof, phone_number='88005553535',
                               address='Tatarstan, Innopolis city, st. Sportivnaya 2/3', telegram='@restorator',
                               patron_type=type_faculty)
+    PatronInfo.objects.create(user=s, phone_number='30004',
+                              address='Avenida Mazatlan 250', telegram='@restorator',
+                              patron_type=type_student)
+    PatronInfo.objects.create(user=v, phone_number='30005',
+                              address='Stret Atocha, 27', telegram='@restorator',
+                              patron_type=type_vp)
 
     author1 = Author.objects.create(first_name='Thomas', last_name='Cormen')
     author2 = Author.objects.create(first_name='Charles', last_name='Leiserson')
@@ -120,10 +130,13 @@ def populate_db(request):
     doc1.authors.add(author4)
     doc1.tags.add(tag1)
     doc1.tags.add(tag2)
-    DocumentInstance.objects.create(document=doc1, status='a', location=location1, price=1200.0,
+    doc11 = DocumentInstance.objects.create(document=doc1, status='a', location=location1, price=5000.0,
                                     additional_field1='MIT Press', additional_field2='2009',
                                     additional_field3='Third edition')
-    DocumentInstance.objects.create(document=doc1, status='a', location=location2, price=200.0,
+    DocumentInstance.objects.create(document=doc1, status='a', location=location2, price=5000.0,
+                                    additional_field1='MIT Press', additional_field2='2009',
+                                    additional_field3='Third edition')
+    DocumentInstance.objects.create(document=doc1, status='a', location=location2, price=5000.0,
                                     additional_field1='MIT Press', additional_field2='2009',
                                     additional_field3='Third edition')
 
@@ -137,7 +150,13 @@ def populate_db(request):
     doc2.tags.add(tag1)
     doc2.tags.add(tag2)
 
-    DocumentInstance.objects.create(document=doc2, status='a', location=location3, price=2341.0,
+    DocumentInstance.objects.create(document=doc2, status='a', location=location3, price=1700.0,
+                                    additional_field1='Addison-Wesley Professional', additional_field2='2003',
+                                    additional_field3='First edition')
+    DocumentInstance.objects.create(document=doc2, status='a', location=location3, price=1700.0,
+                                    additional_field1='Addison-Wesley Professional', additional_field2='2003',
+                                    additional_field3='First edition')
+    DocumentInstance.objects.create(document=doc2, status='a', location=location3, price=1700.0,
                                     additional_field1='Addison-Wesley Professional', additional_field2='2003',
                                     additional_field3='First edition')
 
@@ -160,11 +179,11 @@ def populate_db(request):
     doc4.tags.add(tag1)
     doc4.tags.add(tag4)
 
-    DocumentInstance.objects.create(document=doc4, status='a', location=location2, price=3100.0,
+    DocumentInstance.objects.create(document=doc4, status='a', location=location2, price=700.0,
                                     additional_field1='Spielberg',
                                     additional_field2='Agaganda', additional_field3='2013',
                                     additional_field4='Blue-Ray')
-    DocumentInstance.objects.create(document=doc4, status='a', location=location2, price=1100.0,
+    DocumentInstance.objects.create(document=doc4, status='a', location=location2, price=700.0,
                                     additional_field1='Spielberg',
                                     additional_field2='Agaganda', additional_field3='2013',
                                     additional_field4='DVD')
@@ -184,5 +203,10 @@ def populate_db(request):
                                     additional_field1='Spielberg',
                                     additional_field2='Agaganda', additional_field3='2013',
                                     additional_field4='DVD')
-    # Reservation.objects.create(user=user, document=document, document_copy=copy, executed=False).save()
+
+    # GIVE-OUTS
+
+    #tt = datetime.datetime.strptime('26 Sep 2012', '%d %b %Y')
+    #doc11.DEBUG_give_out(doc1, patr1, patr_info1, tt)
+
     return redirect('index')

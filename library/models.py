@@ -123,6 +123,16 @@ class DocumentInstance(models.Model):
         else:
             return overdue * 100
 
+    def DEBUG_give_out(self, document, user, patron, timestamp):
+        self.holder = user
+        self.due_back = timestamp + datetime.timedelta(days=document.days_available(patron))
+        self.status = 'g'
+        self.save()
+        document.quantity_synced = False
+        GiveOut.objects.create(user=user, patron=patron, document=document, document_instance=self)
+        if timestamp is not None:
+            GiveOut.objects.filter(user=user, document_instance=self).update(timestamp=timestamp)
+
     def clean_giveout(self, request):
         self.status = 'a'
         self.holder = None
