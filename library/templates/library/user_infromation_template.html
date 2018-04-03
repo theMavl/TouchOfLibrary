@@ -230,7 +230,7 @@
                                                 </td>
                                             {% endif %}
                                             <!-- RENEWALS -->
-                                            {% if perms.library.change_reservation %}
+                                            {% if perms.library.change_giveout %}
                                                 <th>
 
                                                     {% if issuance.renewed_times < patron_info.patron_type.max_renew_times %}
