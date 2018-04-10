@@ -1,5 +1,5 @@
 {% extends "base_generic.html" %}
-
+{% if perms.library.add_author %}
 {% block content %}
     <h1>Authors</h1>
 
@@ -15,3 +15,4 @@
         <p>There are no authors yet.</p>
     {% endif %}
 {% endblock %}
+{%  endif %}

@@ -32,7 +32,7 @@
                                                  <span class="badge badge-success" style="background: lightseagreen;">In library</span>
                                             {% endif %}</h4>
                                             <p> {% for author in document.authors.all %}
-                                                <a href="{{ author.get_absolute_url }}">{{ author.first_name }} {{ author.last_name }}</a>
+                                                {{ author.first_name }} {{ author.last_name }}
                                                 {% if not forloop.last %},{% else %}{% endif %}{% endfor %} </p>
 
                                             <p class="card-text">

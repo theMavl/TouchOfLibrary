@@ -1,17 +1,15 @@
 {% extends "base_generic.html" %}
+{% if perms.library.add_author %}
+    {% block content %}
+        <h1>{{ author.first_name }} {{ author.last_name }}</h1>
+        <p>{{ author.date_born }}-{{ author.date_died }}
+            </br>
+            Librarian features:
+            </br>
+            <a href="{% url 'author-update' id=author.id %}">Update</a>
+            </br>
+            <a href="{% url 'author-deleteconfirm' id=author.id %}">Delete</a>
+        </br>{% endblock %}
 
-{% block content %}
-    <h1>{{ author.first_name }} {{ author.last_name }}</h1>
-    <p>{{ author.date_born }}-{{ author.date_died }}
-    </br>
-      Librarian features:
-    </br>
-      <a href="{% url 'author-update' id=author.id %}">Update</a>
-      </br>
-      <a href="{% url 'author-deleteconfirm' id=author.id %}">Delete</a>
-    <p><strong>Documents by this author:</strong>
-    <!-- TODO: docs by author (D3) -->
-  </br>
+{% endif %}
 
-
-{% endblock %}
