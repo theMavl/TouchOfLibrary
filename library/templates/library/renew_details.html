@@ -2,96 +2,91 @@
 {% load bootstrap %}
 {% block content %}
     <body style="background: lightseagreen">
-    {% if perms.library.change_giveout %}
-        <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
-            <li class="list-group-item">
-                <div class="jumbotron">
-                    <h1 align="center">Renewal confirmation</h1>
-                </div>
-            </li>
-            <li class="list-group-item">
+    <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
+        <li class="list-group-item">
+            <div class="jumbotron">
+                <h1 align="center">Renewal confirmation</h1>
+            </div>
+        </li>
+        <li class="list-group-item">
 
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-2">
+                        <h5>Renewal:</h5>
+                    </div>
+                    <div class="col-md-10">
+                        <p>{{ giveout.document_instance.summary }}</p>
+                    </div>
+                </div>
+            </div>
+
+        </li>
+        <li class="list-group-item">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-2">
+                        <h5>Holder:</h5>
+                    </div>
+                    <div class="col-md-10">
+                        <p>{{ giveout.user.first_name }} {{ giveout.user.last_name }} ({{ patron_type }})</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-2">
+                        <h5>Due:</h5>
+                    </div>
+                    <div class="col-md-10">
+                        <p>{{ giveout.document_instance.due_back }}</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-2">
+                        <h5>Renewals:</h5>
+                    </div>
+                    <div class="col-md-10">
+                        <p>{{ giveout.renewed_times }}/{{ patron_type.max_renew_times }}</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-2">
+                        <h5>Outstanding requests:</h5>
+                    </div>
+                    <div class="col-md-10">
+                        <p>{{ outstanding_requests }}</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <form action="" method="post">
+                {% csrf_token %}
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-2">
-                            <h5>Renewal:</h5>
-                        </div>
-                        <div class="col-md-10">
-                            <p>{{ giveout.document_instance.summary }}</p>
-                        </div>
-                    </div>
-                </div>
 
-            </li>
-            <li class="list-group-item">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <h5>Holder:</h5>
+                        <div class="col-md-6">
+                            {{ form|bootstrap_inline }}
                         </div>
-                        <div class="col-md-10">
-                            <p>{{ giveout.user.first_name }} {{ giveout.user.last_name }} ({{ patron_type }})</p>
+                        <div class="col-md-3">
+                            <input class="btn btn-success" type="submit" name="accept_renew" value="Accept">
                         </div>
                     </div>
                 </div>
-            </li>
-            <li class="list-group-item">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <h5>Due:</h5>
-                        </div>
-                        <div class="col-md-10">
-                            <p>{{ giveout.document_instance.due_back }}</p>
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li class="list-group-item">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <h5>Renewals:</h5>
-                        </div>
-                        <div class="col-md-10">
-                            <p>{{ giveout.renewed_times }}/{{ patron_type.max_renew_times }}</p>
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li class="list-group-item">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <h5>Outstanding requests:</h5>
-                        </div>
-                        <div class="col-md-10">
-                            <p>{{ outstanding_requests }}</p>
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li class="list-group-item">
-                <form action="" method="post">
-                    {% csrf_token %}
-                    <div class="container-fluid">
-                        <div class="row">
-
-                            <div class="col-md-6">
-                                {{ form|bootstrap_inline }}
-                            </div>
-                            <div class="col-md-3">
-                                <input class="btn btn-success" type="submit" name="accept_renew" value="Accept">
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </li>
-        </ul>
-
-
-    {% else %} You are not allowed to be here
-    {% endif %}
+            </form>
+        </li>
+    </ul>
     </body>
 
 {% endblock %}

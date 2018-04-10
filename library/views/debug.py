@@ -7,6 +7,7 @@ from library.models import Document, Author, DocumentInstance, PatronInfo, Patro
     LibraryLocation, DocType, GiveOut
 import datetime
 
+
 @permission_required('library.add_document', 'library.add_user', 'library.add_patroninfo')
 def populate_db(request):
     perms_user = Permission.objects.filter(content_type=ContentType.objects.get(app_label="auth", model="user"))
@@ -47,7 +48,7 @@ def populate_db(request):
     libr = User.objects.create_user(username='libr', email='libr@touch.com', password='cakeisalie', first_name='John',
                                     last_name='Smith')
     s = User.objects.create_user(username='s', email='student@touch.com', password='cakeisalie', first_name='Andrey',
-                                    last_name='Velo')
+                                 last_name='Velo')
     v = User.objects.create_user(username='v', email='vp@touch.com', password='cakeisalie', first_name='Veronika',
                                  last_name='Rama')
 
@@ -62,23 +63,24 @@ def populate_db(request):
                                         position='v')
 
     patr_info1 = PatronInfo.objects.create(user=patr1, phone_number='30001',
-                              address='Via Margutta, 3', telegram='None',
-                              patron_type=type_faculty)
-    PatronInfo.objects.create(user=patr2, phone_number='30002',
-                              address='Via Sacra, 13', telegram='None',
-                              patron_type=type_faculty)
-    PatronInfo.objects.create(user=patr3, phone_number='30003',
-                              address='Via del Corso, 22', telegram='None',
-                              patron_type=type_faculty)
-    PatronInfo.objects.create(user=prof, phone_number='88005553535',
-                              address='Tatarstan, Innopolis city, st. Sportivnaya 2/3', telegram='@restorator',
-                              patron_type=type_faculty)
-    PatronInfo.objects.create(user=s, phone_number='30004',
-                              address='Avenida Mazatlan 250', telegram='@restorator',
-                              patron_type=type_student)
-    PatronInfo.objects.create(user=v, phone_number='30005',
-                              address='Stret Atocha, 27', telegram='@restorator',
-                              patron_type=type_vp)
+                                           address='Via Margutta, 3', telegram='None',
+                                           patron_type=type_faculty)
+    patr_info2 = PatronInfo.objects.create(user=patr2, phone_number='30002',
+                                           address='Via Sacra, 13', telegram='None',
+                                           patron_type=type_faculty)
+    patr_info3 = PatronInfo.objects.create(user=patr3, phone_number='30003',
+                                           address='Via del Corso, 22', telegram='None',
+                                           patron_type=type_faculty)
+    patr_infop = PatronInfo.objects.create(user=prof, phone_number='88005553535',
+                                           address='Tatarstan, Innopolis city, st. Sportivnaya 2/3',
+                                           telegram='@restorator',
+                                           patron_type=type_faculty)
+    patr_infos = PatronInfo.objects.create(user=s, phone_number='30004',
+                                           address='Avenida Mazatlan 250', telegram='@restorator',
+                                           patron_type=type_student)
+    patr_infov = PatronInfo.objects.create(user=v, phone_number='30005',
+                                           address='Stret Atocha, 27', telegram='@restorator',
+                                           patron_type=type_vp)
 
     author1 = Author.objects.create(first_name='Thomas', last_name='Cormen')
     author2 = Author.objects.create(first_name='Charles', last_name='Leiserson')
@@ -131,14 +133,14 @@ def populate_db(request):
     doc1.tags.add(tag1)
     doc1.tags.add(tag2)
     doc11 = DocumentInstance.objects.create(document=doc1, status='a', location=location1, price=5000.0,
-                                    additional_field1='MIT Press', additional_field2='2009',
-                                    additional_field3='Third edition')
-    DocumentInstance.objects.create(document=doc1, status='a', location=location2, price=5000.0,
-                                    additional_field1='MIT Press', additional_field2='2009',
-                                    additional_field3='Third edition')
-    DocumentInstance.objects.create(document=doc1, status='a', location=location2, price=5000.0,
-                                    additional_field1='MIT Press', additional_field2='2009',
-                                    additional_field3='Third edition')
+                                            additional_field1='MIT Press', additional_field2='2009',
+                                            additional_field3='Third edition')
+    doc12 = DocumentInstance.objects.create(document=doc1, status='a', location=location2, price=5000.0,
+                                            additional_field1='MIT Press', additional_field2='2009',
+                                            additional_field3='Third edition')
+    doc13 = DocumentInstance.objects.create(document=doc1, status='a', location=location2, price=5000.0,
+                                            additional_field1='MIT Press', additional_field2='2009',
+                                            additional_field3='Third edition')
 
     doc2 = Document.objects.create(title='Design Patterns: Elements of Reusable Object-Oriented Software',
                                    description='* Capturing a wealth of experience about the design of object-oriented software, four top-notch designers present a catalog of simple and succinct solutions to commonly occurring design problems. Previously undocumented, these 23 patterns allow designers to create more flexible, elegant, and ultimately reusable designs without having to rediscover the design solutions themselves. * The authors begin by describing what patterns are and how they can help you design object-oriented software. They then go on to systematically name, explain, evaluate, and catalog recurring designs in object-oriented systems. With Design Patterns as your guide, you will learn how these important patterns fit into the software development process, and how you can leverage them to solve your own design problems most efficiently.',
@@ -150,15 +152,15 @@ def populate_db(request):
     doc2.tags.add(tag1)
     doc2.tags.add(tag2)
 
-    DocumentInstance.objects.create(document=doc2, status='a', location=location3, price=1700.0,
-                                    additional_field1='Addison-Wesley Professional', additional_field2='2003',
-                                    additional_field3='First edition')
-    DocumentInstance.objects.create(document=doc2, status='a', location=location3, price=1700.0,
-                                    additional_field1='Addison-Wesley Professional', additional_field2='2003',
-                                    additional_field3='First edition')
-    DocumentInstance.objects.create(document=doc2, status='a', location=location3, price=1700.0,
-                                    additional_field1='Addison-Wesley Professional', additional_field2='2003',
-                                    additional_field3='First edition')
+    doc21 = DocumentInstance.objects.create(document=doc2, status='a', location=location3, price=1700.0,
+                                            additional_field1='Addison-Wesley Professional', additional_field2='2003',
+                                            additional_field3='First edition')
+    doc22 = DocumentInstance.objects.create(document=doc2, status='a', location=location3, price=1700.0,
+                                            additional_field1='Addison-Wesley Professional', additional_field2='2003',
+                                            additional_field3='First edition')
+    doc23 = DocumentInstance.objects.create(document=doc2, status='a', location=location3, price=1700.0,
+                                            additional_field1='Addison-Wesley Professional', additional_field2='2003',
+                                            additional_field3='First edition')
 
     doc3 = Document.objects.create(title='The Mythical Man-month',
                                    description='Few books on software project management have been as influential and timeless as The Mythical Man-Month. With a blend of software engineering facts and thought-provoking opinions, Fred Brooks offers insight for anyone managing complex projects. These essays draw from his experience as project manager for the IBM System/360 computer family and then for OS/360, its massive software system. Now, 20 years after the initial publication of his book, Brooks has revisited his original ideas and added new thoughts and advice, both for readers already familiar with his work and for readers discovering it for the first time.',
@@ -167,9 +169,9 @@ def populate_db(request):
     doc3.authors.add(author10)
     doc3.tags.add(tag1)
     doc3.tags.add(tag2)
-    DocumentInstance.objects.create(document=doc3, status='a', location=location2, price=100.0,
-                                    additional_field1='Addison-Wesley Longman Publishing Co., Inc.',
-                                    additional_field2='1995', additional_field3='Second edition')
+    doc31 = DocumentInstance.objects.create(document=doc3, status='a', location=location2, price=100.0,
+                                            additional_field1='Addison-Wesley Longman Publishing Co., Inc.',
+                                            additional_field2='1995', additional_field3='Second edition')
 
     doc4 = Document.objects.create(
         title='Null References: The Billion Dollar Mistake',
@@ -179,14 +181,14 @@ def populate_db(request):
     doc4.tags.add(tag1)
     doc4.tags.add(tag4)
 
-    DocumentInstance.objects.create(document=doc4, status='a', location=location2, price=700.0,
-                                    additional_field1='Spielberg',
-                                    additional_field2='Agaganda', additional_field3='2013',
-                                    additional_field4='Blue-Ray')
-    DocumentInstance.objects.create(document=doc4, status='a', location=location2, price=700.0,
-                                    additional_field1='Spielberg',
-                                    additional_field2='Agaganda', additional_field3='2013',
-                                    additional_field4='DVD')
+    doc41 = DocumentInstance.objects.create(document=doc4, status='a', location=location2, price=700.0,
+                                            additional_field1='Spielberg',
+                                            additional_field2='Agaganda', additional_field3='2013',
+                                            additional_field4='Blue-Ray')
+    doc42 = DocumentInstance.objects.create(document=doc4, status='a', location=location2, price=700.0,
+                                            additional_field1='Spielberg',
+                                            additional_field2='Agaganda', additional_field3='2013',
+                                            additional_field4='DVD')
 
     doc5 = Document.objects.create(title='Information Entropy',
                                    description='None',
@@ -206,7 +208,15 @@ def populate_db(request):
 
     # GIVE-OUTS
 
-    #tt = datetime.datetime.strptime('26 Sep 2012', '%d %b %Y')
-    #doc11.DEBUG_give_out(doc1, patr1, patr_info1, tt)
+    # tt = datetime.datetime.strptime('26 Sep 2012', '%d %b %Y')
+    #doc11.DEBUG_give_out(doc1, patr1, patr_info1, datetime.datetime.strptime('28 Mar 2018', '%d %b %Y'))
+
+    #GiveOut.objects.filter(document_instance=doc11, patron=patr_info1).update(renewed_times=1)
+    #doc11.due_back = datetime.datetime.strptime('31 Mar 2018', '%d %b %Y') + datetime.timedelta(doc1.days_available(patr_info1))
+
+    #doc12.DEBUG_give_out(doc1, v, patr_infov, datetime.datetime.strptime('28 Mar 2018', '%d %b %Y'))
+
+    #GiveOut.objects.filter(document_instance=doc12, patron=patr_infov).update(renewed_times=1)
+    #doc12.due_back = datetime.datetime.strptime('31 Mar 2018', '%d %b %Y') + datetime.timedelta(doc1.days_available(patr_infov))
 
     return redirect('index')

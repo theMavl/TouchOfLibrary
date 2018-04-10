@@ -230,9 +230,8 @@
                                                 </td>
                                             {% endif %}
                                             <!-- RENEWALS -->
-                                            {% if perms.library.change_reservation %}
+                                            {% if perms.library.change_reservation or user == issuance.user %}
                                                 <th>
-
                                                     {% if issuance.renewed_times < patron_info.patron_type.max_renew_times %}
                                                         <div><a href="{{ issuance.get_absolute_renew_url }}" class="btn btn-success">Renew</a>
                                                         </div>
