@@ -1,5 +1,8 @@
 {% extends "base_generic.html" %}
-{#{% load cloudinary %}#}
+{% load cloudinary %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+{% cloudinary_includes %}
+{% cloudinary_js_config %}
 {% block content %}
     <head>
         <style>
@@ -30,10 +33,13 @@
                                 {% if perms.library.add_documentinstance %}
                                     <a href="{% url 'documentinstance-create' pk=document.pk %}" class="btn btn-success"
                                        role="button">New copy</a>
+
                                 {% endif %}
                                 {% if perms.library.change_document %}
                                     <a href="{% url 'document-update' pk=document.pk %}" class="btn btn-warning"
                                        role="button">Edit</a>
+                                    <a href="{% url 'document-upload-picture' pk=document.pk %}" class="btn btn-warning"
+                                       role="button">Upload picture</a>
                                 {% endif %}
                                 {% if perms.library.delete_document %}
                                     {% if all_given_out.count > 0 %}
@@ -65,7 +71,7 @@
                         </div>
                         <div class="col-md-11">
                             <p>{% for author in document.authors.all %}
-                              {{ author.first_name }} {{ author.last_name }}
+                                {{ author.first_name }} {{ author.last_name }}
                                 {% if not forloop.last %},{% else %}{% endif %}{% endfor %}</p>
                         </div>
                     </div>

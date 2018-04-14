@@ -61,6 +61,8 @@ urlpatterns = [
     url(r'^document/instance/delete/confirm/(?P<id>[0-9a-f-]+)$', instance_deleteconfirm,
         name='documentinstance-deleteconfirm'),
     url(r'^document/update/(?P<pk>\d+)$', DocumentUpdate.as_view(), name='document-update'),
+    url(r'^document/upload_picture/(?P<pk>\d+)$', upload_prompt, name='document-upload-picture'),
+    url(r'^document/upload_picture_complete/', direct_upload_complete, name='document-upload-complete'),
     url(r'^document/delete/(?P<pk>\d+)$', DocumentDelete.as_view(), name='document-delete'),
 
     url(r'^authors/create', author_create, name='author-create'),

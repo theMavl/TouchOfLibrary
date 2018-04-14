@@ -6,8 +6,12 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
-from library.models import DocumentInstance, Author, DocType, Tag
+from library.models import DocumentInstance, Author, DocType, Tag, Document
 from .models import PatronType
+
+
+from django.forms import ModelForm
+from cloudinary.forms import CloudinaryJsFileField
 
 
 class DueDateForm(forms.Form):
@@ -246,7 +250,7 @@ class SignupForm(UserCreationForm):
         model = User
         fields = ('username', 'email', 'password1', 'password2', 'first_name', 'last_name')
 
-        
+
 class TagCreate(forms.ModelForm):
     class Meta:
         model = Tag
@@ -263,3 +267,10 @@ class TagDelete(forms.ModelForm):
     class Meta:
         model = Tag
         fields = '__all__'
+
+
+class DocDirectForm(forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = 'image',
+    image = CloudinaryJsFileField()

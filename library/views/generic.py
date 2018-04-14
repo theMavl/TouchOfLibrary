@@ -1,7 +1,14 @@
+import json
+
+from cloudinary.forms import cl_init_js_callbacks
+from django.http import HttpResponse
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
+from library.forms import DocDirectForm
 from library.models import Document, Author, DocType, Tag
 
 
@@ -78,3 +85,21 @@ class TagListView(generic.ListView):
     """
     model = Tag
     paginate_by = 10
+
+
+def upload_prompt(request, pk):
+    context = dict(direct_form=DocDirectForm())
+    cl_init_js_callbacks(context['direct_form'], request)
+    return render(request, 'upload_prompt.html', context)
+
+
+@csrf_exempt
+def direct_upload_complete(request):
+    form = DocDirectForm(request.POST)
+    if form.is_valid():
+        form.save()
+        ret = dict(doc_id=form.instance.id)
+    else:
+        ret = dict(errors=form.errors)
+
+    return HttpResponse(json.dumps(ret), content_type='application/json')

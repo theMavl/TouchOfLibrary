@@ -1,0 +1,5 @@
+<form action="{% url "document-upload-complete" %}" method="post">
+  {% csrf_token %}
+  {{ direct_form }}
+  <input type="submit" value="Submit" />
+</form>
