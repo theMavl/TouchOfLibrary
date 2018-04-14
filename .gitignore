@@ -14,3 +14,4 @@ build/
 tests/report/
 .idea/
 *.sqlite3
+migrations/
