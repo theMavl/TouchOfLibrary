@@ -6,8 +6,12 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
-from library.models import DocumentInstance, Author, DocType, Tag
+from library.models import DocumentInstance, Author, DocType, Tag, Document
 from .models import PatronType
+
+from cloudinary.forms import CloudinaryJsFileField, CloudinaryUnsignedJsFileField
+from cloudinary.compat import to_bytes
+import cloudinary, hashlib
 
 
 class DueDateForm(forms.Form):
@@ -246,7 +250,7 @@ class SignupForm(UserCreationForm):
         model = User
         fields = ('username', 'email', 'password1', 'password2', 'first_name', 'last_name')
 
-        
+
 class TagCreate(forms.ModelForm):
     class Meta:
         model = Tag
@@ -263,3 +267,19 @@ class TagDelete(forms.ModelForm):
     class Meta:
         model = Tag
         fields = '__all__'
+
+
+class DocImageForm(forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = '__all__'
+
+
+class ImageDirectForm(DocImageForm):
+    image = CloudinaryJsFileField()
+
+
+class ImageUnsignedDirectForm(DocImageForm):
+    upload_preset_name = "sample_" + hashlib.sha1(
+        to_bytes(cloudinary.config().api_key + cloudinary.config().api_secret)).hexdigest()[0:10]
+    image = CloudinaryUnsignedJsFileField(upload_preset_name)
