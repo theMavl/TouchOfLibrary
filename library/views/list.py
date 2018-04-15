@@ -1,4 +1,5 @@
 from django.contrib import auth
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect
 
@@ -11,14 +12,20 @@ def reservation_list(request):
     return render(request, 'library/reservation_list.html', context={'reservations': reservations})
 
 
-@permission_required('auth.change_user')
+@permission_required('library.change_patroninfo')
 def patrons_list(request):
     user = auth.get_user(request)
-    if not user.has_perm('auth.change_user'):
+    if not user.has_perm('library.change_patroninfo'):
         return redirect('dashboard')
 
     record = PatronInfo.objects.all()
     return render(request, 'library/patrons_list.html', context={'patrons': record})
+
+
+@permission_required('auth.change_user')
+def users_list(request):
+    record = User.objects.all()
+    return render(request, 'library/users_list.html', context={'users': record})
 
 
 @permission_required('library.change_giveout')

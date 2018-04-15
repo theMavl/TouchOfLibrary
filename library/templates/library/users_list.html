@@ -7,10 +7,10 @@
         <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
             <li class="list-group-item">
                 <div class="jumbotron">
-                    <h1 align="center">Registered Patrons</h1>
-                    {% if perms.library.add_patroninfo %}
+                    <h1 align="center">All users</h1>
+                    {% if perms.library.add_user %}
                         <p align="center"><a href="{% url 'patron-add' %}" class="btn btn-success"> Register new
-                            patron </a></p>
+                            user </a></p>
                     {% endif %}
                 </div>
             </li>
@@ -20,21 +20,21 @@
                     <tr>
                         <th> Username</th>
                         <th> Full Name</th>
-                        <th> Patron Type</th>
-                        <th> Telegram Alias</th>
+                        <th> Email</th>
+                        <th> Group</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for record in patrons %}
-                        {% if record.user.is_active %}
+                    {% for record in users %}
+                        {% if record.is_active %}
                             <tr>
                                 {% else %}
                             <tr bgcolor="#A9A9A9">
                         {% endif %}
-                    <td><a href="{{ record.get_absolute_url }}">{{ record.user.username }} </a></td>
-                    <td>{{ record.user.first_name }} {{ record.user.last_name }} </td>
-                    <td>{{ record.patron_type }} </td>
-                    <td>{{ record.telegram }}  </td>
+                    <td><a href="{{ record.get_absolute_url }}">{{ record.username }} </a></td>
+                    <td>{{ record.first_name }} {{ record.last_name }} </td>
+                    <td>{{ record.email }} </td>
+                    <td>{{ record.group }} </td>
                     </tr>
 
                     {% endfor %}
