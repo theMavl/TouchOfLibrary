@@ -54,7 +54,7 @@ class RenewDocumentForm(forms.Form):
         if data < self.return_date:
             raise ValidationError('Wrong date - date before the return')
 
-        # If the interval is bigger than 2 weeks
+        # If the interval is out of limit
         if data > self.return_date + datetime.timedelta(self.max_days):
             raise ValidationError('Wrong date - out of limit borders')
 

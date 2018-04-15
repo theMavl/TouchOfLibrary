@@ -1,17 +1,13 @@
-from django.contrib.auth.decorators import permission_required, login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render
 from django.contrib import auth
 
 from library.forms import RenewDocumentForm
 from library.models import GiveOut, PatronInfo, DocumentRequest
-from django.http import HttpResponseForbidden
-from django.template import loader
 
 import datetime
 
 
-# @permission_required("library.change_giveout")
 def renew_document(request, id):
     user = auth.get_user(request)
     giveout = GiveOut.objects.get(id=id)
