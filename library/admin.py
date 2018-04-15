@@ -1,8 +1,9 @@
 from django.contrib import admin
-from .models import Author, Document, DocumentInstance, DocType, LibraryLocation, PatronInfo, Tag, GiveOut, PatronType, \
+from .models import User, Author, Document, DocumentInstance, DocType, LibraryLocation, Tag, GiveOut, PatronType, \
     Reservation, GiveOutLogEntry, DocumentRequest
 
-admin.site.register(PatronInfo)
+admin.site.register(User)
+
 admin.site.register(PatronType)
 
 admin.site.register(Author)

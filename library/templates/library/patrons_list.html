@@ -8,7 +8,7 @@
             <li class="list-group-item">
                 <div class="jumbotron">
                     <h1 align="center">Registered Patrons</h1>
-                    {% if perms.library.add_patroninfo %}
+                    {% if perms.library.add_patron %}
                         <p align="center"><a href="{% url 'patron-add' %}" class="btn btn-success"> Register new
                             patron </a></p>
                     {% endif %}
@@ -26,17 +26,18 @@
                     </thead>
                     <tbody>
                     {% for record in patrons %}
-                        {% if record.user.is_active %}
-                            <tr>
-                                {% else %}
-                            <tr bgcolor="#A9A9A9">
+                        {% if record.is_patron %}
+                            {% if record.is_active %}
+                                <tr>
+                                    {% else %}
+                                <tr bgcolor="#A9A9A9">
+                            {% endif %}
+                            <td><a href="{{ record.get_absolute_url }}">{{ record.username }} </a></td>
+                            <td>{{ record.first_name }} {{ record.last_name }} </td>
+                            <td>{{ record.patron_type }} </td>
+                            <td>{{ record.telegram }}  </td>
+                            </tr>
                         {% endif %}
-                    <td><a href="{{ record.get_absolute_url }}">{{ record.user.username }} </a></td>
-                    <td>{{ record.user.first_name }} {{ record.user.last_name }} </td>
-                    <td>{{ record.patron_type }} </td>
-                    <td>{{ record.telegram }}  </td>
-                    </tr>
-
                     {% endfor %}
                     </tbody>
                 </table>

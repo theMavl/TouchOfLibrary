@@ -1,16 +1,16 @@
-from django.contrib.auth.models import User, Group, Permission
+from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import permission_required
 
-from library.models import Document, Author, DocumentInstance, PatronInfo, PatronType, Tag, \
+from library.models import User, Document, Author, DocumentInstance, PatronType, Tag, \
     LibraryLocation, DocType, GiveOut
 import datetime
 
 
-@permission_required('library.add_document', 'library.add_user', 'library.add_patroninfo')
+@permission_required('library.add_document', 'library.add_user', 'library.add_patron')
 def populate_db(request):
-    perms_user = Permission.objects.filter(content_type=ContentType.objects.get(app_label="auth", model="user"))
+    perms_user = Permission.objects.filter(content_type=ContentType.objects.get(app_label="library", model="user"))
     perms_document = Permission.objects.filter(
         content_type=ContentType.objects.get(app_label="library", model="document"))
     perms_document_instance = Permission.objects.filter(
@@ -23,36 +23,17 @@ def populate_db(request):
         content_type=ContentType.objects.get(app_label="library", model="tag"))
     perms_doctype = Permission.objects.filter(
         content_type=ContentType.objects.get(app_label="library", model="doctype"))
-    perms_patroninfo = Permission.objects.filter(
-        content_type=ContentType.objects.get(app_label="library", model="patroninfo"))
     perms_document_request = Permission.objects.filter(
         content_type=ContentType.objects.get(app_label="library", model="documentrequest"))
 
     libr_perms = [perms_user, perms_document, perms_document_instance, perms_reservation, perms_giveout, perms_tag,
-                  perms_doctype, perms_patroninfo, perms_document_request]
+                  perms_doctype, perms_document_request]
 
     group_libr = Group.objects.create(name='Librarian')
 
     for p in libr_perms:
         for perm in p:
             group_libr.permissions.add(perm)
-
-    patr1 = User.objects.create_user(username='p1', email='first_patron@patronspace.com', password='cakeisalie',
-                                     first_name='Sergey', last_name='Afonso')
-    patr2 = User.objects.create_user(username='p2', email='second_patron@patronspace.com', password='cakeisalie',
-                                     first_name='Nadia', last_name='Teixeira')
-    patr3 = User.objects.create_user(username='p3', email='third_patron@patronspace.com', password='cakeisalie',
-                                     first_name='Elvira', last_name='Espindola')
-    prof = User.objects.create_user(username='prof', email='the_professor@patronspace.com', password='cakeisalie',
-                                    first_name='Nickolay', last_name='Pink')
-    libr = User.objects.create_user(username='libr', email='libr@touch.com', password='cakeisalie', first_name='John',
-                                    last_name='Smith')
-    s = User.objects.create_user(username='s', email='student@touch.com', password='cakeisalie', first_name='Andrey',
-                                 last_name='Velo')
-    v = User.objects.create_user(username='v', email='vp@touch.com', password='cakeisalie', first_name='Veronika',
-                                 last_name='Rama')
-
-    libr.groups.add(group_libr)
 
     type_student = PatronType.objects.create(title='Student', max_documents=5, max_renew_times=1, priority=50,
                                              position='n')
@@ -62,25 +43,37 @@ def populate_db(request):
                                         priority=10,
                                         position='v')
 
-    patr_info1 = PatronInfo.objects.create(user=patr1, phone_number='30001',
-                                           address='Via Margutta, 3', telegram='None',
-                                           patron_type=type_faculty)
-    patr_info2 = PatronInfo.objects.create(user=patr2, phone_number='30002',
-                                           address='Via Sacra, 13', telegram='None',
-                                           patron_type=type_faculty)
-    patr_info3 = PatronInfo.objects.create(user=patr3, phone_number='30003',
-                                           address='Via del Corso, 22', telegram='None',
-                                           patron_type=type_faculty)
-    patr_infop = PatronInfo.objects.create(user=prof, phone_number='88005553535',
-                                           address='Tatarstan, Innopolis city, st. Sportivnaya 2/3',
-                                           telegram='@restorator',
-                                           patron_type=type_faculty)
-    patr_infos = PatronInfo.objects.create(user=s, phone_number='30004',
-                                           address='Avenida Mazatlan 250', telegram='@restorator',
-                                           patron_type=type_student)
-    patr_infov = PatronInfo.objects.create(user=v, phone_number='30005',
-                                           address='Stret Atocha, 27', telegram='@restorator',
-                                           patron_type=type_vp)
+    patr1 = User.objects.create_user(username='p1', email='first_patron@patronspace.com', password='cakeisalie',
+                                     first_name='Sergey', last_name='Afonso', phone_number='30001',
+                                     address='Via Margutta, 3', telegram='None',
+                                     patron_type=type_faculty, is_patron=True)
+    patr2 = User.objects.create_user(username='p2', email='second_patron@patronspace.com', password='cakeisalie',
+                                     first_name='Nadia', last_name='Teixeira', phone_number='30002',
+                                     address='Via Sacra, 13', telegram='None',
+                                     patron_type=type_faculty, is_patron=True)
+    patr3 = User.objects.create_user(username='p3', email='third_patron@patronspace.com', password='cakeisalie',
+                                     first_name='Elvira', last_name='Espindola', phone_number='30003',
+                                     address='Via del Corso, 22', telegram='None',
+                                     patron_type=type_faculty, is_patron=True)
+    prof = User.objects.create_user(username='prof', email='the_professor@patronspace.com', password='cakeisalie',
+                                    first_name='Nickolay', last_name='Pink', phone_number='88005553535',
+                                    address='Tatarstan, Innopolis city, st. Sportivnaya 2/3',
+                                    telegram='@restorator',
+                                    patron_type=type_faculty, is_patron=True)
+    libr = User.objects.create_user(username='libr', email='libr@touch.com', password='cakeisalie',
+                                    first_name='John',
+                                    last_name='Smith')
+    s = User.objects.create_user(username='s', email='student@touch.com', password='cakeisalie',
+                                 first_name='Andrey',
+                                 last_name='Velo', phone_number='30004',
+                                 address='Avenida Mazatlan 250', telegram='@restorator',
+                                 patron_type=type_student)
+    v = User.objects.create_user(username='v', email='vp@touch.com', password='cakeisalie', first_name='Veronika',
+                                 last_name='Rama', phone_number='30005',
+                                 address='Stret Atocha, 27', telegram='@restorator',
+                                 patron_type=type_vp)
+
+    libr.groups.add(group_libr)
 
     author1 = Author.objects.create(first_name='Thomas', last_name='Cormen')
     author2 = Author.objects.create(first_name='Charles', last_name='Leiserson')
@@ -209,14 +202,14 @@ def populate_db(request):
     # GIVE-OUTS
 
     # tt = datetime.datetime.strptime('26 Sep 2012', '%d %b %Y')
-    #doc11.DEBUG_give_out(doc1, patr1, patr_info1, datetime.datetime.strptime('28 Mar 2018', '%d %b %Y'))
+    # doc11.DEBUG_give_out(doc1, patr1, patr_info1, datetime.datetime.strptime('28 Mar 2018', '%d %b %Y'))
 
-    #GiveOut.objects.filter(document_instance=doc11, patron=patr_info1).update(renewed_times=1)
-    #doc11.due_back = datetime.datetime.strptime('31 Mar 2018', '%d %b %Y') + datetime.timedelta(doc1.days_available(patr_info1))
+    # GiveOut.objects.filter(document_instance=doc11, patron=patr_info1).update(renewed_times=1)
+    # doc11.due_back = datetime.datetime.strptime('31 Mar 2018', '%d %b %Y') + datetime.timedelta(doc1.days_available(patr_info1))
 
-    #doc12.DEBUG_give_out(doc1, v, patr_infov, datetime.datetime.strptime('28 Mar 2018', '%d %b %Y'))
+    # doc12.DEBUG_give_out(doc1, v, patr_infov, datetime.datetime.strptime('28 Mar 2018', '%d %b %Y'))
 
-    #GiveOut.objects.filter(document_instance=doc12, patron=patr_infov).update(renewed_times=1)
-    #doc12.due_back = datetime.datetime.strptime('31 Mar 2018', '%d %b %Y') + datetime.timedelta(doc1.days_available(patr_infov))
+    # GiveOut.objects.filter(document_instance=doc12, patron=patr_infov).update(renewed_times=1)
+    # doc12.due_back = datetime.datetime.strptime('31 Mar 2018', '%d %b %Y') + datetime.timedelta(doc1.days_available(patr_infov))
 
     return redirect('index')

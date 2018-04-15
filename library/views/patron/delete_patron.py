@@ -1,19 +1,17 @@
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.template.loader import render_to_string
 
 from library.forms import DeletePatron
-from library.models import PatronInfo
+from library.models import User
 from library.models import Reservation, GiveOut
 
 
 @permission_required('auth.delete_user')
 def delete_patron(request, pk):
     current_user = User.objects.get(id=pk)
-    current_patron = PatronInfo.objects.get(user_id=pk)
     if request.method == 'POST':
 
         form = DeletePatron(request.POST)
@@ -49,6 +47,4 @@ def delete_patron(request, pk):
         form = DeletePatron(initial={'comment': ''})
         return render(request, 'library/patron_delete.html',
                       context={'form': form,
-                               'patron':current_patron})
-
-
+                               'patron': current_user})

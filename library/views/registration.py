@@ -1,5 +1,5 @@
 from django.contrib.auth import login
-from django.contrib.auth.models import User
+from library.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
@@ -9,7 +9,6 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
 from library.forms import SignupForm
-from library.models import PatronInfo
 from library.tokens import account_activation_token
 
 
@@ -20,12 +19,6 @@ def signup(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            created_patron = PatronInfo.objects.create(user=user,
-                                                       phone_number=form.cleaned_data['phone_number'],
-                                                       address=form.cleaned_data['address'],
-                                                       telegram=form.cleaned_data['telegram'],
-                                                       patron_type=None)
-            created_patron.save()
             current_site = get_current_site(request)
             mail_subject = 'Touch of Library: Account activation'
             message = render_to_string('mails/acc_active_email.html', {

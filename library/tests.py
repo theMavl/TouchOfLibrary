@@ -1,10 +1,10 @@
 from django.test import TestCase
-from django.contrib.auth.models import User, Group, Permission
+from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import permission_required
 
-from library.models import Document, Author, DocumentInstance, PatronInfo, PatronType, Tag, \
+from library.models import User, Document, Author, DocumentInstance, PatronType, Tag, \
     LibraryLocation, DocType, GiveOut
 
 
@@ -23,38 +23,18 @@ class Tests(TestCase):
             content_type=ContentType.objects.get(app_label="library", model="tag"))
         perms_doctype = Permission.objects.filter(
             content_type=ContentType.objects.get(app_label="library", model="doctype"))
-        perms_patroninfo = Permission.objects.filter(
-            content_type=ContentType.objects.get(app_label="library", model="patroninfo"))
+
         perms_document_request = Permission.objects.filter(
             content_type=ContentType.objects.get(app_label="library", model="documentrequest"))
 
         libr_perms = [perms_user, perms_document, perms_document_instance, perms_reservation, perms_giveout, perms_tag,
-                      perms_doctype, perms_patroninfo, perms_document_request]
+                      perms_doctype, perms_document_request]
 
         group_libr = Group.objects.create(name='Librarian')
 
         for p in libr_perms:
             for perm in p:
                 group_libr.permissions.add(perm)
-
-        patr1 = User.objects.create_user(username='p1', email='first_patron@patronspace.com', password='cakeisalie',
-                                         first_name='Sergey', last_name='Afonso')
-        patr2 = User.objects.create_user(username='p2', email='second_patron@patronspace.com', password='cakeisalie',
-                                         first_name='Nadia', last_name='Teixeira')
-        patr3 = User.objects.create_user(username='p3', email='third_patron@patronspace.com', password='cakeisalie',
-                                         first_name='Elvira', last_name='Espindola')
-        prof = User.objects.create_user(username='prof', email='the_professor@patronspace.com', password='cakeisalie',
-                                        first_name='Nickolay', last_name='Pink')
-        libr = User.objects.create_user(username='libr', email='libr@touch.com', password='cakeisalie',
-                                        first_name='John',
-                                        last_name='Smith')
-        s = User.objects.create_user(username='s', email='student@touch.com', password='cakeisalie',
-                                     first_name='Andrey',
-                                     last_name='Velo')
-        v = User.objects.create_user(username='v', email='vp@touch.com', password='cakeisalie', first_name='Veronika',
-                                     last_name='Rama')
-
-        libr.groups.add(group_libr)
 
         type_student = PatronType.objects.create(title='Student', max_documents=5, max_renew_times=1, priority=50,
                                                  position='n')
@@ -65,25 +45,37 @@ class Tests(TestCase):
                                             priority=10,
                                             position='v')
 
-        patr_info1 = PatronInfo.objects.create(user=patr1, phone_number='30001',
-                                               address='Via Margutta, 3', telegram='None',
-                                               patron_type=type_faculty)
-        patr_info2 = PatronInfo.objects.create(user=patr2, phone_number='30002',
-                                               address='Via Sacra, 13', telegram='None',
-                                               patron_type=type_faculty)
-        patr_info3 = PatronInfo.objects.create(user=patr3, phone_number='30003',
-                                               address='Via del Corso, 22', telegram='None',
-                                               patron_type=type_faculty)
-        patr_infop = PatronInfo.objects.create(user=prof, phone_number='88005553535',
-                                               address='Tatarstan, Innopolis city, st. Sportivnaya 2/3',
-                                               telegram='@restorator',
-                                               patron_type=type_faculty)
-        patr_infos = PatronInfo.objects.create(user=s, phone_number='30004',
-                                               address='Avenida Mazatlan 250', telegram='@restorator',
-                                               patron_type=type_student)
-        patr_infov = PatronInfo.objects.create(user=v, phone_number='30005',
-                                               address='Stret Atocha, 27', telegram='@restorator',
-                                               patron_type=type_vp)
+        patr1 = User.objects.create_user(username='p1', email='first_patron@patronspace.com', password='cakeisalie',
+                                         first_name='Sergey', last_name='Afonso', phone_number='30001',
+                                         address='Via Margutta, 3', telegram='None',
+                                         patron_type=type_faculty)
+        patr2 = User.objects.create_user(username='p2', email='second_patron@patronspace.com', password='cakeisalie',
+                                         first_name='Nadia', last_name='Teixeira', phone_number='30002',
+                                         address='Via Sacra, 13', telegram='None',
+                                         patron_type=type_faculty)
+        patr3 = User.objects.create_user(username='p3', email='third_patron@patronspace.com', password='cakeisalie',
+                                         first_name='Elvira', last_name='Espindola', phone_number='30003',
+                                         address='Via del Corso, 22', telegram='None',
+                                         patron_type=type_faculty)
+        prof = User.objects.create_user(username='prof', email='the_professor@patronspace.com', password='cakeisalie',
+                                        first_name='Nickolay', last_name='Pink', phone_number='88005553535',
+                                        address='Tatarstan, Innopolis city, st. Sportivnaya 2/3',
+                                        telegram='@restorator',
+                                        patron_type=type_faculty)
+        libr = User.objects.create_user(username='libr', email='libr@touch.com', password='cakeisalie',
+                                        first_name='John',
+                                        last_name='Smith')
+        s = User.objects.create_user(username='s', email='student@touch.com', password='cakeisalie',
+                                     first_name='Andrey',
+                                     last_name='Velo', phone_number='30004',
+                                     address='Avenida Mazatlan 250', telegram='@restorator',
+                                     patron_type=type_student)
+        v = User.objects.create_user(username='v', email='vp@touch.com', password='cakeisalie', first_name='Veronika',
+                                     last_name='Rama', phone_number='30005',
+                                     address='Stret Atocha, 27', telegram='@restorator',
+                                     patron_type=type_vp)
+
+        libr.groups.add(group_libr)
 
         author1 = Author.objects.create(first_name='Thomas', last_name='Cormen')
         author2 = Author.objects.create(first_name='Charles', last_name='Leiserson')
