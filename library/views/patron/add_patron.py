@@ -5,7 +5,7 @@ from library.forms import AddPatron
 from library.models import User
 
 
-@permission_required('auth.add_user')
+@permission_required('library.add_patron')
 def add_patron(request):
     if request.method == 'POST':
         form = AddPatron(request.POST)

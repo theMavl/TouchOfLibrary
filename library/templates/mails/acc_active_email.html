@@ -1,9 +1,9 @@
 {% autoescape off %}
-    Dear {{ user.first_name }} {{ user.last_name }},
+    <p>Dear {{ user.first_name }} {{ user.last_name }},</p>
 
-    Please use the following link to confirm your email:
-    http://{{ domain }}/library/activate/{{ uid }}/{{ token }}
-
-    Regards,
+    <div>Please use the following link to confirm your email:</div>
+    <div><a href="http://{{ domain }}/activate/{{ uid }}/{{ token }}">Activate account</a></div>
+<br>
+    <div>Regards,</div>
     Touch of Library.
 {% endautoescape %}

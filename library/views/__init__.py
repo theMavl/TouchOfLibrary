@@ -10,6 +10,4 @@ from library.views.generic import *
 
 from library.views.edit_user_perms import *
 
-from library.views.registration import *
-
 from library.views.debug import populate_db

@@ -1,14 +1,18 @@
+from django.contrib import messages
 from django.contrib.auth import login
-from library.models import User
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import EmailMessage
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
 from library.forms import SignupForm
+from library.models import User
 from library.tokens import account_activation_token
 
 
@@ -32,7 +36,7 @@ def signup(request):
             return HttpResponse('Please confirm your email address to complete the registration')
     else:
         form = SignupForm()
-    return render(request, 'signup.html', {'form': form})
+    return render(request, 'registration/signup.html', {'form': form})
 
 
 def activate(request, uidb64, token):

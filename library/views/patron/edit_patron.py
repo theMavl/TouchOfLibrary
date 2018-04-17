@@ -6,7 +6,7 @@ from library.forms import EditPatron
 from library.models import User
 
 
-@permission_required('library.change_user')
+@permission_required('library.change_patron')
 def edit_patron(request, pk):
     if request.method == 'POST':
         form = EditPatron(request.POST)
