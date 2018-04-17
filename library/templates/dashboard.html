@@ -33,8 +33,7 @@
                 <div class="card-body">
                     {% if perms.library.change_user %}
                         <h4 class="card-title">User management</h4>
-                        <p><a href="{% url 'users-list' %}" class="btn btn-success">Users</a>
-                        <p><a href="{% url 'patrons-list' %}" class="btn btn-success">Patrons</a>
+                        <p><a href="{% url 'patrons-list' %}" class="btn btn-success">Users</a>
                             {% else %}
                         <h4 class="card-title">Patron management</h4>
                         <p><a href="{% url 'patrons-list' %}" class="btn btn-success">Patrons</a>
@@ -95,9 +94,9 @@
             <div class="alert alert-danger">
                 <strong>Attention!</strong> Your account is not active.
             </div>
-        {% elif not user.is_patron %}
+        {% elif user.is_limited %}
             <div class="alert alert-warning">
-                <strong>Attention!</strong>Your account is limited. Please visit Touch of Library for further
+                <strong>Attention! </strong>Your account is limited. Please visit Touch of Library for further
                 information.
             </div>
         {% endif %}

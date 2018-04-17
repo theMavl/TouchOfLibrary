@@ -36,7 +36,7 @@
                         {% for request,importance in queue %}
                             <tr>
                                 <td> <a href="{% url 'patron-details' id=request.user_id %}">{{ request.user.first_name }} {{ request.user.last_name }}</a></td>
-                                <td> {{ request.patron.patron_type }}</td>
+                                <td> {{ request.user.patron_type }}</td>
                                 <td> {{ request.timestamp }}</td>
                                 <td> {{ importance }}</td>
                             </tr>

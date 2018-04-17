@@ -26,14 +26,27 @@ def populate_db(request):
     perms_document_request = Permission.objects.filter(
         content_type=ContentType.objects.get(app_label="library", model="documentrequest"))
 
-    libr_perms = [perms_user, perms_document, perms_document_instance, perms_reservation, perms_giveout, perms_tag,
+    libr_perms = [perms_document, perms_document_instance, perms_reservation, perms_giveout, perms_tag,
                   perms_doctype, perms_document_request]
 
+    admin_perms = [perms_user, perms_document, perms_document_instance, perms_reservation, perms_giveout, perms_tag,
+                   perms_doctype, perms_document_request]
+
     group_libr = Group.objects.create(name='Librarian')
+    group_admin = Group.objects.create(name='Administrator')
 
     for p in libr_perms:
         for perm in p:
             group_libr.permissions.add(perm)
+
+    for p in admin_perms:
+        for perm in p:
+            group_admin.permissions.add(perm)
+
+    perm_change_patron = Permission.objects.get(codename='change_patron')
+    perm_add_patron = Permission.objects.get(codename='add_patron')
+    group_libr.permissions.add(perm_change_patron)
+    group_libr.permissions.add(perm_add_patron)
 
     type_student = PatronType.objects.create(title='Student', max_documents=5, max_renew_times=1, priority=50,
                                              position='n')
@@ -43,6 +56,10 @@ def populate_db(request):
                                         priority=10,
                                         position='v')
 
+    libradmin = User.objects.create_user(username='libradmin', email='libradmin@touchoflibrary.com',
+                                         password='cakeisalie',
+                                         first_name='John', last_name='Smith', phone_number='30000',
+                                         address='Hidden', telegram='Hidden', is_patron=False)
     patr1 = User.objects.create_user(username='p1', email='first_patron@patronspace.com', password='cakeisalie',
                                      first_name='Sergey', last_name='Afonso', phone_number='30001',
                                      address='Via Margutta, 3', telegram='None',
@@ -74,6 +91,7 @@ def populate_db(request):
                                  patron_type=type_vp)
 
     libr.groups.add(group_libr)
+    libradmin.groups.add(group_admin)
 
     author1 = Author.objects.create(first_name='Thomas', last_name='Cormen')
     author2 = Author.objects.create(first_name='Charles', last_name='Leiserson')

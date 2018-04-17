@@ -1,8 +1,12 @@
 {% extends 'base_generic.html' %}
 {% block content %}
     <h2>Edit patron</h2>
+    {% if perms.library.change_user %}
+        <a href="{% url 'edit-user-perms' pk=userid %}">Set user group</a>
+    {% endif %}
     <form action="" method="post">{% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Update"/>
     </form>
+
 {% endblock %}

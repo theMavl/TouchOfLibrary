@@ -3,25 +3,28 @@ import uuid
 
 import cloudinary.models
 import pytz
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
+from django.core.mail import send_mail
 from django.db import models
 from django.db.models import Q
 from django.template.loader import render_to_string
 from django.urls import reverse
-from django.db import models
-from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
     # Patron attributes
     is_patron = models.BooleanField(default=False)
+    is_limited = models.BooleanField(default=False)
     phone_number = models.CharField(max_length=20, blank=True)
     address = models.CharField(max_length=200, blank=True)
     telegram = models.CharField(max_length=20, blank=True)
     patron_type = models.ForeignKey('PatronType', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def email_user(self, mail_subject, message, from_email=None, **kwargs):
+        send_mail(mail_subject, message, from_email, [self.email], **kwargs)
 
     def form_mail_about_deletion(self):
         n_line = "%0A%0A"
@@ -33,8 +36,6 @@ class User(AbstractUser):
                    n_line[:3])
 
     class Meta:
-        verbose_name = "Patron's Information"
-        verbose_name_plural = "Patrons' Information"
         permissions = (
             ("add_patron", "Can add new patron"),
             ("change_patron", "Can change a patron"),
@@ -85,6 +86,8 @@ class Document(models.Model):
         return ', '.join(authors_list)
 
     def days_available(self, user):
+        if user.patron_type is None:
+            return 0
         if user.patron_type.position == 'p':
             return self.type.max_days_privileges
         elif user.patron_type.position == 'v':
@@ -195,6 +198,7 @@ class DocumentInstance(models.Model):
                     'reservation_due': reservation.due_date(),
                     'reservation_id': reservation.id
                 })
+
                 to_email = user.email
                 email = EmailMultiAlternatives(mail_subject, message, to=[to_email])
                 email.attach_alternative(message, "text/html")

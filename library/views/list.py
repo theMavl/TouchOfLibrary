@@ -16,16 +16,11 @@ def patrons_list(request):
     user = auth.get_user(request)
     if not user.has_perm('library.change_patron'):
         return redirect('dashboard')
-
-    record = User.objects.all()
+    if user.has_perm("library.change_user"):
+        record = User.objects.all()
+    else:
+        record = User.objects.filter(is_patron=True)
     return render(request, 'library/patrons_list.html', context={'patrons': record})
-
-
-@permission_required('auth.change_user')
-def users_list(request):
-    record = User.objects.all()
-    return render(request, 'library/users_list.html', context={'users': record})
-
 
 @permission_required('library.change_giveout')
 def giveout_list(request):

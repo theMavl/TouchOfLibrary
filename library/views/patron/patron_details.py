@@ -9,7 +9,7 @@ from library.models import User, Reservation, GiveOut, GiveOutLogEntry, Document
 def patron_details(request, id):
     user = auth.get_user(request)
 
-    if not user.has_perm('auth.change_user'):
+    if not user.has_perm('library.change_patron'):
         return redirect('dashboard')
 
     patron_user = User.objects.get(id=id)

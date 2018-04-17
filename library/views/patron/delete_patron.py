@@ -28,16 +28,11 @@ def delete_patron(request, pk):
                 r.document_copy.save()
                 r.document.save()
 
-            mail_subject = 'Touch of Library: Account deletion'
             message = render_to_string('mails/acc_delete_email.html', {
                 'user': current_user,
                 'reason': form.cleaned_data['reason'],
             })
-            to_email = current_user.email
-            email = EmailMessage(
-                mail_subject, message, to=[to_email]
-            )
-            email.send()
+            current_user.email_user('Touch of Library: Account deletion', message)
 
             current_user.is_active = False
             current_user.save()

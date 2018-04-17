@@ -1,9 +1,4 @@
-<!DOCTYPE html>
 {% load bootstrap %}
-<html lang="en">
-<head>
-</head>
-<body>
 <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;" xmlns="http://www.w3.org/1999/html">
     <li class="list-group-item">
         <div class="jumbotron">
@@ -12,7 +7,10 @@
                 <small><span class="badge badge-danger">Inactive</span></small>
             {% else %}
                 <small><span class="badge badge-success">Active</span></small>
-            {% endif %}</h4>
+            {% endif %}
+                {% if patron_user.is_limited %}
+                    <small><span class="badge badge-warning">Limited</span></small>
+                {% endif %}</h4>
 
         </div>
     </li>
@@ -53,27 +51,26 @@
                         <td>{{ patron_user.phone_number }}</td>
                     </tr>
                     <tr>
-                        <td>{% if perms.auth.change_user %}
+                        <td>{% if perms.library.change_patron and not patron_user.superuser and not patron_user.is_staff %}
                             <div class="btn-group">
                                 <a href="{% url 'patron_edit' pk=patron_user.id %}" class="btn btn-warning">Edit</a>
                             </div>
+                            <div class="btn-group">
+                                {% if not patron_user.is_active %}
+                                    <button class="btn btn-dark" title="Impossible to delete inactive patron">
+                                        Delete
+                                    </button>
+                                {% elif giveout_table %}
+                                    <button class="btn btn-dark"
+                                            title="Impossible to delete patron with give outs"> Delete
+                                    </button>
+                                {% else %}
+                                    <a href="{% url 'patron-delete' pk=patron_user.id %}" class="btn btn-danger">
+                                        Delete</a>
+                                {% endif %}
+                            </div>
                         {% endif %}
-                            {% if perms.auth.delete_user %}
-                                <div class="btn-group">
-                                    {% if not patron_user.is_active %}
-                                        <button class="btn btn-dark" title="Impossible to delete inactive patron">
-                                            Delete
-                                        </button>
-                                    {% elif giveout_table %}
-                                        <button class="btn btn-dark"
-                                                title="Impossible to delete patron with give outs"> Delete
-                                        </button>
-                                    {% else %}
-                                        <a href="{% url 'patron-delete' pk=patron_user.id %}" class="btn btn-danger">
-                                            Delete</a>
-                                    {% endif %}
-                                </div>
-                            {% endif %}</td>
+                        </td>
                     </tr>
 
                 </table>
@@ -233,7 +230,8 @@
                                             {% if perms.library.change_reservation or user == issuance.user %}
                                                 <th>
                                                     {% if issuance.renewed_times < patron_user.patron_type.max_renew_times %}
-                                                        <div><a href="{{ issuance.get_absolute_renew_url }}" class="btn btn-success">Renew</a>
+                                                        <div><a href="{{ issuance.get_absolute_renew_url }}"
+                                                                class="btn btn-success">Renew</a>
                                                         </div>
                                                     {% else %}
                                                         <div class="text-danger"> Unable to renew
@@ -288,6 +286,3 @@
             </div>
     </li>
 </ul>
-
-</body>
-</html>

@@ -48,7 +48,7 @@ urlpatterns = [
     url(r'^return_document/(?P<id>\d+)$', return_document, name='return-document'),
     url(r'^renew_document/(?P<id>\d+)$', renew_document, name='renew-document'),
 
-    url(r'^users/$', users_list, name='users-list'),
+    url(r'^patrons/(?P<pk>\d+)/permissions$', edit_user_perms, name='edit-user-perms'),
 
     url(r'^patrons/$', patrons_list, name='patrons-list'),
     url(r'^patrons/(?P<id>\d+)$', patron_details, name='patron-details'),

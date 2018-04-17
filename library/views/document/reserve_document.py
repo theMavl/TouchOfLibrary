@@ -10,7 +10,7 @@ def reserve_document(request, copy_id):
     copy = DocumentInstance.objects.get(id=str(copy_id))
     document = Document.objects.get(id=copy.document_id)
 
-    if user.is_authenticated and user.is_active and user.is_patron:
+    if user.is_authenticated and user.is_active and not user.is_limited and user.is_patron:
         reserved = Reservation.objects.filter(user_id=user.id, document_copy_id=copy.id)
         checked_out = GiveOut.objects.filter(user=user, document=document)
         if reserved:

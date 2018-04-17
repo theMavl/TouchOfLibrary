@@ -20,18 +20,15 @@ def signup(request):
             user.is_active = False
             user.save()
             current_site = get_current_site(request)
-            mail_subject = 'Touch of Library: Account activation'
+
             message = render_to_string('mails/acc_active_email.html', {
                 'user': user,
                 'domain': current_site.domain,
                 'uid': str(urlsafe_base64_encode(force_bytes(user.pk)))[2:-1],
                 'token': account_activation_token.make_token(user),
             })
-            to_email = form.cleaned_data.get('email')
-            email = EmailMessage(
-                mail_subject, message, to=[to_email]
-            )
-            email.send()
+            user.email_user('Touch of Library: Account activation', message)
+
             return HttpResponse('Please confirm your email address to complete the registration')
     else:
         form = SignupForm()
@@ -46,6 +43,8 @@ def activate(request, uidb64, token):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
+        user.is_patron = True
+        user.is_limited = True
         user.save()
         login(request, user)
         # return redirect('home')

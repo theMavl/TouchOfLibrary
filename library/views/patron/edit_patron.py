@@ -6,7 +6,7 @@ from library.forms import EditPatron
 from library.models import User
 
 
-@permission_required('auth.change_user')
+@permission_required('library.change_user')
 def edit_patron(request, pk):
     if request.method == 'POST':
         form = EditPatron(request.POST)
@@ -17,12 +17,12 @@ def edit_patron(request, pk):
             edited_patron.email = form.cleaned_data['email']
             edited_patron.first_name = form.cleaned_data['name']
             edited_patron.last_name = form.cleaned_data['surname']
-            edited_patron.save()
-
             edited_patron.phone_number = form.cleaned_data['phone_number']
             edited_patron.address = form.cleaned_data['address']
             edited_patron.telegram = form.cleaned_data['telegram']
+            edited_patron.is_patron = form.cleaned_data['is_patron']
             edited_patron.patron_type = form.cleaned_data['type']
+            edited_patron.is_limited = form.cleaned_data['is_limited']
             edited_patron.save()
 
             return HttpResponseRedirect('/library/patrons/' + str(pk))
@@ -34,6 +34,9 @@ def edit_patron(request, pk):
                                    'name': patron.first_name, 'surname': patron.last_name,
                                    'email': patron.email, 'phone_number': patron.phone_number,
                                    'telegram': patron.telegram, 'address': patron.address,
-                                   'type': patron.patron_type})
+                                   'type': patron.patron_type,
+                                   'is_limited': patron.is_limited,
+                                   'is_patron': patron.is_patron,
+                                   })
 
-    return render(request, 'library/patron_edit.html', {'form': form})
+    return render(request, 'library/patron_edit.html', {'form': form, 'userid': pk})

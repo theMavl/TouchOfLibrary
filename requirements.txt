@@ -1,3 +1,4 @@
+pytz
 cloudinary==1.11.0
 dj-database-url==0.4.2
 Django==2.0.1
