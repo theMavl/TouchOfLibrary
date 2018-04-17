@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+import TouchOfLibrary.views as views
 
 urlpatterns = [
     path('admin/', admin.site.urls)
@@ -33,6 +34,9 @@ from django.views.generic import RedirectView
 
 urlpatterns += [
     url(r'^$', RedirectView.as_view(url='/library/', permanent=True)),
+    url(r'^signup/$', views.signup, name='signup'),
+    url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        views.activate, name='activate'),
 ]
 
 from django.conf import settings

@@ -1,12 +1,12 @@
 import datetime
 
 from django import forms
+from django.contrib.auth.models import Group
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
-from library.models import DocumentInstance, Author, DocType, Tag, Document
+from library.models import User, DocumentInstance, Author, DocType, Tag, Document
 from .models import PatronType
 
 from cloudinary.forms import CloudinaryJsFileField, CloudinaryUnsignedJsFileField
@@ -139,10 +139,14 @@ class AddPatron(forms.Form):
 
     def clean_telegram(self):
         data = self.cleaned_data['telegram']
-        if not str(data).startswith("@"):
+        if not str(data).startswith("@") and not len(str(data)) == 0:
             raise ValidationError('Telegram alias must starts with "@" symbol')
 
         return data
+
+
+class EditUserPerms(forms.Form):
+    groups = forms.ModelMultipleChoiceField(label="User group", queryset=Group.objects.all())
 
 
 class EditPatron(forms.Form):
@@ -153,8 +157,11 @@ class EditPatron(forms.Form):
     phone_number = forms.CharField(required=True)
     address = forms.CharField(max_length=200, required=True)
     telegram = forms.CharField(required=False)
-
-    type = forms.ModelChoiceField(label="Patron Group: ", queryset=PatronType.objects.all())
+    is_limited = forms.BooleanField(help_text="Limited users can not reserve, request and check-out books",
+                                    required=False)
+    is_patron = forms.BooleanField(help_text="Determines whether user is patron or just user",
+                                    required=False)
+    type = forms.ModelChoiceField(label="Patron Group", queryset=PatronType.objects.all())
 
     def clean_name(self):
         data = self.cleaned_data['name']
@@ -193,7 +200,7 @@ class EditPatron(forms.Form):
 
     def clean_telegram(self):
         data = self.cleaned_data['telegram']
-        if not str(data).startswith("@"):
+        if not str(data).startswith("@") and not str(data) == "None":
             raise ValidationError('Telegram alias must starts with "@" symbol')
 
         return data
@@ -248,7 +255,9 @@ class SignupForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2', 'first_name', 'last_name')
+        fields = (
+            'username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'phone_number', 'address',
+            'telegram')
 
 
 class TagCreate(forms.ModelForm):

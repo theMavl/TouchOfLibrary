@@ -48,6 +48,8 @@ urlpatterns = [
     url(r'^return_document/(?P<id>\d+)$', return_document, name='return-document'),
     url(r'^renew_document/(?P<id>\d+)$', renew_document, name='renew-document'),
 
+    url(r'^patrons/(?P<pk>\d+)/permissions$', edit_user_perms, name='edit-user-perms'),
+
     url(r'^patrons/$', patrons_list, name='patrons-list'),
     url(r'^patrons/(?P<id>\d+)$', patron_details, name='patron-details'),
     url(r'^patrons/(?P<pk>\d+)/edit$', edit_patron, name='patron_edit'),
@@ -75,10 +77,6 @@ urlpatterns = [
     url(r'^types/update/(?P<id>\d+)$', type_update, name='type-update'),
     url(r'^types/delete/confirm/(?P<id>\d+)$', type_deleteconfirm, name='type-deleteconfirm'),
     url(r'^types/delete/(?P<id>\d+)$', type_delete, name='type-delete'),
-
-    url(r'^signup/$', signup, name='signup'),
-    url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
-        activate, name='activate'),
 
     url(r'^tags/$', TagListView.as_view(), name='tags'),
     url(r'^tags/create', tag_create, name='tag-create'),

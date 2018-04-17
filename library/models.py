@@ -3,14 +3,51 @@ import uuid
 
 import cloudinary.models
 import pytz
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
+from django.core.mail import send_mail
 from django.db import models
 from django.db.models import Q
 from django.template.loader import render_to_string
 from django.urls import reverse
+
+
+class User(AbstractUser):
+    # Patron attributes
+    is_patron = models.BooleanField(default=False)
+    is_limited = models.BooleanField(default=False)
+    phone_number = models.CharField(max_length=20, blank=True)
+    address = models.CharField(max_length=200, blank=True)
+    telegram = models.CharField(max_length=20, blank=True)
+    patron_type = models.ForeignKey('PatronType', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def email_user(self, mail_subject, message, from_email=None, **kwargs):
+        send_mail(mail_subject, message, from_email, [self.email], **kwargs)
+
+    def form_mail_about_deletion(self):
+        n_line = "%0A%0A"
+        return "mailto:%s?subject=The deletion of your account in Library&body=Dear %s %s,%sThis is Touch of Library. " \
+               "We inform you that your account has been deleted." \
+               "%sReason:" \
+               "%sRegards,%sTouch of Library." % (
+                   self.email, self.first_name, self.last_name, n_line, n_line, n_line,
+                   n_line[:3])
+
+    class Meta:
+        permissions = (
+            ("add_patron", "Can add new patron"),
+            ("change_patron", "Can change a patron"),
+        )
+
+    def get_absolute_url(self):
+        return reverse('patron-details', args=[str(self.id)])
+
+    def __str__(self):
+        return '[%d] %s %s (%s), %s, %s, TG: %s' % (
+            self.id, self.first_name, self.last_name, self.patron_type, self.phone_number, self.address,
+            self.telegram)
 
 
 class Document(models.Model):
@@ -48,10 +85,12 @@ class Document(models.Model):
         authors_list = [str(x) for x in list(self.authors.all())]
         return ', '.join(authors_list)
 
-    def days_available(self, patron):
-        if patron.patron_type.position == 'p':
+    def days_available(self, user):
+        if user.patron_type is None:
+            return 0
+        if user.patron_type.position == 'p':
             return self.type.max_days_privileges
-        elif patron.patron_type.position == 'v':
+        elif user.patron_type.position == 'v':
             return self.type.max_days_visiting
         else:
             if self.bestseller:
@@ -123,13 +162,13 @@ class DocumentInstance(models.Model):
         else:
             return overdue * 100
 
-    def DEBUG_give_out(self, document, user, patron, timestamp):
+    def DEBUG_give_out(self, document, user, timestamp):
         self.holder = user
-        self.due_back = timestamp + datetime.timedelta(days=document.days_available(patron))
+        self.due_back = timestamp + datetime.timedelta(days=document.days_available(user))
         self.status = 'g'
         self.save()
         document.quantity_synced = False
-        GiveOut.objects.create(user=user, patron=patron, document=document, document_instance=self)
+        GiveOut.objects.create(user=user, document=document, document_instance=self)
         if timestamp is not None:
             GiveOut.objects.filter(user=user, document_instance=self).update(timestamp=timestamp)
 
@@ -159,6 +198,7 @@ class DocumentInstance(models.Model):
                     'reservation_due': reservation.due_date(),
                     'reservation_id': reservation.id
                 })
+
                 to_email = user.email
                 email = EmailMultiAlternatives(mail_subject, message, to=[to_email])
                 email.attach_alternative(message, "text/html")
@@ -276,43 +316,6 @@ class DocType(models.Model):
         return reverse('types-detail', args=[str(self.id)])
 
 
-class PatronInfo(models.Model):
-    """
-        Model of patron
-    """
-    # Patron attributes
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
-    phone_number = models.CharField(max_length=20)
-    address = models.CharField(max_length=200)
-    telegram = models.CharField(max_length=20, blank=True)
-    patron_type = models.ForeignKey('PatronType', on_delete=models.SET_NULL, null=True)
-
-    # Patron features
-    def get_name(self):
-        return "kek"
-
-    def form_mail_about_deletion(self):
-        n_line = "%0A%0A"
-        return "mailto:%s?subject=The deletion of your account in Library&body=Dear %s %s,%sThis is Touch of Library. " \
-               "We inform you that your account has been deleted." \
-               "%sReason:" \
-               "%sRegards,%sTouch of Library." % (
-                   self.user.email, self.user.first_name, self.user.last_name, n_line, n_line, n_line,
-                   n_line[:3])
-
-    class Meta:
-        verbose_name = "Patron's Information"
-        verbose_name_plural = "Patrons' Information"
-
-    def get_absolute_url(self):
-        return reverse('patron-details', args=[str(self.user_id)])
-
-    def __str__(self):
-        return '[%d] %s %s (%s), %s, %s, TG: %s' % (
-            self.user.id, self.user.first_name, self.user.last_name, self.patron_type, self.phone_number, self.address,
-            self.telegram)
-
-
 class PatronType(models.Model):
     title = models.CharField(max_length=100, blank=True)
     max_renew_times = models.IntegerField(help_text='Maximum number of renewals allowed', null=True)
@@ -343,8 +346,7 @@ class GiveOut(models.Model):
     """
         Model of giving-out a document to an user
     """
-    user = models.ForeignKey('auth.User', on_delete=models.PROTECT)
-    patron = models.ForeignKey('PatronInfo', on_delete=models.PROTECT)
+    user = models.ForeignKey('library.User', on_delete=models.PROTECT)
     document = models.ForeignKey('Document', on_delete=models.PROTECT)
     document_instance = models.ForeignKey('DocumentInstance', on_delete=models.PROTECT)
     timestamp = models.DateTimeField(auto_now=True)
@@ -369,7 +371,7 @@ class Reservation(models.Model):
         Model of reservation on a book
     """
     _default_lifetime = 2
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    user = models.ForeignKey('library.User', on_delete=models.CASCADE)
     document = models.ForeignKey('Document', on_delete=models.CASCADE)
     document_copy = models.ForeignKey('DocumentInstance', on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now=True)
@@ -435,7 +437,7 @@ class GiveOutLogEntry(models.Model):
     timestamp_given_out = models.DateTimeField()
     timestamp_due_back = models.DateTimeField()
     timestamp_returned = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey('library.User', on_delete=models.SET_NULL, null=True)
     patron_information = models.CharField(max_length=200)
     document_instance_summary = models.CharField(max_length=200)
 
@@ -451,8 +453,7 @@ class GiveOutLogEntry(models.Model):
 
 class DocumentRequest(models.Model):
     timestamp = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
-    patron = models.ForeignKey('PatronInfo', on_delete=models.CASCADE)
+    user = models.ForeignKey('library.User', on_delete=models.CASCADE)
     document = models.ForeignKey('Document', on_delete=models.CASCADE)
     outstanding = models.BooleanField(default=False)
 
@@ -472,5 +473,5 @@ class DocumentRequest(models.Model):
         how_long_waits = today_date - self.timestamp
         the_longest_awaiting = today_date - the_oldest
         x = how_long_waits / the_longest_awaiting * 100
-        y = self.patron.patron_type.priority
+        y = self.user.patron_type.priority
         return (x + y * y) / 10100

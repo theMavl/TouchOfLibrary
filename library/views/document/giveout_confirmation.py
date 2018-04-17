@@ -6,14 +6,14 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from library.forms import DueDateForm
-from library.models import PatronInfo, Reservation, GiveOut
+from library.models import User, Reservation, GiveOut
 
 
 @permission_required('library.add_giveout')
 def giveout_confirmation(request, id):
     reservation = Reservation.objects.get(id=id)
     copy = reservation.document_copy
-    patron = PatronInfo.objects.get(user_id=reservation.user.id)
+    patron = reservation.user
 
     max_days = copy.document.days_available(patron)
 
@@ -26,9 +26,9 @@ def giveout_confirmation(request, id):
             copy.document.quantity_synced = False
             copy.document.save()
             copy.status = 'g'
-            copy.holder = reservation.user
+            copy.holder = patron
             copy.save()
-            GiveOut.objects.create(user=reservation.user, patron=patron, document=reservation.document,
+            GiveOut.objects.create(user=patron, document=reservation.document,
                                    document_instance=copy)
             reservation.delete()
             return HttpResponseRedirect(reverse('reservation-list'))

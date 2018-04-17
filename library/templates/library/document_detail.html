@@ -102,7 +102,7 @@
 
         {#    {% cloudinary image %}#}
 
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and not user.is_limited %}
             {% if document.is_reference %}
                 <div class="alert alert-danger message" align="center">
                     Reference documents cannot be checked out!
@@ -146,14 +146,14 @@
                     <p><a href="{% url 'priority_queue' id=document.id %}" class="btn btn-warning">Queue</a></p>
                 </div>
             {% endif %}
-
-
         {% elif not user.is_authenticated and copy_list %}
             <div class="alert alert-danger message" align="center">To check out that {{ document.type }} you need to
                 login
             </div>
         {% elif not user.is_active %}
             <div class="alert alert-danger message" align="center">You need to verify your email address!</div>
+        {% elif user.is_limited %}
+            <div class="alert alert-danger message" align="center">Your account is limited. Please visit Touch of Library for further informaiton.</div>
         {% elif not copy_list %}
             <div class="alert alert-danger message" align="center">There are no copies in the library yet</div>
         {% endif %}
@@ -186,11 +186,11 @@
 
                         {% if copy.status == 'a' %}
                             {% if user.is_authenticated %}
-                                {% if not_a_patron %}
-                                    <td title="Your account is limited. Please visit Touch of Library for further information.">
+                                {% if not can_reserve %}
+                                    <td title="Your can not reserve documents. Please visit Touch of Library for further information.">
                                         <span class="badge badge-success">In library</span>
                                     </td>
-                                {% elif not can_reserve %}
+                                {% elif reservation_limit %}
                                     <td title="You are over reservation limit">
                                         <span class="badge badge-success">In library</span>
                                         <span class="badge badge-danger">You are over reservation limit</span>
