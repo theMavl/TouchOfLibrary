@@ -67,7 +67,7 @@
 
 
             <div class="row" style="padding-top: 50px">
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                     <div class="card" style="width: 100%; display: inline-block">
                         <div class="card-body">
                             <h4 class="card-title">Types</h4>
@@ -76,12 +76,21 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                     <div class="card" style="width: 100%; display: inline-block">
                         <div class="card-body">
                             <h4 class="card-title">Tags</h4>
                             <p><a href="{% url 'tags' %}" class="btn btn-success">All tags</a>
                                 <a href="{% url 'tag-create' %}" class="btn btn-success">New tag</a></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="card" style="width: 100%; display: inline-block">
+                        <div class="card-body">
+                            <h4 class="card-title">Locations</h4>
+                            <p><a href="{% url 'location_list' %}" class="btn btn-success">All locations</a>
+                                <a href="{% url 'create_location' %}" class="btn btn-success">New Location</a></p>
                         </div>
                     </div>
                 </div>

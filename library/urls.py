@@ -1,5 +1,6 @@
 from django.conf.urls import url
 
+from library.views.document.location import LocationListView, create_location, location_delete_confirmation, location_update, location_delete
 from library.views.tag.tag_create import tag_create
 from library.views.tag.tag_update import tag_update
 from library.views.tag.tag_delete import tag_delete
@@ -26,6 +27,12 @@ except:
 urlpatterns = [
     url(r'^$', index, name='index'),
     url(r'^dashboard/$', dashboard, name='dashboard'),
+
+    url(r'^location/$', LocationListView.as_view(), name='location_list'),
+    url(r'^location/create/$', create_location, name='create_location'),
+    url(r'^location/(?P<id>\d+)/delete_confirm/$', location_delete_confirmation, name='delete_location_confirm'),
+    url(r'^location/(?P<id>\d+)/update/$', location_update, name='update_location'),
+    url(r'^location/(?P<id>\d+)/delete/$', location_delete, name='delete_location'),
 
     url(r'^document/$', DocumentListView.as_view(), name='document'),
     url(r'^document/(?P<id>\d+)$', get_document_detail, name='document-detail'),
