@@ -1,5 +1,5 @@
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.http import HttpResponse, request
+from django.shortcuts import render, redirect, render_to_response
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -133,3 +133,20 @@ def direct_upload_complete(request):
         ret = dict(errors=form.errors)
 
     return HttpResponse(json.dumps(ret), content_type='application/json')
+
+
+from django.views.generic import ListView
+from django.db.models import Q
+
+
+class SearchListView(ListView):
+    model = Document
+
+    def get_queryset(self):
+        # Получаем не отфильтрованный кверисет всех моделей
+        queryset = super(SearchListView, self).get_queryset()
+        q = self.request.GET.get("q")
+        if q:
+            # Если 'q' в GET запросе, фильтруем кверисет по данным из 'q'
+            return queryset.filter(Q(title__icontains=q))
+        return queryset

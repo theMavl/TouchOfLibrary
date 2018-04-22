@@ -54,10 +54,10 @@
                 </li>
                 <li class="nav-item"><a class="base nav-link" href="{% url 'document' %}">All Documents</a></li>
                 <li class="nav-item">
-                <form class="form-inline" action="">
-                    <input class="form-control mr-sm-2 nav-item" type="text" placeholder="Search">
-                    <button class="btn btn-success nav-item" type="submit">Search</button>
-                </form>
+                    <form action="{% url "search" %}" method="GET">
+                        <input type="text" name="q"/>
+                        <button type="submit">search</button>
+                    </form>
                 </li>
             </ul>
             <ul class="navbar-nav navbar-right">
