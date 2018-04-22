@@ -8,7 +8,7 @@
             .message {
                 padding-left: 10%;
                 padding-right: 10%;
-                width: 80%%;
+                width: 80%;
                 margin: 1% 10% 1% 10%;
             }
 
@@ -65,7 +65,7 @@
                         </div>
                         <div class="col-md-11">
                             <p>{% for author in document.authors.all %}
-                              {{ author.first_name }} {{ author.last_name }}
+                                {{ author.first_name }} {{ author.last_name }}
                                 {% if not forloop.last %},{% else %}{% endif %}{% endfor %}</p>
                         </div>
                     </div>
@@ -152,7 +152,9 @@
         {% elif not user.is_active %}
             <div class="alert alert-danger message" align="center">You need to verify your email address!</div>
         {% elif user.is_limited %}
-            <div class="alert alert-danger message" align="center">Your account is limited. Please visit Touch of Library for further informaiton.</div>
+            <div class="alert alert-danger message" align="center">Your account is limited. Please visit Touch of
+                Library for further informaiton.
+            </div>
         {% elif not copy_list %}
             <div class="alert alert-danger message" align="center">There are no copies in the library yet</div>
         {% endif %}
@@ -280,10 +282,4 @@
         </div>
     {% endif %}
     </body>
-    <a href="{{ document.image.url }}" target="_blank" class="public_id_link">
-            <div class='public_id'>{{ document.image.public_id }}</div>
-            {# Renders an IMG tag for a CloudinaryImage objects. #}
-            {# THUMBNAIL defined in context_processors #}
-            {% cloudinary document.image THUMBNAIL %}
-</a>
 {% endblock %}
