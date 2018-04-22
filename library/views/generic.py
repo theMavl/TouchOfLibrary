@@ -11,6 +11,9 @@ import json
 from cloudinary.forms import cl_init_js_callbacks
 from cloudinary import api  # Only required for creating upload presets on the fly
 
+from django.views.generic import ListView
+from django.db.models import Q
+
 
 class DocumentListView(generic.ListView):
     """
@@ -135,18 +138,14 @@ def direct_upload_complete(request):
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 
-from django.views.generic import ListView
-from django.db.models import Q
-
-
 class SearchListView(ListView):
     model = Document
 
     def get_queryset(self):
-        # Получаем не отфильтрованный кверисет всех моделей
         queryset = super(SearchListView, self).get_queryset()
         q = self.request.GET.get("q")
         if q:
-            # Если 'q' в GET запросе, фильтруем кверисет по данным из 'q'
-            return queryset.filter(Q(title__icontains=q))
+            return queryset.filter(
+                Q(title__icontains=q) | Q(description__icontains=q) | Q(authors__first_name__icontains=q) | Q(
+                    authors__last_name__icontains=q))
         return queryset
