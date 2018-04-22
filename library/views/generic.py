@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -9,8 +9,7 @@ from library.models import Document, Author, DocType, Tag
 
 import json
 from cloudinary.forms import cl_init_js_callbacks
-from cloudinary import api # Only required for creating upload presets on the fly
-
+from cloudinary import api  # Only required for creating upload presets on the fly
 
 
 class DocumentListView(generic.ListView):
@@ -119,6 +118,7 @@ def upload(request):
         if form.is_valid():
             # Uploads image and creates a model instance for it
             form.save()
+            return redirect('document')
 
     return render(request, 'upload.html', context)
 
@@ -133,4 +133,3 @@ def direct_upload_complete(request):
         ret = dict(errors=form.errors)
 
     return HttpResponse(json.dumps(ret), content_type='application/json')
-

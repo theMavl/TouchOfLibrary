@@ -26,7 +26,6 @@
                 <div class="jumbotron">
                     <h1 align="center">{{ document.title }} <br>
                         {% if user.is_authenticated %}
-                            <a class="upload_link" href="{% url "document-upload-photo" %}">Upload Images...</a>
                             <div class="btn-group" align="center">
                                 {% if perms.library.add_documentinstance %}
                                     <a href="{% url 'documentinstance-create' pk=document.pk %}" class="btn btn-success"
