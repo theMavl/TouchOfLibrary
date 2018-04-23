@@ -147,5 +147,5 @@ class SearchListView(ListView):
         if q:
             return queryset.filter(
                 Q(title__icontains=q) | Q(description__icontains=q) | Q(authors__first_name__icontains=q) | Q(
-                    authors__last_name__icontains=q)).distinct().exclude(last_quantity__icontains=str(0))
+                    authors__last_name__icontains=q)).distinct().exclude(last_quantity__icontains=str(0)).distinct()
         return queryset
