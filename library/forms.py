@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
-from library.models import User, DocumentInstance, Author, DocType, Tag, Document
+from library.models import User, DocumentInstance, Author, DocType, Tag, Document, LibraryLocation
 from .models import PatronType
 
 from cloudinary.forms import CloudinaryJsFileField, CloudinaryUnsignedJsFileField
@@ -226,6 +226,24 @@ class AuthorDelete(forms.ModelForm):
 class AuthorCreate(forms.ModelForm):
     class Meta:
         model = Author
+        fields = '__all__'
+
+
+class LocationCreate(forms.ModelForm):
+    class Meta:
+        model = LibraryLocation
+        fields = '__all__'
+
+
+class LocationUpdate(forms.ModelForm):
+    class Meta:
+        model = LibraryLocation
+        fields = '__all__'
+
+
+class LocationDelete(forms.ModelForm):
+    class Meta:
+        model = LibraryLocation
         fields = '__all__'
 
 

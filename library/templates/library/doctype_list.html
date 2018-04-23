@@ -9,15 +9,16 @@
                     <h1 align="center">List of document types</h1>
                 </div>
             </li>
-                {% if doctype_list %}
-                        {% for type in doctype_list %}
-                            <li class="list-group-item" >
-                               <div align="center"><a href="{{ type.get_absolute_url }}">{{ type.name }}</a></div>
-                            </li>
-                        {% endfor %}
-                {% else %}
-                    <li class="list-group-item"> <p align="center">There are no DocTypes yet.</p></li>
-                {% endif %}
+            <a href="{% url 'type-create' %}" class="btn btn-success">New type</a>
+            {% if doctype_list %}
+                {% for type in doctype_list %}
+                    <li class="list-group-item">
+                        <div align="center"><a href="{{ type.get_absolute_url }}">{{ type.name }}</a></div>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li class="list-group-item"><p align="center">There are no DocTypes yet.</p></li>
+            {% endif %}
 
         </ul>
 

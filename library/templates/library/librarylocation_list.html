@@ -1,0 +1,40 @@
+{% extends "base_generic.html" %}
+{% block content %}
+    <body style="background: lightseagreen">
+    {% if perms.library.change_tag %}
+        <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
+            <li class="list-group-item">
+                <div class="jumbotron">
+                    <h1 align="center">List of locations <a href="{% url 'create_location' %}" class="btn btn-success">Add</a></h1>
+                </div>
+                {% if librarylocation_list %}
+                    <table class="table">
+                        <tr>
+                            <th>Level</th>
+                            <th>Room</th>
+                        </tr>
+                        {% for loc in librarylocation_list %}
+
+                            <tr>
+                                <td>{{ loc.level }} </td>
+                                <td>{{ loc.room }} </td>
+                                <td><a class="btn btn-warning" href="{% url 'update_location' id=loc.id %}"> Edit </a>
+                                </td>
+                                <td><a class="btn btn-danger" href="{% url 'delete_location_confirm' id=loc.id %}"> Delete </a>
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <p> There are no Tags yet.</p>
+                {% endif %}
+            </li>
+        </ul>
+
+    {% else %} You are not allowed to be here
+    {% endif %}
+
+
+    </body>
+{% endblock %}
