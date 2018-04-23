@@ -18,7 +18,7 @@
                             {% if perms.library.change_user %}
                                 <h4 class="card-title">User management</h4>
                                 <p><a href="{% url 'patrons-list' %}" class="btn btn-success">Users</a>
-                             {% else %}
+                                    {% else %}
                                 <h4 class="card-title">Patron management</h4>
                                 <p><a href="{% url 'patrons-list' %}" class="btn btn-success">Patrons</a>
                             {% endif %}
@@ -44,7 +44,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-sm-3">
+                    <div class="card" style="width: 100%; display: inline-block">
+                        <div class="card-body">
+                            <h4 class="card-title">Tags</h4>
+                            <p><a href="{% url 'tags' %}" class="btn btn-success">Tags management</a>
 
+                        </div>
+                    </div>
+                </div>
             </div>
 
 
@@ -58,15 +66,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-3">
-                    <div class="card" style="width: 100%; display: inline-block">
-                        <div class="card-body">
-                            <h4 class="card-title">Tags</h4>
-                            <p><a href="{% url 'tags' %}" class="btn btn-success">Tags management</a>
 
-                        </div>
-                    </div>
-                </div>
                 <div class="col-sm-3">
                     <div class="card" style="width: 100%; display: inline-block">
                         <div class="card-body">

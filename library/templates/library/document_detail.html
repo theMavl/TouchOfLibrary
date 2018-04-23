@@ -61,7 +61,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-1">
-                            <p>Authors:</p>
+                            <p>Authors: </p>
                         </div>
                         <div class="col-md-11">
                             <p>{% for author in document.authors.all %}
@@ -87,7 +87,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-1">
-                            <p>Quantity</p>
+                            <p>Quantity: </p>
                         </div>
                         <div class="col-md-11">
                             <p>{{ document.quantity }}</p>
@@ -115,19 +115,19 @@
             {% elif not not_a_patron %}
                 {% if document.quantity < 1 and not reserved and not given_out %}
                     {% if requested %}
-                        <div class="alert alert-warning message" align="center"><p><strong>You have requested
+                        <div class="alert alert-warning message" align="center"><p>You have requested
                             this {{ document.type }}. When it will be your turn to get
-                            a copy, you will be notified via e-mail.</strong></p>
-                            <p><a
+                            a copy, you will be notified via e-mail.</p>
+                            <p><a class="alert-link"
                                     href="{% url 'request-document' document_id=document.id %}">Click here to cancel
                                 your
-                                request.</a></p>
+                                request</a>.</p>
                         </div>
                     {% else %}
                         <div class="alert alert-danger message" align="center">
-                            <p><strong>There are not available copies, but <a
+                            <p>There are not available copies, but <a class="alert-link"
                                     href="{% url 'request-document' document_id=document.id %}">you can request
-                                this {{ document.type }}</a></strong></p>
+                                this {{ document.type }}</a></p>
                             <p>You will be notified via e-mail when any copy of this document will be available.</p>
                         </div>
                     {% endif %}
@@ -167,11 +167,11 @@
             <table class="table" align="left" style="background: white">
 
                 <tr>
-                    <th> Title</th>
-                    <th> Location</th>
+                    <th> Details</th>
                     <th> Status</th>
-                    <th> Additional</th>
+
                     {% if perms.library.change_documentinstance %}
+                        <th> Location</th>
                         {% if copy.status != 'g' %}
                             <th>Actions</th>
                         {% endif %}
@@ -180,9 +180,20 @@
 
                 {% for copy in copy_list %}
                     <tr>
-                        <td>{{ copy.document.title }}</td>
-                        <td><strong>Level </strong> {{ copy.location.level }},
-                            <strong>Room </strong> {{ copy.location.room }}
+                        <td>
+                            {% for a in additional %}
+                                {% if forloop.counter == 1 %}
+                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field1 }} </div>
+                                {% elif forloop.counter == 2 %}
+                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field2 }} </div>
+                                {% elif forloop.counter == 3 %}
+                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field3 }} </div>
+                                {% elif forloop.counter == 4 %}
+                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field4 }} </div>
+                                {% elif forloop.counter == 5 %}
+                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field5 }} </div>
+                                {% endif %}
+                            {% endfor %}
                         </td>
 
                         {% if copy.status == 'a' %}
@@ -216,9 +227,9 @@
                             <td title="Must be available on {{ copy.due_back }}">
                                 {% if perms.library.change_reservation %}
                                     <span class="badge badge-danger">Given out</span>
-                                    <p>Holder:
-                                        <a href="{% url 'patron-details' id=copy.holder.id %}">{{ copy.holder }}</a>.
-                                        <a href="{{ copy.form_return_request_mail }}">Request to return</a></p>
+                                    <div>Holder:
+                                    <a href="{% url 'patron-details' id=copy.holder.id %}">{{ copy.holder.first_name }} {{ copy.holder.last_name }}</a>.<br>
+                                        <a href="{{ copy.form_return_request_mail }}">Request to return</a></div>
                                 {% elif copy.id == given_out.document_instance.id %}
                                     <span class="badge badge-danger">Given out to you</span>
                                     {% if copy.overdue_days > 0 %}
@@ -245,22 +256,11 @@
                                 <span class="badge badge-secondary"> Maintenance</span>
                             </td>
                         {% endif %}
-                        <td>
-                            {% for a in additional %}
-                                {% if forloop.counter == 1 %}
-                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field1 }} </div>
-                                {% elif forloop.counter == 2 %}
-                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field2 }} </div>
-                                {% elif forloop.counter == 3 %}
-                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field3 }} </div>
-                                {% elif forloop.counter == 4 %}
-                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field4 }} </div>
-                                {% elif forloop.counter == 5 %}
-                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field5 }} </div>
-                                {% endif %}
-                            {% endfor %}
-                        </td>
+
                         {% if perms.library.change_documentinstance %}
+                            <td>Level <strong>{{ copy.location.level }}</strong>,
+                                Room <strong>{{ copy.location.room }}</strong>
+                            </td>
                             {% if copy.status != 'g' %}
                                 <td>
                                     <div class="btn-group-horizontal">
@@ -273,7 +273,7 @@
                                     </div>
                                 </td>
                             {% else %}
-                                <td class="text-danger">Given out documents can not be updated or deleted</td>
+                                <td class="alert alert-danger">Given out documents<br>can not be updated or deleted</td>
                             {% endif %}
                         {% endif %}
                     </tr>

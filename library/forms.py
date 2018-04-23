@@ -146,7 +146,7 @@ class AddPatron(forms.Form):
 
 
 class EditUserPerms(forms.Form):
-    groups = forms.ModelMultipleChoiceField(label="User group", queryset=Group.objects.all())
+    groups = forms.ModelMultipleChoiceField(label="User group", queryset=Group.objects.all(), required=False)
 
 
 class EditPatron(forms.Form):
