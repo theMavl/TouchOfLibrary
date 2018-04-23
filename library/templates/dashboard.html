@@ -6,96 +6,90 @@
 {% block content %}
     <body style="background: lightseagreen">
     <h1 align="center" style="color: white;">Dashboard</h1>
-    <a href={% url 'password_change' %}>Change your password</a>
     {#    {% cloudinary image width=320 height=240 %}#}
     {#    {% cloudinary_direct_upload_field request=request %}#}
     {% if perms.library.change_reservation and perms.library.change_patron and perms.library.change_giveout and perms.library.change_document %}
         <h3 align="center" style="color: white;">Librarian activities</h3>
         <div class="container-fluid">
-        <div class="row" style="padding-top: 50px">
-            {% if user.is_staff %}
-                <div class="col-sm-3">
+            <div class="row" style="padding-top: 50px">
+                <div class="col-sm-4">
                     <div class="card" style="width: 100%; display: inline-block">
-
                         <div class="card-body">
-                            <h4 class="card-title">DEBUG FEATURE</h4>
-                            <p class="card-text">Instrument for populating database</p>
-                            <a href="{% url 'debug-populate-database' %}" class="btn btn-success">Populate
-                                database</a>
+                            {% if perms.library.change_user %}
+                                <h4 class="card-title">User management</h4>
+                                <p><a href="{% url 'patrons-list' %}" class="btn btn-success">Users</a>
+                             {% else %}
+                                <h4 class="card-title">Patron management</h4>
+                                <p><a href="{% url 'patrons-list' %}" class="btn btn-success">Patrons</a>
+                            {% endif %}
+                            <a href="{% url 'reservation-list' %}" class="btn btn-success">Reservations</a>
+                            <a href="{% url 'giveout-list' %}" class="btn btn-success">Check-outs</a></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="card" style="width:100%; display: inline-block">
+                        <div class="card-body">
+                            <h4 class="card-title">Documents</h4>
+                            <p><a href="{% url 'document-upload-photo' %}" class="btn btn-success">New document</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-3">
-
-            {% else %}
-                <div class="col-sm-6">
-            {% endif %}
-            <div class="card" style="width: 100%; display: inline-block">
-                <div class="card-body">
-                    {% if perms.library.change_user %}
-                        <h4 class="card-title">User management</h4>
-                        <p><a href="{% url 'patrons-list' %}" class="btn btn-success">Users</a>
-                            {% else %}
-                        <h4 class="card-title">Patron management</h4>
-                        <p><a href="{% url 'patrons-list' %}" class="btn btn-success">Patrons</a>
-                    {% endif %}
-
-                    <a href="{% url 'reservation-list' %}" class="btn btn-success">Reservations</a>
-                    <a href="{% url 'giveout-list' %}" class="btn btn-success">Check-outs</a></p>
-                </div>
-            </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="card" style="width:100%; display: inline-block">
-                    <div class="card-body">
-                        <h4 class="card-title">Documents</h4>
-                        <p><a href="{% url 'document-upload-photo' %}" class="btn btn-success">New document</a>
+                    <div class="card" style="width:100%; display: inline-block">
+                        <div class="card-body">
+                            <h4 class="card-title">Authors</h4>
+                            <p><a href="{% url 'authors' %}" class="btn btn-success">List of Authors</a>
+                                <a href="{% url 'author-create' %}" class="btn btn-success">New author</a></p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="card" style="width:100%; display: inline-block">
-                    <div class="card-body">
-                        <h4 class="card-title">Authors</h4>
-                        <p><a href="{% url 'authors' %}" class="btn btn-success">List of Authors</a></p>
-                        <p><a href="{% url 'author-create' %}" class="btn btn-success">New author</a></p>
-                    </div>
-                </div>
-            </div>
 
             </div>
 
 
             <div class="row" style="padding-top: 50px">
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <div class="card" style="width: 100%; display: inline-block">
                         <div class="card-body">
                             <h4 class="card-title">Types</h4>
-                            <p><a href="{% url 'types' %}" class="btn btn-success">All Document Types</a>
-                                <a href="{% url 'type-create' %}" class="btn btn-success">New type</a></p>
+                            <p><a href="{% url 'types' %}" class="btn btn-success">Document Types management</a>
+
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <div class="card" style="width: 100%; display: inline-block">
                         <div class="card-body">
                             <h4 class="card-title">Tags</h4>
-                            <p><a href="{% url 'tags' %}" class="btn btn-success">All tags</a>
-                                <a href="{% url 'tag-create' %}" class="btn btn-success">New tag</a></p>
+                            <p><a href="{% url 'tags' %}" class="btn btn-success">Tags management</a>
+
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <div class="card" style="width: 100%; display: inline-block">
                         <div class="card-body">
                             <h4 class="card-title">Locations</h4>
-                            <p><a href="{% url 'location_list' %}" class="btn btn-success">All locations</a>
-                                <a href="{% url 'create_location' %}" class="btn btn-success">New Location</a></p>
+                            <p><a href="{% url 'location_list' %}" class="btn btn-success">Locations management</a></p>
                         </div>
                     </div>
                 </div>
             </div>
-
+            {% if user.is_staff %}
+                <div class="row" style="padding-top: 50px; padding-bottom: 50px">
+                    <div class="col-sm-4">
+                        <div class="card" style="width: 100%; display: inline-block">
+                            <div class="card-body">
+                                <h4 style="color: red;" class="card-title">Staff Area</h4>
+                                <a href="/admin" class="btn btn-success">Admin Panel</a>
+                                <a href="{% url 'debug-populate-database' %}" class="btn btn-success">Populate
+                                    database</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         </div>
 
 
