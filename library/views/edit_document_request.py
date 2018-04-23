@@ -6,7 +6,6 @@ from django.core.mail import EmailMultiAlternatives
 
 
 @permission_required("library.change_documentrequest")
-@permission_required("library.edit_documentrequest")
 def edit_document_request(request, id, action):
     return_user_id = -1
     if action == 'outstanding':
