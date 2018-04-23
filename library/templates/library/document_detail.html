@@ -61,7 +61,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-1">
-                            <p>Authors:</p>
+                            <p>Authors: </p>
                         </div>
                         <div class="col-md-11">
                             <p>{% for author in document.authors.all %}
@@ -87,7 +87,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-1">
-                            <p>Quantity</p>
+                            <p>Quantity: </p>
                         </div>
                         <div class="col-md-11">
                             <p>{{ document.quantity }}</p>
@@ -167,11 +167,11 @@
             <table class="table" align="left" style="background: white">
 
                 <tr>
-                    <th> Title</th>
-                    <th> Location</th>
+                    <th> Details</th>
                     <th> Status</th>
-                    <th> Additional</th>
+
                     {% if perms.library.change_documentinstance %}
+                        <th> Location</th>
                         {% if copy.status != 'g' %}
                             <th>Actions</th>
                         {% endif %}
@@ -180,9 +180,20 @@
 
                 {% for copy in copy_list %}
                     <tr>
-                        <td>{{ copy.document.title }}</td>
-                        <td><strong>Level </strong> {{ copy.location.level }},
-                            <strong>Room </strong> {{ copy.location.room }}
+                        <td>
+                            {% for a in additional %}
+                                {% if forloop.counter == 1 %}
+                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field1 }} </div>
+                                {% elif forloop.counter == 2 %}
+                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field2 }} </div>
+                                {% elif forloop.counter == 3 %}
+                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field3 }} </div>
+                                {% elif forloop.counter == 4 %}
+                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field4 }} </div>
+                                {% elif forloop.counter == 5 %}
+                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field5 }} </div>
+                                {% endif %}
+                            {% endfor %}
                         </td>
 
                         {% if copy.status == 'a' %}
@@ -217,7 +228,7 @@
                                 {% if perms.library.change_reservation %}
                                     <span class="badge badge-danger">Given out</span>
                                     <p>Holder:
-                                        <a href="{% url 'patron-details' id=copy.holder.id %}">{{ copy.holder }}</a>.
+                                        <a href="{% url 'patron-details' id=copy.holder.id %}">{{ copy.holder.first_name }} {{ copy.holder.last_name }}</a>.
                                         <a href="{{ copy.form_return_request_mail }}">Request to return</a></p>
                                 {% elif copy.id == given_out.document_instance.id %}
                                     <span class="badge badge-danger">Given out to you</span>
@@ -245,22 +256,11 @@
                                 <span class="badge badge-secondary"> Maintenance</span>
                             </td>
                         {% endif %}
-                        <td>
-                            {% for a in additional %}
-                                {% if forloop.counter == 1 %}
-                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field1 }} </div>
-                                {% elif forloop.counter == 2 %}
-                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field2 }} </div>
-                                {% elif forloop.counter == 3 %}
-                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field3 }} </div>
-                                {% elif forloop.counter == 4 %}
-                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field4 }} </div>
-                                {% elif forloop.counter == 5 %}
-                                    <div><strong>{{ a }}: </strong> {{ copy.additional_field5 }} </div>
-                                {% endif %}
-                            {% endfor %}
-                        </td>
+
                         {% if perms.library.change_documentinstance %}
+                            <td>Level <strong>{{ copy.location.level }}</strong>,
+                                Room <strong>{{ copy.location.room }}</strong>
+                            </td>
                             {% if copy.status != 'g' %}
                                 <td>
                                     <div class="btn-group-horizontal">
