@@ -108,14 +108,14 @@
                                                 {% if perms.library.change_documentrequest and perms.library.change_documentrequest %}
 
                                                     <th>
-                                                        <div class="btn-group-vertical">{% if request.outstanding %}<p>
-                                                            <a href="{% url 'edit-document-request' id=request.id action='outstanding' %}"
+                                                        <div class="btn-group-vertical">{% if request.outstanding %}
+                                                            <p><a href="{% url 'edit-document-request' id=request.id action='outstanding' %}"
                                                                class="btn btn-warning"
                                                                role="button">Remove
                                                                 outstanding
-                                                                request</a>
+                                                                request</a></p>
                                                         {% else %}
-                                                            <a href="{% url 'edit-document-request' id=request.id action='outstanding' %}"
+                                                            <p><a href="{% url 'edit-document-request' id=request.id action='outstanding' %}"
                                                                class="btn btn-info"
                                                                role="button">Outstanding
                                                                 request</a>
