@@ -65,12 +65,12 @@
                         </div>
                         <div class="col-md-11">
                             <p> {% for author in document.authors.all %}
-{#                                <a title="Born: {{ author.date_born }}#}
-{#                                {% if author.date_died %}Died: {{ author.date_died }}{% endif %}">#}
+                                <a title="Born: {{ author.date_born }}
+{% if author.date_died %}Died: {{ author.date_died }}{% endif %}">
                                     {{ author.first_name }} {{ author.last_name }}
                                     {% if not forloop.last %}, {% else %}{% endif %}
-{#                                </a>#}
-                                {% endfor %}
+                                </a>
+                            {% endfor %}
 
                             </p>
                         </div>
