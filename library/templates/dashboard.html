@@ -76,7 +76,7 @@
                     </div>
                 </div>
             </div>
-            {% if user.is_staff %}
+            {% if user.is_staff or perms.library.view_logs %}
                 <div class="row" style="padding-top: 50px; padding-bottom: 50px">
                     <div class="col-sm-4">
                         <div class="card" style="width: 100%; display: inline-block">
@@ -85,6 +85,7 @@
                                 <a href="/admin" class="btn btn-success">Admin Panel</a>
                                 <a href="{% url 'debug-populate-database' %}" class="btn btn-success">Populate
                                     database</a>
+                                <a href="{% url 'logs-list' %}" class="btn btn-info">Logs</a>
                             </div>
                         </div>
                     </div>

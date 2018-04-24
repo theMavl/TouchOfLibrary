@@ -22,12 +22,14 @@ def patrons_list(request):
         record = User.objects.filter(is_patron=True)
     return render(request, 'library/patrons_list.html', context={'patrons': record})
 
+
 @permission_required('library.change_giveout')
 def giveout_list(request):
     giveouts = GiveOut.objects.all()
     return render(request, 'library/giveout_list.html', context={'giveouts': giveouts})
 
 
+@permission_required('library.view_logs')
 def log_list(request):
     logs = Log.objects.all().order_by('-date')[:100]
     print(logs.count())

@@ -497,8 +497,7 @@ class Log(models.Model):
     object_name = models.CharField(max_length=100, null=True)
     #object_url = models.CharField(max_length=100, null=True)
 
-
-    # class Meta:
-    #     permissions = (
-    #         ("view_logs", "Can view logs")
-    #     )
+    class Meta:
+        permissions = (
+            ("view_logs", "Can view logs"),
+        )
