@@ -1,6 +1,8 @@
-from django.http import HttpResponse, request
+from django.contrib.auth.decorators import permission_required
+from django.http import HttpResponse, request, HttpResponseForbidden
 from django.shortcuts import render, redirect, render_to_response
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
@@ -42,6 +44,10 @@ class DocumentCreate(CreateView):
     model = Document
     fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference'
 
+    @method_decorator(permission_required('library.add_document'))
+    def dispatch(self, request, *args, **kwargs):
+        return super(DocumentCreate, self).dispatch(request, *args, **kwargs)
+
     class Meta:
         model = Document
         fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference'
@@ -58,6 +64,11 @@ class DocumentCreate(CreateView):
 
 class DocumentDelete(DeleteView):
     model = Document
+
+    @method_decorator(permission_required('library.delete_document'))
+    def dispatch(self, request, *args, **kwargs):
+        return super(DocumentDelete, self).dispatch(request, *args, **kwargs)
+
     success_url = reverse_lazy('document')
 
 
@@ -65,6 +76,10 @@ class DocumentUpdate(UpdateView):
     model = Document
     fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference'
     template_name_suffix = '_update_form'
+
+    @method_decorator(permission_required('library.change_document'))
+    def dispatch(self, request, *args, **kwargs):
+        return super(DocumentUpdate, self).dispatch(request, *args, **kwargs)
 
 
 class TypeListView(generic.ListView):
@@ -144,8 +159,37 @@ class SearchListView(ListView):
     def get_queryset(self):
         queryset = super(SearchListView, self).get_queryset()
         q = self.request.GET.get("q")
+
         if q:
+            splitq = str(q).split()
+            sor, sand = False, False
+            if splitq.__contains__('AND'):
+                sand = True
+                splitq.remove('AND')
+            if splitq.__contains__('OR'):
+                sor = True
+                splitq.remove('OR')
+            if sor:
+                return queryset.filter(
+                    Q(title__icontains=splitq[0]) | Q(description__icontains=splitq[0]) | Q(
+                        authors__first_name__icontains=splitq[0]) | Q(
+                        authors__last_name__icontains=splitq[0]) | Q(title__icontains=splitq[1]) | Q(
+                        description__icontains=splitq[1]) | Q(
+                        authors__first_name__icontains=splitq[1]) | Q(
+                        authors__last_name__icontains=splitq[1])).distinct().exclude(last_quantity__icontains=str(0))
+            if sand:
+                return queryset.filter(
+                    (Q(title__icontains=splitq[0]) | Q(description__icontains=splitq[0]) | Q(
+                        authors__first_name__icontains=splitq[0]) | Q(
+                        authors__last_name__icontains=splitq[0])) & (
+                            Q(title__icontains=splitq[1]) | Q(description__icontains=splitq[1]) | Q(
+                        authors__first_name__icontains=splitq[1]) | Q(
+                        authors__last_name__icontains=splitq[1]))).distinct().exclude(
+                    last_quantity__icontains=str(0))
+
             return queryset.filter(
-                Q(title__icontains=q) | Q(description__icontains=q) | Q(authors__first_name__icontains=q) | Q(
-                    authors__last_name__icontains=q))
+                Q(title__icontains=q) | Q(description__icontains=q) | Q(
+                    authors__first_name__icontains=q) | Q(
+                    authors__last_name__icontains=q)).distinct().exclude(last_quantity__icontains=str(0))
+
         return queryset

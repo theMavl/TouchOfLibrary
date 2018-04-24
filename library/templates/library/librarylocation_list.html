@@ -5,7 +5,7 @@
         <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
             <li class="list-group-item">
                 <div class="jumbotron">
-                    <h1 align="center">List of locations</h1>
+                    <h1 align="center">Locations <a href="{% url 'create_location' %}" class="btn btn-success">Add</a></h1>
                 </div>
                 {% if librarylocation_list %}
                     <table class="table">

@@ -1,36 +1,40 @@
 {% extends "base_generic.html" %}
+{% load cloudinary %}
 {% block content %}
     <body style="background: lightseagreen">
-    <h1 style="color: white;"  align="center">Documents</h1>
+    <h1 style="color: white;" align="center">Documents</h1>
     <h1></h1>
     <div class="conteiner">
         {% if document_list %}
             <ul class="list-group" style="width: 100%; padding-left: 10%; padding-right: 10%">
 
                 {% for document in document_list %}
-                    <li class="list-group-item" >
+                    <li class="list-group-item">
                         <table class="table table-striped">
                             <tr>
-                                <td width="12%"><img style="margin: 10%; width: 100px; height: 100px"
+                                <td width="12%">
+                                    <div style="margin: 10%; width: 100px; height: 100px">
                                         {% if document.image %}
-                                                     src="{{ document.image }}"
+                                            {% cloudinary document.image width=100 height=100 crop="fit" %}
                                         {% elif  document.type.name == "Book" %}
-                                         src="http://www.posgradoderechoumsnh.com.mx/doctorado/doctorado/images/libro.png"
+                                            {% cloudinary "UI/libro.png" width=100 height=100 crop="fill" %}
                                         {% else %}
-                                         src="http://icons.iconarchive.com/icons/designbolts/free-multimedia/1024/Cassette-icon.png"
-                                        {% endif %} alt="Card image"></td>
+                                            {% cloudinary "UI/Cassette-icon.png" margin=10 width=100 height=100 crop="fill" %}
+                                        {% endif %}</div>
+                                </td>
                                 <td width="90%">
                                     <div class="card">
 
                                         <div class="card-body">
                                             <h4 class="card-title">
-                                                <a href="{% url 'document-detail' id=document.id %}">{{ document.title }} </a>
-                                           <span class="badge badge-primary">{{ document.type.name }}</span>
-                                            {% if document.is_reference %}
-                                           <span class="badge badge-danger" style="background: tomato">Reference</span>
-                                            {% elif document.quantity > 0 %}
-                                                 <span class="badge badge-success" style="background: lightseagreen;">In library</span>
-                                            {% endif %}</h4>
+                                                <a href="{% url 'document-detail' id=document.id %}">{{ document.title }}</a>
+                                                <span class="badge badge-primary">{{ document.type.name }}</span>
+                                                {% if gdocument.is_reference %}
+                                                    <span class="badge badge-danger" style="background: tomato">Reference</span>
+                                                {% elif document.quantity > 0 %}
+                                                    <span class="badge badge-success"
+                                                          style="background: lightseagreen;">In library</span>
+                                                {% endif %}</h4>
                                             <p> {% for author in document.authors.all %}
                                                 {{ author.first_name }} {{ author.last_name }}
                                                 {% if not forloop.last %},{% else %}{% endif %}{% endfor %} </p>

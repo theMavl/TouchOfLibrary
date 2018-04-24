@@ -6,8 +6,11 @@
         <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
             <li class="list-group-item">
                 <div class="jumbotron">
-                    <h1 align="center">List of tags</h1>
+                    <h1 align="center">Tags
+                        <a href="{% url 'tag-create' %}" class="btn btn-success">Add</a></h1>
+
                 </div>
+
                 {% if tag_list %}
                     <table class="table">
                         {% for tag in tag_list %}

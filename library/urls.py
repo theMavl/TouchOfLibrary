@@ -94,5 +94,5 @@ urlpatterns = [
     url(r'^populate_database/$', populate_db, name='debug-populate-database'),
     url(r'^document/(?P<id>\d+)/queue$', get_priority_queue, name='priority_queue'),
 
-    url(r'^place_search/$', SearchListView.as_view(), name='search'),
+    url(r'^search/$', SearchListView.as_view(), name='search'),
 ]
