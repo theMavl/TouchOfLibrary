@@ -1,9 +1,13 @@
-
 {% load bootstrap %}
-{% block content %}
+
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/4.0.0/sketchy/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
     <!------ Include the above in your HEAD tag ---------->
@@ -20,25 +24,27 @@
 
         body {
             background-image: url("https://www.princeton.edu/sites/default/files/styles/1x_full_2x_half_crop/public/images/2017/12/20170509_Eng_Library_DJA_012_3.jpg?itok=-WaXTWX8");
+
         }
 
         .w3-panel {
-            opacity: 0.8;
-            align-self: center;
-            position: absolute;
             color: white !important;
             background-color: black;
             border: 5px solid white;
             margin: 15%;
-            font-size: large;
-            text-align: center;
+            opacity: 0.8
 
         }
 
-        .w3-padding-32 {
+        .words {
+            color: white;
+
+        }
+
+        .w3-padding-32{
             letter-spacing: 2px !important;
-            text-align: center;
         }
+
 
         input {
             background-color: black;
@@ -56,11 +62,7 @@
 
     </style>
     <title>Touch Of Library</title>
-
-    <body>
-
-
-    </body>
+{% block content %}
 
     <div class="w3-content">
         <!-- Header -->
@@ -73,17 +75,17 @@
                     <div>
                         <div>
                             {% if form.errors %}
-                        {% endif %}
+                            {% endif %}
                             <div>
                                 <h3>Memeber Login</h3>
 
-                                {{  form.username|bootstrap }}
+                                {{ form.username|bootstrap }}
 
                                 {{ form.password|bootstrap }}
                                 <div class="form-group">
-                                    <div >
+                                    <div>
                                         <br>
-                                        <button type="submit" value="login">Submit</button>
+                                        <button class="btn btn-warning" type="submit" value="login">Submit</button>
                                         <input type="hidden" name="next" value="{{ next }}"/>
                                     </div>
                                 </div>
@@ -105,4 +107,9 @@
         </header>
     </div>
 
-{% endblock %}
+    {% endblock %}
+
+    <body>
+
+
+    </body>

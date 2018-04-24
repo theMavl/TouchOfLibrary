@@ -1,24 +1,42 @@
 {% extends "base_generic.html" %}
 
+
+{% load bootstrap %}
 {% block content %}
-    <h2>Sign up</h2>
-    <form method="post">
-        {% csrf_token %}
-        {% for field in form %}
-            <div>
-            {{ field.label_tag }}<br>
-            {{ field }}
-            {% if field.help_text %}
-                <small style="display: none">{{ field.help_text }}</small>
-            {% endif %}
-            {% for error in field.errors %}
-                <p style="color: red">{{ error }}</p>
-            {% endfor %}
-        {% endfor %}
-        </div>
-        <br>
-        <p>
-            <button type="submit">Sign up</button>
-        </p>
-    </form>
+    <body style="background: lightseagreen">
+    <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
+        <li class="list-group-item">
+            <div class="jumbotron">
+                <h1 align="center">Sing up</h1>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="container-fluid">
+                    {% for field in form %}
+                        <div class="row">
+                            <div class="col-md-2">
+                                {{ field.label_tag }}<br>
+                            </div>
+                            <div class="col-md-6">
+                                {{ field|bootstrap_inline }}
+                            </div>
+
+                        </div>
+                        {% if field.help_text %}
+                            <small style="display: none">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <p style="color: red">{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                <br>
+                <p align="center">
+                    <button class="btn btn-success" type="submit">Sign up</button>
+                </p>
+            </form>
+        </li>
+    </ul>
+    </body>
+
 {% endblock %}
