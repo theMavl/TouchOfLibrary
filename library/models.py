@@ -495,6 +495,7 @@ class Log(models.Model):
     object_id = models.TextField(help_text="undefined object id")
     object_type = models.CharField(max_length=100, null=True)
     object_name = models.CharField(max_length=100, null=True)
+    #object_url = models.CharField(max_length=100, null=True)
 
 
     # class Meta:

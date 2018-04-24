@@ -160,7 +160,7 @@ class EditPatron(forms.Form):
     is_limited = forms.BooleanField(help_text="Limited users can not reserve, request and check-out books",
                                     required=False)
     is_patron = forms.BooleanField(help_text="Determines whether user is patron or just user",
-                                    required=False)
+                                   required=False)
     type = forms.ModelChoiceField(label="Patron Group", queryset=PatronType.objects.all())
 
     def clean_name(self):
@@ -204,6 +204,13 @@ class EditPatron(forms.Form):
             raise ValidationError('Telegram alias must starts with "@" symbol')
 
         return data
+
+
+class RequestAllConfirm(forms.Form):
+    librarian_confirmation = forms.BooleanField(
+        help_text="You need to confirm deletion. You will not be able to undo requests!",
+        required=True)
+    reason = forms.CharField(label="Reason", max_length=50, required=True)
 
 
 class DeletePatron(forms.Form):

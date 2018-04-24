@@ -173,10 +173,16 @@
                     {% if perms.library.change_documentinstance %}
                         <th> Location</th>
                         {% if copy.status != 'g' %}
-                            <th>Actions</th>
+                            <th>Actions </th>
                         {% endif %}
                     {% endif %}
                 </tr>
+
+                {% if copy_list %}
+                    <a href="{% url 'request_all' pk=document.id %}" class="btn btn-success"
+                                           role="button"> Request All
+                    </a>
+                {% endif %}
 
                 {% for copy in copy_list %}
                     <tr>

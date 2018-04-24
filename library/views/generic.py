@@ -118,7 +118,7 @@ def upload(request):
     instance = Document.objects.create()
     if request.method == 'POST':
         # Only backend upload should be posting here
-        form = DocImageForm(request.POST, request.FILES, instance)
+        form = DocImageForm(request.POST, request.FILES, instance=instance)
         context['posted'] = form.instance
         if form.is_valid():
             # Uploads image and creates a model instance for it
