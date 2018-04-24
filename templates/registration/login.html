@@ -1,67 +1,79 @@
+
+{% load bootstrap %}
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
 <title>Touch Of Library</title>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <!--<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    {% load bootstrap %}
-</head>
 
-<style>
-    .name {
-        letter-spacing: 6px;
-        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif
-    }
+    <!------ Include the above in your HEAD tag ---------->
+    <style>
 
-    .w3-row-padding img {
-        margin-bottom: 12px
-    }
+        .name {
+            letter-spacing: 6px;
+            font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif
+        }
 
-    body {
-        background-image: url("http://res.cloudinary.com/***REMOVED***/image/upload/v1524462844/index_bg.jpg");
-    }
+        .w3-row-padding img {
+            margin-bottom: 12px
+        }
 
-    .w3-panel {
-        color: white !important;
-        background-color: black;
-        border: 5px solid white;
-        margin: 15%;
-    }
+        body {
+            background-image: url("https://www.princeton.edu/sites/default/files/styles/1x_full_2x_half_crop/public/images/2017/12/20170509_Eng_Library_DJA_012_3.jpg?itok=-WaXTWX8");
 
-    .words {
-        color: white;
-    }
+        }
 
-    .w3-padding-32 {
-        letter-spacing: 2px !important;
-        text-align: center;
-    }
+        .w3-panel {
+            color: white !important;
+            background-color: black;
+            border: 5px solid white;
+            margin: 15%;
+            opacity: 0.8
 
-    input {
-        background-color: black;
-        color: white;
-    }
+        }
 
-    .password {
-        margin: 1%;
-    }
+        .words {
+            color: white;
 
-    h3 {
-        font-size: x-large;
-    }
-</style>
-<body>
+        }
 
+        .w3-padding-32{
+            letter-spacing: 2px !important;
+        }
+
+
+        input {
+            background-color: black;
+            color: white;
+        }
+
+        .password {
+            margin: 1%;
+        }
+
+        h3 {
+            font-size: x-large;
+        }
+
+
+    </style>
+    <body>
 {% block content %}
+
     <div class="w3-content">
         <!-- Header -->
         <header class="w3-panel w3-center w3-opacity name" style="padding:128px 16px">
@@ -81,7 +93,8 @@
                                 <div class="form-group">
                                     <div>
                                         <br>
-                                        <button type="submit" class="w3-bar-item w3-button w3-border w3-round-large" value="login">Submit</button>
+                                        <button class="btn btn-warning" type="submit" value="login">Submit</button>
+
                                         <input type="hidden" name="next" value="{{ next }}"/>
                                     </div>
                                 </div>
@@ -102,6 +115,8 @@
             </div>
         </header>
     </div>
+
 {% endblock %}
 </body>
 </html>
+

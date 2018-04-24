@@ -6,6 +6,7 @@
 {% block content %}
     <body style="background: lightseagreen">
     <h1 align="center" style="color: white;">Dashboard</h1>
+    
     {#    {% cloudinary image width=320 height=240 %}#}
     {#    {% cloudinary_direct_upload_field request=request %}#}
     {% if perms.library.dashboard_access %}
@@ -13,11 +14,12 @@
         <div class="container-fluid">
             <div class="row" style="padding-top: 50px">
                 <div class="col-sm-4">
+
                     <div class="card" style="width: 100%; display: inline-block">
                         <div class="card-body">
                             {% if perms.library.change_user %}
                                 <h4 class="card-title">User management</h4>
-                                <p><a href="{% url 'patrons-list' %}" class="btn btn-success">Users</a></p>
+                                <p><a href="{% url 'patrons-list' %}" class="btn btn-success">Users</a>
                             {% elif perms.library.change_patron %}
                                 <h4 class="card-title">Patron management</h4>
                                 <p><a href="{% url 'patrons-list' %}" class="btn btn-success">Patrons</a>
@@ -75,9 +77,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
+
             {% if user.is_staff %}
-                <div class="row" style="padding-top: 50px; padding-bottom: 50px">
+
                     <div class="col-sm-4">
                         <div class="card" style="width: 100%; display: inline-block">
                             <div class="card-body">
@@ -88,8 +90,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
+
             {% endif %}
+            </div>
         </div>
 
 
