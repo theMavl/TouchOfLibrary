@@ -64,20 +64,23 @@
                                 <div class="btn-group">
                                     <a href="{% url 'patron_edit' pk=patron_user.id %}" class="btn btn-warning">Edit</a>
                                 </div>
-                                <div class="btn-group">
-                                    {% if not patron_user.is_active %}
-                                        <button class="btn btn-dark" title="Impossible to delete inactive patron">
-                                            Delete
-                                        </button>
-                                    {% elif giveout_table %}
-                                        <button class="btn btn-dark"
-                                                title="Impossible to delete patron with give outs"> Delete
-                                        </button>
-                                    {% else %}
-                                        <a href="{% url 'patron-delete' pk=patron_user.id %}" class="btn btn-danger">
-                                            Delete</a>
-                                    {% endif %}
-                                </div>
+                                {% if perms.library.delete_patron %}
+                                    <div class="btn-group">
+                                        {% if not patron_user.is_active %}
+                                            <button class="btn btn-dark" title="Impossible to delete inactive patron">
+                                                Delete
+                                            </button>
+                                        {% elif giveout_table %}
+                                            <button class="btn btn-dark"
+                                                    title="Impossible to delete patron with give outs"> Delete
+                                            </button>
+                                        {% else %}
+                                            <a href="{% url 'patron-delete' pk=patron_user.id %}"
+                                               class="btn btn-danger">
+                                                Delete</a>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
                             {% endif %}
                         </td>
                     </tr>
@@ -109,13 +112,15 @@
 
                                                     <th>
                                                         <div class="btn-group-vertical">{% if request.outstanding %}
-                                                            <p><a href="{% url 'edit-document-request' id=request.id action='outstanding' %}"
-                                                               class="btn btn-warning"
-                                                               role="button">Remove
-                                                                outstanding
-                                                                request</a></p>
+                                                            <p>
+                                                                <a href="{% url 'edit-document-request' id=request.id action='outstanding' %}"
+                                                                   class="btn btn-warning"
+                                                                   role="button">Remove
+                                                                    outstanding
+                                                                    request</a></p>
                                                         {% else %}
-                                                            <p><a href="{% url 'edit-document-request' id=request.id action='outstanding' %}"
+                                                            <p>
+                                                            <a href="{% url 'edit-document-request' id=request.id action='outstanding' %}"
                                                                class="btn btn-info"
                                                                role="button">Outstanding
                                                                 request</a>

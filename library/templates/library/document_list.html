@@ -29,7 +29,7 @@
                                             <h4 class="card-title">
                                                 <a href="{% url 'document-detail' id=document.id %}">{{ document.title }}</a>
                                                 <span class="badge badge-primary">{{ document.type.name }}</span>
-                                                {% if document.is_reference %}
+                                                {% if gdocument.is_reference %}
                                                     <span class="badge badge-danger" style="background: tomato">Reference</span>
                                                 {% elif document.quantity > 0 %}
                                                     <span class="badge badge-success"

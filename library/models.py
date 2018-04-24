@@ -37,8 +37,10 @@ class User(AbstractUser):
 
     class Meta:
         permissions = (
-            ("add_patron", "Can add new patron"),
-            ("change_patron", "Can change a patron"),
+            ("add_patron", "Can add patron"),
+            ("change_patron", "Can change patron"),
+            ("delete_patron", "Can delete patron"),
+            ("dashboard_access", "Can access to dashboard")
         )
 
     def get_absolute_url(self):
@@ -354,6 +356,10 @@ class GiveOut(models.Model):
 
     class Meta:
         ordering = ('document_instance__due_back',)
+        permissions = (
+            ("put_outstanding", "Can create outstanding request"),
+            ("delete_outstanding", "Can delete outstanding request"),
+        )
 
     @property
     def is_overdue(self):

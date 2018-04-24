@@ -1,6 +1,8 @@
-from django.http import HttpResponse, request
+from django.contrib.auth.decorators import permission_required
+from django.http import HttpResponse, request, HttpResponseForbidden
 from django.shortcuts import render, redirect, render_to_response
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
@@ -42,6 +44,10 @@ class DocumentCreate(CreateView):
     model = Document
     fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference'
 
+    @method_decorator(permission_required('library.add_document'))
+    def dispatch(self, request, *args, **kwargs):
+        return super(DocumentCreate, self).dispatch(request, *args, **kwargs)
+
     class Meta:
         model = Document
         fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference'
@@ -58,6 +64,11 @@ class DocumentCreate(CreateView):
 
 class DocumentDelete(DeleteView):
     model = Document
+
+    @method_decorator(permission_required('library.delete_document'))
+    def dispatch(self, request, *args, **kwargs):
+        return super(DocumentDelete, self).dispatch(request, *args, **kwargs)
+
     success_url = reverse_lazy('document')
 
 
@@ -65,6 +76,10 @@ class DocumentUpdate(UpdateView):
     model = Document
     fields = 'title', 'authors', 'description', 'type', 'tags', 'bestseller', 'is_reference'
     template_name_suffix = '_update_form'
+
+    @method_decorator(permission_required('library.change_document'))
+    def dispatch(self, request, *args, **kwargs):
+        return super(DocumentUpdate, self).dispatch(request, *args, **kwargs)
 
 
 class TypeListView(generic.ListView):

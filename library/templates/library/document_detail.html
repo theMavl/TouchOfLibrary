@@ -266,10 +266,10 @@
                                     <div class="btn-group-horizontal">
                                         <div><a href="{% url 'documentinstance-update' id=copy.id %}"
                                                 class="btn btn-warning"
-                                                role="button">Edit</a> <a
-                                                href="{% url 'documentinstance-deleteconfirm' id=copy.id %}"
+                                                role="button">Edit</a>
+                                           {% if perms.library.delete_documentinstance %}<a href="{% url 'documentinstance-deleteconfirm' id=copy.id %}"
                                                 class="btn btn-danger"
-                                                role="button">Delete</a></div>
+                                                role="button">Delete</a>{% endif %}</div>
                                     </div>
                                 </td>
                             {% else %}
