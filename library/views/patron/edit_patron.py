@@ -25,6 +25,9 @@ def edit_patron(request, pk):
             edited_patron.is_limited = form.cleaned_data['is_limited']
             edited_patron.save()
 
+            from library.logger import create_log
+            create_log(request, "Updated", edited_patron)
+
             return HttpResponseRedirect('/library/patrons/' + str(pk))
 
     # if a GET (or any other method) we'll create a blank form

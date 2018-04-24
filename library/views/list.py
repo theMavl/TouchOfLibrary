@@ -2,7 +2,7 @@ from django.contrib import auth
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect
 
-from library.models import User, Reservation, GiveOut
+from library.models import User, Reservation, GiveOut, Log
 
 
 @permission_required('library.change_reservation')
@@ -26,3 +26,9 @@ def patrons_list(request):
 def giveout_list(request):
     giveouts = GiveOut.objects.all()
     return render(request, 'library/giveout_list.html', context={'giveouts': giveouts})
+
+
+def log_list(request):
+    logs = Log.objects.all().order_by('-date')[:100]
+    print(logs.count())
+    return render(request, 'library/logs_list.html', context={'logs': logs})

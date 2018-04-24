@@ -10,5 +10,7 @@ def author_update(request, id):
     form = AuthorUpdate(request.POST or None, instance=instance)
     if form.is_valid():
         form.save()
+        from library.logger import create_log
+        create_log(request, "Updated", instance)
         return redirect('author-detail', pk=form.instance.id)
     return render(request, 'author_update.html', {'form': form})

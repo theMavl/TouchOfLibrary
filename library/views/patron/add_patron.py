@@ -22,6 +22,8 @@ def add_patron(request):
                                                     address=form.cleaned_data['address'],
                                                     telegram=form.cleaned_data['telegram'],
                                                     patron_type=form.cleaned_data['type'])
+            from library.logger import create_log
+            create_log(request, "Registered", created_user)
 
             return render(request, 'library/registration_info.html',
                           {'username': created_user.username, 'password': password, 'email': created_user.email,

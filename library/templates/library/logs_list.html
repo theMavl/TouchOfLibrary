@@ -1,0 +1,42 @@
+{% extends "base_generic.html" %}
+{% load bootstrap %}
+
+{% block content %}
+    <body style="background: lightseagreen">
+    {% if perms.library.change_patron %}
+        <ul class="list-group" style="width: 80%; margin: 2% 10% 2% 10%;">
+            <li class="list-group-item">
+                <div class="jumbotron">
+                <h1 align="center">Logs</h1>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <table class="table table-bordered table-condensed" width="80%" style="background: white;width: 90%; margin: 0 5% 0 5%">
+                    <thead>
+                    <tr>
+                        <th> Time </th>
+                        <th> User </th>
+                        <th> Action </th>
+                        <th> Object ID </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for log in logs %}
+
+                        <td>{{ log.date}} </td>
+                        <td>[<a href="{{ log.user.get_absolute_url }}">{{ log.user.username }}</a>] <br> {{ log.user_type }} </td>
+                        <td>{{ log.action }} </td>
+                        <td>[{{log.object_type}}] <br> {{ log.object_name }}</td>
+
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </li>
+        </ul>
+
+
+    {% else %} You are not allowed to be here
+    {% endif %}
+    </body>
+{% endblock %}

@@ -43,6 +43,10 @@ def renew_document(request, id):
             giveout.renewed_times = giveout.renewed_times + 1
             doc_instance.save()
             giveout.save()
+
+            from library.logger import create_log
+            create_log(request, "Renewed", doc_instance)
+
             return HttpResponseRedirect('/library/patrons/' + str(patron_user.id))
 
     else:
