@@ -119,14 +119,15 @@
                             this {{ document.type }}. When it will be your turn to get
                             a copy, you will be notified via e-mail.</p>
                             <p><a class="alert-link"
-                                    href="{% url 'request-document' document_id=document.id %}">Click here to cancel
+                                  href="{% url 'request-document' document_id=document.id %}">Click here to cancel
                                 your
                                 request</a>.</p>
                         </div>
                     {% else %}
                         <div class="alert alert-danger message" align="center">
                             <p>There are not available copies, but <a class="alert-link"
-                                    href="{% url 'request-document' document_id=document.id %}">you can request
+                                                                      href="{% url 'request-document' document_id=document.id %}">you
+                                can request
                                 this {{ document.type }}</a></p>
                             <p>You will be notified via e-mail when any copy of this document will be available.</p>
                         </div>
@@ -228,8 +229,13 @@
                                 {% if perms.library.change_reservation %}
                                     <span class="badge badge-danger">Given out</span>
                                     <div>Holder:
-                                    <a href="{% url 'patron-details' id=copy.holder.id %}">{{ copy.holder.first_name }} {{ copy.holder.last_name }}</a>.<br>
-                                        <a href="{{ copy.form_return_request_mail }}">Request to return</a></div>
+                                        {% if copy.holder.id %}
+                                            <a href="{% url 'patron-details' id=copy.holder.id %}">{{ copy.holder.first_name }} {{ copy.holder.last_name }}</a>
+                                            .<br>
+                                            <a href="{{ copy.form_return_request_mail }}">Request to return</a>
+                                        {% else %}
+                                            <strong>Unknown</strong>
+                                        {% endif %}</div>
                                 {% elif copy.id == given_out.document_instance.id %}
                                     <span class="badge badge-danger">Given out to you</span>
                                     {% if copy.overdue_days > 0 %}
@@ -267,9 +273,10 @@
                                         <div><a href="{% url 'documentinstance-update' id=copy.id %}"
                                                 class="btn btn-warning"
                                                 role="button">Edit</a>
-                                           {% if perms.library.delete_documentinstance %}<a href="{% url 'documentinstance-deleteconfirm' id=copy.id %}"
-                                                class="btn btn-danger"
-                                                role="button">Delete</a>{% endif %}</div>
+                                            {% if perms.library.delete_documentinstance %}
+                                                <a href="{% url 'documentinstance-deleteconfirm' id=copy.id %}"
+                                                   class="btn btn-danger"
+                                                   role="button">Delete</a>{% endif %}</div>
                                     </div>
                                 </td>
                             {% else %}
