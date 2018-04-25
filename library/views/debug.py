@@ -27,13 +27,22 @@ def populate_db(request):
         content_type=ContentType.objects.get(app_label="library", model="documentrequest"))
     perms_author = Permission.objects.filter(
         content_type=ContentType.objects.get(app_label="library", model="author"))
+    perms_log= Permission.objects.filter(
+        content_type=ContentType.objects.get(app_label="library", model="log"))
 
     libr_perms = [perms_document, perms_document_instance, perms_reservation, perms_giveout, perms_tag,
                   perms_doctype, perms_document_request, perms_author]
 
-    admin_perms = [perms_user]
+    admin_perms = [perms_user, perms_log]
 
-    group_libr = Group.objects.create(name='Librarian')
+    libr_1_perm = ["change_document", "change_documentinstance", "change_patron", "dashboard_access"]
+    libr_2_perm = ["add_document", "add_documentinstance", "add_patron"]
+    libr_3_perm = ["delete_document", "delete_documentinstance", "delete_patron", "put_outstanding", "delete_outstanding"]
+
+    group_libr_1 = Group.objects.create(name='Librarian 1')
+    group_libr_2 = Group.objects.create(name='Librarian 2')
+    group_libr_3 = Group.objects.create(name='Librarian 3')
+    group_libr = Group.objects.create(name='Super Librarian')
     group_admin = Group.objects.create(name='Administrator')
 
     for p in libr_perms:
@@ -49,6 +58,18 @@ def populate_db(request):
     perm_add_patron = Permission.objects.get(codename='add_patron')
     group_libr.permissions.add(perm_change_patron)
     group_libr.permissions.add(perm_add_patron)
+
+    for perm in libr_1_perm:
+        group_libr_1.permissions.add(Permission.objects.get(codename=perm))
+        group_libr_2.permissions.add(Permission.objects.get(codename=perm))
+        group_libr_3.permissions.add(Permission.objects.get(codename=perm))
+
+    for perm in libr_2_perm:
+        group_libr_2.permissions.add(Permission.objects.get(codename=perm))
+        group_libr_3.permissions.add(Permission.objects.get(codename=perm))
+
+    for perm in libr_3_perm:
+        group_libr_3.permissions.add(Permission.objects.get(codename=perm))
 
     type_student = PatronType.objects.create(title='Student', max_documents=5, max_renew_times=1, priority=50,
                                              position='n')
@@ -82,36 +103,56 @@ def populate_db(request):
     libr = User.objects.create_user(username='libr', email='libr@touch.com', password='cakeisalie',
                                     first_name='John',
                                     last_name='Smith')
+
+    libr1 = User.objects.create_user(username='l1', email='libr1@touch.com', password='cakeisalie',
+                                    first_name='Eugenia',
+                                    last_name='Rama')
+    libr2 = User.objects.create_user(username='l2', email='libr2@touch.com', password='cakeisalie',
+                                     first_name='Luie',
+                                     last_name='Ramos')
+    libr3 = User.objects.create_user(username='l3', email='libr3@touch.com', password='cakeisalie',
+                                     first_name='Ramon',
+                                     last_name='Valdez')
+
     s = User.objects.create_user(username='s', email='student@touch.com', password='cakeisalie',
                                  first_name='Andrey',
                                  last_name='Velo', phone_number='30004',
                                  address='Avenida Mazatlan 250', telegram='@restorator',
-                                 patron_type=type_student)
+                                 patron_type=type_student, is_patron=True)
     v = User.objects.create_user(username='v', email='vp@touch.com', password='cakeisalie', first_name='Veronika',
                                  last_name='Rama', phone_number='30005',
                                  address='Stret Atocha, 27', telegram='@restorator',
-                                 patron_type=type_vp)
+                                 patron_type=type_vp, is_patron=True)
 
     libr.groups.add(group_libr)
     libradmin.groups.add(group_admin)
 
+    libr1.groups.add(group_libr_1)
+    libr2.groups.add(group_libr_2)
+    libr3.groups.add(group_libr_3)
+
     author1 = Author.objects.create(first_name='Thomas', last_name='Cormen')
-    author2 = Author.objects.create(first_name='Charles', last_name='Leiserson')
-    author3 = Author.objects.create(first_name='Ronald', last_name='Rivest')
-    author4 = Author.objects.create(first_name='Clifford', last_name='Stein')
-    author5 = Author.objects.create(first_name='Erich', last_name='Gamma')
-    author6 = Author.objects.create(first_name='Ralph', last_name='Johnson')
+    author2 = Author.objects.create(first_name='Charles', last_name='Leiserson', date_born='1953-10-10')
+    author3 = Author.objects.create(first_name='Ronald', last_name='Rivest', date_born='1947-05-06')
+    author4 = Author.objects.create(first_name='Clifford', last_name='Stein', date_born='1965-12-14')
+    author5 = Author.objects.create(first_name='Niklaus', last_name='Wirth', date_born='1934-02-15')
+    author6 = Author.objects.create(first_name='Donald', last_name='Knuth', date_born='1938-01-10')
     author7 = Author.objects.create(first_name='John', last_name='Vlissides')
     author8 = Author.objects.create(first_name='Richard', last_name='Helm')
     author9 = Author.objects.create(first_name='Brooks', last_name='Jr.')
     author10 = Author.objects.create(first_name='Frederick', last_name='P.')
     author11 = Author.objects.create(first_name='Tony', last_name='Hoare')
     author12 = Author.objects.create(first_name='Claude', last_name='Shannon')
+    author12 = Author.objects.create(first_name='Claude', last_name='Shannon')
 
-    tag1 = Tag.objects.create(caption='On English')
-    tag2 = Tag.objects.create(caption='Programming')
-    tag4 = Tag.objects.create(caption='Classic')
-    tag5 = Tag.objects.create(caption='Hard reading')
+    tag1 = Tag.objects.create(caption='Algorithms')
+    tag2 = Tag.objects.create(caption='Data Structures')
+    tag3 = Tag.objects.create(caption='Complexity')
+    tag4 = Tag.objects.create(caption='Computional Theory')
+    tag5 = Tag.objects.create(caption='Search Algorithms')
+    tag6 = Tag.objects.create(caption='Pascal')
+    tag7 = Tag.objects.create(caption='Combinatorial Algorithms')
+    tag8 = Tag.objects.create(caption='Recursion')
 
     type_book = DocType.objects.create(name='Book', fields='Publisher;Year;Edition', max_days=21,
                                        max_days_bestseller=14,
@@ -145,6 +186,8 @@ def populate_db(request):
     doc1.authors.add(author4)
     doc1.tags.add(tag1)
     doc1.tags.add(tag2)
+    doc1.tags.add(tag3)
+    doc1.tags.add(tag4)
     doc11 = DocumentInstance.objects.create(document=doc1, status='a', location=location1, price=5000.0,
                                             additional_field1='MIT Press', additional_field2='2009',
                                             additional_field3='Third edition')
@@ -155,36 +198,38 @@ def populate_db(request):
                                             additional_field1='MIT Press', additional_field2='2009',
                                             additional_field3='Third edition')
 
-    doc2 = Document.objects.create(title='Design Patterns: Elements of Reusable Object-Oriented Software',
-                                   description='* Capturing a wealth of experience about the design of object-oriented software, four top-notch designers present a catalog of simple and succinct solutions to commonly occurring design problems. Previously undocumented, these 23 patterns allow designers to create more flexible, elegant, and ultimately reusable designs without having to rediscover the design solutions themselves. * The authors begin by describing what patterns are and how they can help you design object-oriented software. They then go on to systematically name, explain, evaluate, and catalog recurring designs in object-oriented systems. With Design Patterns as your guide, you will learn how these important patterns fit into the software development process, and how you can leverage them to solve your own design problems most efficiently.',
-                                   type=type_book, bestseller=True)
+    doc2 = Document.objects.create(title='Algorithms + Data Structures = Programs',
+                                   description="This is a classic book about basic algorithms and data structures. "
+                                               "It's a must have book for understanding behind-the-scenes logic of "
+                                               "standard libraries in modern programming languages. "
+                                               "Should be on every programmer's read list.",
+                                   type=type_book)
     doc2.authors.add(author5)
-    doc2.authors.add(author6)
-    doc2.authors.add(author7)
-    doc2.authors.add(author8)
     doc2.tags.add(tag1)
     doc2.tags.add(tag2)
+    doc2.tags.add(tag5)
+    doc2.tags.add(tag6)
 
-    doc21 = DocumentInstance.objects.create(document=doc2, status='a', location=location3, price=1700.0,
-                                            additional_field1='Addison-Wesley Professional', additional_field2='2003',
+    doc21 = DocumentInstance.objects.create(document=doc2, status='a', location=location1, price=5000.0,
+                                            additional_field1=' Prentice Hall PTR', additional_field2='1978',
                                             additional_field3='First edition')
-    doc22 = DocumentInstance.objects.create(document=doc2, status='a', location=location3, price=1700.0,
-                                            additional_field1='Addison-Wesley Professional', additional_field2='2003',
+    doc22 = DocumentInstance.objects.create(document=doc2, status='a', location=location1, price=5000.0,
+                                            additional_field1=' Prentice Hall PTR', additional_field2='1978',
                                             additional_field3='First edition')
-    doc23 = DocumentInstance.objects.create(document=doc2, status='a', location=location3, price=1700.0,
-                                            additional_field1='Addison-Wesley Professional', additional_field2='2003',
+    doc23 = DocumentInstance.objects.create(document=doc2, status='a', location=location1, price=5000.0,
+                                            additional_field1=' Prentice Hall PTR', additional_field2='1978',
                                             additional_field3='First edition')
 
-    doc3 = Document.objects.create(title='The Mythical Man-month',
-                                   description='Few books on software project management have been as influential and timeless as The Mythical Man-Month. With a blend of software engineering facts and thought-provoking opinions, Fred Brooks offers insight for anyone managing complex projects. These essays draw from his experience as project manager for the IBM System/360 computer family and then for OS/360, its massive software system. Now, 20 years after the initial publication of his book, Brooks has revisited his original ideas and added new thoughts and advice, both for readers already familiar with his work and for readers discovering it for the first time.',
-                                   type=type_book, is_reference=True)
-    doc3.authors.add(author9)
-    doc3.authors.add(author10)
-    doc3.tags.add(tag1)
-    doc3.tags.add(tag2)
-    doc31 = DocumentInstance.objects.create(document=doc3, status='a', location=location2, price=100.0,
+    doc3 = Document.objects.create(title='The Art of Computer Programming',
+                                   description='None',
+                                   type=type_book)
+    doc3.authors.add(author6)
+
+    doc3.tags.add(tag7)
+    doc3.tags.add(tag8)
+    doc31 = DocumentInstance.objects.create(document=doc3, status='a', location=location2, price=5000.0,
                                             additional_field1='Addison-Wesley Longman Publishing Co., Inc.',
-                                            additional_field2='1995', additional_field3='Second edition')
+                                            additional_field2='1997', additional_field3='Third edition')
 
     doc4 = Document.objects.create(
         title='Null References: The Billion Dollar Mistake',
