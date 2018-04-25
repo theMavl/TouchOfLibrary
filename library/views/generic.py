@@ -176,24 +176,24 @@ class SearchListView(ListView):
                 splitq.remove('OR')
             if sor:
                 return queryset.filter(
-                    Q(title__icontains=splitq[0]) | Q(description__icontains=splitq[0]) | Q(
+                    Q(title__icontains=splitq[0]) | Q(tags__caption__icontains=splitq[0]) | Q(description__icontains=splitq[0]) | Q(
                         authors__first_name__icontains=splitq[0]) | Q(
-                        authors__last_name__icontains=splitq[0]) | Q(title__icontains=splitq[1]) | Q(
+                        authors__last_name__icontains=splitq[0]) | Q(title__icontains=splitq[1]) | Q(tags__caption__icontains=splitq[1]) | Q(
                         description__icontains=splitq[1]) | Q(
                         authors__first_name__icontains=splitq[1]) | Q(
                         authors__last_name__icontains=splitq[1])).distinct().exclude(last_quantity__icontains=str(0))
             if sand:
                 return queryset.filter(
-                    (Q(title__icontains=splitq[0]) | Q(description__icontains=splitq[0]) | Q(
+                    (Q(title__icontains=splitq[0]) | Q(tags__caption__icontains=splitq[0]) | Q(description__icontains=splitq[0]) | Q(
                         authors__first_name__icontains=splitq[0]) | Q(
                         authors__last_name__icontains=splitq[0])) & (
-                            Q(title__icontains=splitq[1]) | Q(description__icontains=splitq[1]) | Q(
+                            Q(title__icontains=splitq[1]) | Q(tags__caption__icontains=splitq[1]) | Q(description__icontains=splitq[1]) | Q(
                         authors__first_name__icontains=splitq[1]) | Q(
                         authors__last_name__icontains=splitq[1]))).distinct().exclude(
                     last_quantity__icontains=str(0))
 
             return queryset.filter(
-                Q(title__icontains=q) | Q(description__icontains=q) | Q(
+                Q(title__icontains=q) | Q(tags__caption__icontains=q) |  Q(description__icontains=q) | Q(
                     authors__first_name__icontains=q) | Q(
                     authors__last_name__icontains=q)).distinct().exclude(last_quantity__icontains=str(0))
 

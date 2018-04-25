@@ -230,6 +230,12 @@ def populate_db(request):
     doc31 = DocumentInstance.objects.create(document=doc3, status='a', location=location2, price=5000.0,
                                             additional_field1='Addison-Wesley Longman Publishing Co., Inc.',
                                             additional_field2='1997', additional_field3='Third edition')
+    doc32 = DocumentInstance.objects.create(document=doc3, status='a', location=location2, price=5000.0,
+                                            additional_field1='Addison-Wesley Longman Publishing Co., Inc.',
+                                            additional_field2='1997', additional_field3='Third edition')
+    doc33 = DocumentInstance.objects.create(document=doc3, status='a', location=location2, price=5000.0,
+                                            additional_field1='Addison-Wesley Longman Publishing Co., Inc.',
+                                            additional_field2='1997', additional_field3='Third edition')
 
     doc4 = Document.objects.create(
         title='Null References: The Billion Dollar Mistake',

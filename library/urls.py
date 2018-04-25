@@ -1,6 +1,7 @@
 from django.conf.urls import url
 
-from library.views.document.location import LocationListView, create_location, location_delete_confirmation, location_update, location_delete
+from library.views.document.location import LocationListView, create_location, location_delete_confirmation, \
+    location_update, location_delete
 from library.views.tag.tag_create import tag_create
 from library.views.tag.tag_update import tag_update
 from library.views.tag.tag_delete import tag_delete
@@ -56,7 +57,7 @@ urlpatterns = [
     url(r'^return_document/(?P<id>\d+)$', return_document, name='return-document'),
     url(r'^renew_document/(?P<id>\d+)$', renew_document, name='renew-document'),
 
-    url(r'^patrons/(?P<pk>\d+)/permissions$', edit_user_perms, name='edit-user-perms'),
+    url(r'^users/(?P<pk>\d+)/permissions$', edit_user_perms, name='edit-user-perms'),
 
     url(r'^patrons/$', patrons_list, name='patrons-list'),
     url(r'^patrons/(?P<id>\d+)$', patron_details, name='patron-details'),
@@ -78,7 +79,6 @@ urlpatterns = [
     url(r'^authors/update/(?P<id>\d+)$', author_update, name='author-update'),
     url(r'^authors/delete/confirm/(?P<id>\d+)$', author_deleteconfirm, name='author-deleteconfirm'),
     url(r'^authors/delete/(?P<id>\d+)$', author_delete, name='author-delete'),
-
 
     url(r'^types/$', TypeListView.as_view(), name='types'),
     url(r'^types/(?P<pk>\d+)$', TypeDetailView.as_view(), name='types-detail'),
