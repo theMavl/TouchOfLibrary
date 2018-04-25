@@ -9,7 +9,7 @@ from library.models import User
 from library.models import Reservation, GiveOut
 
 
-@permission_required('library.change_patron')
+@permission_required('library.delete_patron')
 def delete_patron(request, pk):
     user = auth.get_user(request)
     user_to_delete = User.objects.get(id=pk)
