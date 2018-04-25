@@ -178,7 +178,7 @@
                     {% endif %}
                 </tr>
 
-                {% if copy_list %}
+                {% if copy_list and perms.library.change_documentrequest %}
                     <a href="{% url 'request_all' pk=document.id %}" class="btn btn-success"
                                            role="button"> Request All
                     </a>
