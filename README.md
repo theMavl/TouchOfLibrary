@@ -15,22 +15,19 @@ Web application based on framework Django
 * [Alexander Trushin](https://github.com/Skyine918)
 
 
-## Delivery 3
+## Delivery 4
 ### New systems
-- Priority queue
-- Document renew
-- GUI
+- Document searching
+- Permissions, administrator features
+- Actions log
+- Library location creating/editing/deleting
 
 
 ### What has been fixed/added
-- User interface became nice and cute
-- New fields for `patron_type` - `max_renewed_times`, `priority`
-- Lifetime of copy reservation decreased to **2 days**
-- User can make a request if there are no available copies. The request will be saved in the Queue.
-- Position in the Queue is calculated by a formula that considers patron's priority and the date when the request was made. Output range - (0, 1)
-- As soon as any copy will be returned back to library, it will be reserved for the first patron from the queue. The user will be notified via email.
-- User has to confirm that he received the notification within 2 days (the system will automatically re-send mails every day)
-- After user's confirmation, he has 2 more days to come to the library and check out the reserved book.
-- A librarian can mark someone's request as outstanding - it will instantly set it's priority to 1.0.
-- A librarian can renew someone's `giveout`, but only if patron haven't reached his `max_renewed_times` and there is no outstanding request for the document.
-- Overdue days and calculated fine now can be seen in patron's Dashboard and patron's information page.
+- Added group ‘Administrator’ – able to see all registered users, change user’s group and view logs
+- Now all actions on objects are being logged
+- Outstanding request now works according to requirements (button Request All deletes queue, requests all given out copies and disables ability of making reservations and requests for users)
+- In document detail page user can see author’s born and died dates in a pop-up message, when hovering mouse on author’s name
+- User can now change his password
+- Other fixes and improvements in both back and front -ends
+
