@@ -29,6 +29,10 @@ def edit_user_perms(request, pk):
 
             edited_user.save()
 
+            from library.logger import create_log
+            if edited_user.is_patron:
+                create_log(request, "Redefine Group", edited_user)
+
             return HttpResponseRedirect('/library/patrons/' + str(pk))
 
     # if a GET (or any other method) we'll create a blank form

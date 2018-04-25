@@ -1,0 +1,13 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+    <h2>Request All</h2>
+    {% if perms.library.change_documentrequest %}
+
+    <form action="" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Update"/>
+    </form>
+
+    {% endif %}
+
+{% endblock %}

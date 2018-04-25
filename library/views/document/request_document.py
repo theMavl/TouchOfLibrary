@@ -17,7 +17,15 @@ def request_document(request, document_id):
         reserved = Reservation.objects.filter(user_id=user.id, document_id=document_id)
         checked_out = GiveOut.objects.filter(user=user, document=document)
         if requested:
+            instance = requested.first()
+            from library.logger import create_log
+            create_log(request, "Canceled", instance)
             requested.delete()
+
         elif not checked_out and not reserved and not document.is_reference:
             DocumentRequest.objects.create(user=user, document=document).save()
+
+            from library.logger import create_log
+            create_log(request, "Requested", document)
+
     return redirect('document-detail', id=document_id)

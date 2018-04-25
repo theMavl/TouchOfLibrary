@@ -10,6 +10,10 @@ def type_create(request):
     form = TypeCreate(request.POST or None, instance=instance)
     if form.is_valid():
         form.save()
+
+        from library.logger import create_log
+        create_log(request, "Created", instance)
+
         return redirect('types')
     instance.delete()
     return render(request, 'type_create.html', {'form': form})

@@ -10,5 +10,9 @@ def tag_update(request, id):
     form = TagUpdate(request.POST or None, instance=instance)
     if form.is_valid():
         form.save()
+
+        from library.logger import create_log
+        create_log(request, "Updated", instance)
+
         return redirect('tags')
     return render(request, 'tag_update.html', {'form': form})

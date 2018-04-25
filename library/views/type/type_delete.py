@@ -33,5 +33,8 @@ def type_deleteconfirm(request, id):
 def type_delete(request, id):
     instance = get_object_or_404(DocType, id=id)
 
+    from library.logger import create_log
+    create_log(request, "Removed", instance)
+
     instance = get_object_or_404(DocType, id=id).delete()
     return redirect('types')

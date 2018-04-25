@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import User, Author, Document, DocumentInstance, DocType, LibraryLocation, Tag, GiveOut, PatronType, \
-    Reservation, GiveOutLogEntry, DocumentRequest
+    Reservation, GiveOutLogEntry, DocumentRequest, Log
 
 admin.site.register(User)
 
@@ -18,3 +18,4 @@ admin.site.register(GiveOut)
 admin.site.register(Reservation)
 admin.site.register(GiveOutLogEntry)
 admin.site.register(DocumentRequest)
+admin.site.register(Log)

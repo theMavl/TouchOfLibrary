@@ -28,5 +28,9 @@ def tag_deleteconfirm(request, id):
 @permission_required('library.delete_tag')
 def tag_delete(request, id):
     instance = get_object_or_404(Tag, id=id)
+
+    from library.logger import create_log
+    create_log(request, "Removed", instance)
+
     instance.delete()
     return redirect('tags')

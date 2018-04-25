@@ -21,6 +21,10 @@ def return_document(request, id):
                                            user=copy.holder, patron_information=patron_user,
                                            document_instance_summary=copy.summary())
             copy.clean_giveout(request)
+
+            from library.logger import create_log
+            create_log(request, "Accepted Return", copy)
+
             giveout.delete()
             return redirect('patron-details', id=patron_user.id)
     else:

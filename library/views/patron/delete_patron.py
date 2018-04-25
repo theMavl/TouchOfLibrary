@@ -59,6 +59,9 @@ def delete_patron(request, pk):
             })
             user_to_delete.email_user('Touch of Library: Account deletion', message)
 
+            from library.logger import create_log
+            create_log(request, "Disabled", user_to_delete)
+
             user_to_delete.is_active = False
             user_to_delete.save()
 

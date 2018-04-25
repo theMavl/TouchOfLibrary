@@ -11,5 +11,9 @@ def type_update(request, id):
     form = TypeUpdate(request.POST or None, instance=instance)
     if form.is_valid():
         form.save()
+
+        from library.logger import create_log
+        create_log(request, "Updated", instance)
+
         return redirect('types-detail', pk=form.instance.id)
     return render(request, 'type_update.html', {'form': form})

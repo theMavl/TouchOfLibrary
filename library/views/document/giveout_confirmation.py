@@ -30,6 +30,10 @@ def giveout_confirmation(request, id):
             copy.save()
             GiveOut.objects.create(user=patron, document=reservation.document,
                                    document_instance=copy)
+
+            from library.logger import create_log
+            create_log(request, "GaveOut", copy)
+
             reservation.delete()
             return HttpResponseRedirect(reverse('reservation-list'))
 

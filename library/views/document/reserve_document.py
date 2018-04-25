@@ -22,4 +22,8 @@ def reserve_document(request, copy_id):
         document.quantity_synced = False
         copy.save()
         document.save()
+
+        from library.logger import create_log
+        create_log(request, "Reserved", copy)
+
     return redirect('document-detail', id=document.id)

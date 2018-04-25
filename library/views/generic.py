@@ -7,6 +7,7 @@ from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from library.forms import ImageUnsignedDirectForm, ImageDirectForm, DocImageForm
+from library.logger import create_log
 from library.models import Document, Author, DocType, Tag
 
 import json
@@ -81,7 +82,6 @@ class DocumentUpdate(UpdateView):
     def dispatch(self, request, *args, **kwargs):
         return super(DocumentUpdate, self).dispatch(request, *args, **kwargs)
 
-
 class TypeListView(generic.ListView):
     """
     page with all DocTypes
@@ -129,15 +129,20 @@ def upload(request):
     # form's callback url
     cl_init_js_callbacks(context['direct_form'], request)
 
+    instance = Document.objects.create()
     if request.method == 'POST':
         # Only backend upload should be posting here
-        form = DocImageForm(request.POST, request.FILES)
+        form = DocImageForm(request.POST, request.FILES, instance=instance)
         context['posted'] = form.instance
         if form.is_valid():
             # Uploads image and creates a model instance for it
+
+            from library.logger import create_log
+            create_log(request, "Created", instance)
+
             form.save()
             return redirect('document')
-
+    instance.delete()
     return render(request, 'upload.html', context)
 
 

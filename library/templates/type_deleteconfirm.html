@@ -10,7 +10,7 @@
                 </div>
                 {% if not wrong_docs  and not given_out %}
                     <div align="center">
-                        <a class="btn btn-danger" role="button" href="{% url 'tag-delete' id=id %}">Delete</a>
+                        <a class="btn btn-danger" role="button" href="{% url 'type-delete' id=id %}">Delete</a>
                     </div>
                 {% else %}
                     <div class="alert alert-danger" align="center">
