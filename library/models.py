@@ -4,6 +4,7 @@ import uuid
 import cloudinary.models
 import pytz
 from django.contrib.auth.models import AbstractUser
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
@@ -141,6 +142,9 @@ class DocumentInstance(models.Model):
     class Meta:
         ordering = ["due_back"]
 
+    # def __str__(self):
+    #     return str(self.document.title)
+
     def form_return_request_mail(self):
         n_line = "%0A%0A"
         message = "mailto:%s?subject=Touch of Library: Please return document&body=Dear %s %s,%sThis is Touch of Library. " \
@@ -149,6 +153,7 @@ class DocumentInstance(models.Model):
                       self.holder.email, self.holder.first_name, self.holder.last_name, n_line, self.summary(), n_line,
                       n_line[:3])
         print(message)
+
         return message
 
     def overdue_days(self):
@@ -243,7 +248,7 @@ class DocumentInstance(models.Model):
 
     # instance attributes
     def __str__(self):
-        return '%s (%s)' % (self.document.title, self.id)
+        return '%s' % self.document.title
 
     def get_absolute_url(self):
         return reverse('document-detail', args=[str(self.document.id)])
@@ -481,3 +486,24 @@ class DocumentRequest(models.Model):
         x = how_long_waits / the_longest_awaiting * 100
         y = self.user.patron_type.priority
         return (x + y * y) / 10100
+
+
+class Log(models.Model):
+
+    date = models.DateTimeField(auto_now=True)
+
+    user = models.ForeignKey('library.User', on_delete=models.CASCADE)
+    user_type = models.CharField(max_length=20)
+
+    action = models.CharField(max_length=64)
+
+    object_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.TextField(help_text="undefined object id")
+    object_type = models.CharField(max_length=100, null=True)
+    object_name = models.CharField(max_length=100, null=True)
+    #object_url = models.CharField(max_length=100, null=True)
+
+    class Meta:
+        permissions = (
+            ("view_logs", "Can view logs"),
+        )

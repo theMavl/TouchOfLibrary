@@ -17,7 +17,7 @@ from library.views.type.type_create import type_create
 from library.views.type.type_update import type_update
 from library.views.type.type_delete import type_delete
 from library.views.type.type_delete import type_deleteconfirm
-from library.views.document.priority_queue import get_priority_queue
+from library.views.document.priority_queue import get_priority_queue, request_all_view
 
 try:
     Reservation.clean_old_reservations()
@@ -36,6 +36,7 @@ urlpatterns = [
 
     url(r'^document/$', DocumentListView.as_view(), name='document'),
     url(r'^document/(?P<id>\d+)$', get_document_detail, name='document-detail'),
+    url(r'^document/request_all_copies/(?P<pk>\d+)$', request_all_view, name='request_all'),
 
     url(r'^authors/$', AuthorsListView.as_view(), name='authors'),
     url(r'^authors/(?P<pk>\d+)$', AuthorDetailView.as_view(), name='author-detail'),
@@ -78,6 +79,7 @@ urlpatterns = [
     url(r'^authors/delete/confirm/(?P<id>\d+)$', author_deleteconfirm, name='author-deleteconfirm'),
     url(r'^authors/delete/(?P<id>\d+)$', author_delete, name='author-delete'),
 
+
     url(r'^types/$', TypeListView.as_view(), name='types'),
     url(r'^types/(?P<pk>\d+)$', TypeDetailView.as_view(), name='types-detail'),
     url(r'^types/create', type_create, name='type-create'),
@@ -94,5 +96,7 @@ urlpatterns = [
     url(r'^populate_database/$', populate_db, name='debug-populate-database'),
     url(r'^document/(?P<id>\d+)/queue$', get_priority_queue, name='priority_queue'),
 
+    url(r'^place_search/$', SearchListView.as_view(), name='search'),
+    url(r'^logs/$', log_list, name='logs-list'),
     url(r'^search/$', SearchListView.as_view(), name='search'),
 ]

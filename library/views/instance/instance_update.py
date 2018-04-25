@@ -21,5 +21,9 @@ def instance_update(request, id):
                 for log in reservations:
                     if log.document_copy.id == form.instance.id:
                         log.delete()
+
+        from library.logger import create_log
+        create_log(request, "Updated", instance)
+
         return redirect('document-detail', id=instance.document.pk)
     return render(request, 'documentinstance_update.html', {'form': form, 'addfield': addfield})

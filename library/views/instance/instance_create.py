@@ -22,6 +22,10 @@ def instance_create(request, pk):
         current_doc.save()
         if instance.status == 'a':
             instance.reserve_from_queue(request)
+
+        from library.logger import create_log
+        create_log(request, "Created", instance)
+
         return redirect('document-detail', id=doc_id)
     instance.delete()
     return render(request, 'documentinstance_create.html',
