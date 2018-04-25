@@ -31,8 +31,9 @@ def request_all(request, id, reason):
     from django.core.mail import send_mail
     for rec in giveouts:
         send_mail("Document Return", "You need to return a document [" + str(document.title) + "] because of " + str(reason),
-                  User.objects.get(user.pk).email, [rec.user.email])
-        print("Email is sent to [" + str(User.objects.get(user.pk).email) + "]")
+                  User.objects.get(pk=user.pk).email,
+                  [rec.user.email])
+        print("Email is sent to [" + str(User.objects.get(pk=user.pk).email) + "]")
         pass
 
     for rec in requests:
