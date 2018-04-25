@@ -6,7 +6,7 @@
 {% block content %}
     <body style="background: lightseagreen">
     <h1 align="center" style="color: white;">Dashboard</h1>
-    
+
     {#    {% cloudinary image width=320 height=240 %}#}
     {#    {% cloudinary_direct_upload_field request=request %}#}
     {% if perms.library.dashboard_access %}
@@ -20,7 +20,7 @@
                             {% if perms.library.change_user %}
                                 <h4 class="card-title">User management</h4>
                                 <p><a href="{% url 'patrons-list' %}" class="btn btn-success">Users</a>
-                            {% elif perms.library.change_patron %}
+                                    {% elif perms.library.change_patron %}
                                 <h4 class="card-title">Patron management</h4>
                                 <p><a href="{% url 'patrons-list' %}" class="btn btn-success">Patrons</a>
                             {% endif %}
@@ -80,17 +80,19 @@
             </div>
             {% if user.is_staff or perms.library.view_logs %}
                 <div class="row" style="padding-top: 50px; padding-bottom: 50px">
-                    <div class="col-sm-4">
-                        <div class="card" style="width: 100%; display: inline-block">
-                            <div class="card-body">
-                                <h4 style="color: red;" class="card-title">Staff Area</h4>
+                <div class="col-sm-4">
+                    <div class="card" style="width: 100%; display: inline-block">
+                        <div class="card-body">
+                            <h4 style="color: red;" class="card-title">Staff Area</h4>
+                            {% if user.is_staff %}
                                 <a href="/admin" class="btn btn-success">Admin Panel</a>
                                 <a href="{% url 'debug-populate-database' %}" class="btn btn-success">Populate
                                     database</a>
-                                <a href="{% url 'logs-list' %}" class="btn btn-info">Logs</a>
-                            </div>
+                            {% endif %}
+                            <a href="{% url 'logs-list' %}" class="btn btn-info">Logs</a>
                         </div>
                     </div>
+                </div>
 
             {% endif %}
             </div>

@@ -27,7 +27,7 @@ def populate_db(request):
         content_type=ContentType.objects.get(app_label="library", model="documentrequest"))
     perms_author = Permission.objects.filter(
         content_type=ContentType.objects.get(app_label="library", model="author"))
-    perms_log= Permission.objects.filter(
+    perms_log = Permission.objects.filter(
         content_type=ContentType.objects.get(app_label="library", model="log"))
 
     libr_perms = [perms_document, perms_document_instance, perms_reservation, perms_giveout, perms_tag,
@@ -35,9 +35,11 @@ def populate_db(request):
 
     admin_perms = [perms_user, perms_log]
 
-    libr_1_perm = ["change_document", "change_documentinstance", "change_patron", "dashboard_access"]
+    libr_1_perm = ["change_document", "change_documentinstance", "change_patron", "dashboard_access",
+                   "change_reservation", "change_giveout", "add_giveout"]
     libr_2_perm = ["add_document", "add_documentinstance", "add_patron"]
-    libr_3_perm = ["delete_document", "delete_documentinstance", "delete_patron", "put_outstanding", "delete_outstanding"]
+    libr_3_perm = ["delete_document", "delete_documentinstance", "delete_patron", "put_outstanding",
+                   "delete_outstanding", "delete_documentrequest"]
 
     group_libr_1 = Group.objects.create(name='Librarian 1')
     group_libr_2 = Group.objects.create(name='Librarian 2')
@@ -105,8 +107,8 @@ def populate_db(request):
                                     last_name='Smith')
 
     libr1 = User.objects.create_user(username='l1', email='libr1@touch.com', password='cakeisalie',
-                                    first_name='Eugenia',
-                                    last_name='Rama')
+                                     first_name='Eugenia',
+                                     last_name='Rama')
     libr2 = User.objects.create_user(username='l2', email='libr2@touch.com', password='cakeisalie',
                                      first_name='Luie',
                                      last_name='Ramos')
